@@ -87,12 +87,13 @@ By mtime, never filename.
 
 - `pick-screenshots`, `pick-logs`, `pick-reports`.
 
-### Author (7)
+### Author (8)
 
 Each produces a deliverable.
 
 - `empiricism` — verify before encoding; don't overwrite intentional-fail gap tests.
 - `write-a-probe` — throwaway script, gitignored.
+- `write-test-strategy` — generate the test-strategy doc from the suite (scope, types, coverage tables, cycle tree, pass/fail, gaps, CI matrix).
 - `extend-coverage` — extend coverage from existing assets.
 - `update-frd-and-tests` — propagate a spec update.
 - `manual-reproduction-guide` — human-runnable repro.

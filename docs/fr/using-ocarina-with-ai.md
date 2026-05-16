@@ -87,12 +87,14 @@ Par mtime, jamais par nom de fichier.
 
 - `pick-screenshots`, `pick-logs`, `pick-reports`.
 
-### Author (7)
+### Author (8)
 
 Chacun produit un livrable.
 
 - `empiricism` — vérifier avant d'encoder ; ne pas écraser un test gap en échec intentionnel.
 - `write-a-probe` — script jetable, gitignored.
+- `write-test-strategy` — génère le document de stratégie de test à partir de la suite (scope, types, tables de couverture, arbre du cycle, pass/fail,
+  gaps, matrice CI).
 - `extend-coverage` — étend la couverture à partir du patrimoine existant.
 - `update-frd-and-tests` — propage une mise à jour de spec.
 - `manual-reproduction-guide` — repro exécutable par un humain.

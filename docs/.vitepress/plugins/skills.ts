@@ -7,7 +7,8 @@ const SKILLS_DIR = path.resolve(__dirname, '../../../ai/skills');
 const AI_DIR = path.resolve(__dirname, '../../../ai');
 const CLAUDE_FILES = ['CLAUDE.md', 'CLAUDE.slim.md'] as const;
 const DIST_DIR = path.resolve(__dirname, '../dist');
-const PUBLIC_PREFIX = '/skills';
+const BASE_URL = 'https://mojo-molotov.github.io/ocarina-holy-book';
+const PUBLIC_PREFIX = `${BASE_URL}/skills`;
 
 export function generateSkills(): Plugin[] {
   return [
@@ -54,7 +55,7 @@ function appendClaudeFilesToLlms(names: readonly string[]) {
   const lines = ['', '## Claude Context', ''];
   for (const name of names) {
     const title = extractTitle(fs.readFileSync(path.join(AI_DIR, name), 'utf-8')) ?? name;
-    lines.push(`- [${title}](/${name})`);
+    lines.push(`- [${title}](${BASE_URL}/${name})`);
   }
   lines.push('');
   const block = lines.join('\n');

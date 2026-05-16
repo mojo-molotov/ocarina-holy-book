@@ -10,6 +10,8 @@ type Locale = (typeof LOCALES)[number];
 
 const IGNORE = ['**/what-is-it.md', '**/first-feedbacks.md', '**/index.md'];
 
+const BASE_URL = 'https://mojo-molotov.github.io/ocarina-holy-book';
+
 export function generateLlms(): Plugin[] {
   const mdFiles = new Map<string, { content: string; url: string }>();
 
@@ -45,7 +47,9 @@ export function generateLlms(): Plugin[] {
           '# The Ocarina Holy Book - LLMs Full Documentation',
           '',
           '## Languages',
-          ...activeLocales.map((l) => `- ${l === 'en' ? 'English' : l === 'fr' ? 'Français' : l === 'ru' ? 'Русский' : l}: /llms-full.${l}.txt`),
+          ...activeLocales.map(
+            (l) => `- ${l === 'en' ? 'English' : l === 'fr' ? 'Français' : l === 'ru' ? 'Русский' : l}: ${BASE_URL}/llms-full.${l}.txt`
+          ),
           ''
         ];
         fs.writeFileSync(path.join(distDir, 'llms-full.txt'), indexLines.join('\n'));
@@ -77,7 +81,7 @@ const createLocaleMap = <T>(factory: () => T): Record<Locale, T> => LOCALES.redu
 function groupByLocale(files: Map<string, { content: string; url: string }>) {
   const result = createLocaleMap<{ content: string; url: string }[]>(() => []);
   for (const { content, url } of files.values()) {
-    const locale = LOCALES.find((l) => url.startsWith(`/${l}/`)) ?? 'en';
+    const locale = LOCALES.find((l) => url.startsWith(`${BASE_URL}/${l}/`)) ?? 'en';
     result[locale].push({ content, url });
   }
   return result;
@@ -92,7 +96,8 @@ function strip(content: string) {
 
 function mdToUrl(id: string) {
   const docsDir = path.resolve(__dirname, '../..');
-  return '/' + path.relative(docsDir, id).replace(/\.md$/, '').replace(/\\/g, '/');
+  const rel = path.relative(docsDir, id).replace(/\.md$/, '').replace(/\\/g, '/');
+  return `${BASE_URL}/${rel}`;
 }
 
 function extractTitle(content: string) {

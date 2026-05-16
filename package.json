@@ -1,0 +1,61 @@
+{
+  "name": "ocarina-holy-book",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "serve": "vitepress serve docs",
+    "format": "prettier --log-level warn --write .",
+    "format-check": "prettier . --check",
+    "lint": "eslint \"./docs/**/*.{js,jsx,ts,tsx}\" --max-warnings 0",
+    "typecheck": "tsc --noEmit --pretty",
+    "commit": "git-cz",
+    "prepare": "is-ci || husky"
+  },
+  "dependencies": {
+    "@sugarat/theme": "0.5.17"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "20.5.0",
+    "@commitlint/cz-commitlint": "20.5.1",
+    "@eslint/js": "10.0.1",
+    "@types/node": "25.6.0",
+    "commitizen": "4.3.1",
+    "editorconfig": "3.0.2",
+    "eslint": "10.2.1",
+    "eslint-plugin-import-x": "4.16.2",
+    "eslint-plugin-perfectionist": "5.9.0",
+    "eslint-plugin-unused-imports": "4.4.1",
+    "globals": "17.5.0",
+    "husky": "9.1.7",
+    "inquirer": "9.0.0",
+    "is-ci": "4.1.0",
+    "lint-staged": "16.4.0",
+    "pagefind": "1.5.2",
+    "prettier": "3.8.3",
+    "sass-embedded": "1.99.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.59.0",
+    "vitepress": "2.0.0-alpha.17",
+    "vitepress-plugin-image-optimize": "1.5.1",
+    "vue": "3.5.33"
+  },
+  "engines": {
+    "node": "^24.x",
+    "pnpm": "10.x"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search",
+        "search-insights"
+      ]
+    }
+  }
+}

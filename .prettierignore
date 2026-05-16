@@ -1,0 +1,8 @@
+LICENSE
+README.md
+node_modules
+pnpm-lock.yaml
+
+.commitlintrc.cjs
+.lintstagedrc.cjs
+.prettierrc.cjs

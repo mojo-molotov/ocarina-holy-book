@@ -1,0 +1,31 @@
+.VPHome::before {
+  background-image: url(./assets/bg.png);
+  background-size: cover;
+}
+
+.blog-info-wrapper {
+  display: none !important;
+}
+
+* {
+  word-break: break-word !important;
+}
+
+html.dark a[href='https://github.com/cloudcannon/pagefind'] svg path[fill='black'],
+html.dark a[href='https://github.com/cloudcannon/pagefind'] svg ellipse[fill='white'] {
+  fill: white;
+}
+
+html.dark a[href='https://github.com/cloudcannon/pagefind'] svg path[fill='white'],
+html.dark a[href='https://github.com/cloudcannon/pagefind'] svg ellipse[fill='black'] {
+  fill: black;
+}
+
+html.dark a[href='https://github.com/cloudcannon/pagefind'] svg path[stroke='black'] {
+  stroke: white;
+}
+
+.VPDoc .content img {
+  max-height: 600px !important;
+  width: auto !important;
+}

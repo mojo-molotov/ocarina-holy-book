@@ -12,8 +12,7 @@ head:
 
 # Using Ocarina with AI
 
-A working setup: a full test cycle built alongside Claude Code and Ocarina, against the public Katalon CURA demo. Descriptive — what's there, what it
-does.
+A working setup: a full test cycle built alongside Claude Code and Ocarina, against the public Katalon CURA demo.
 
 [📖 Get the AI example as a reference.](https://github.com/mojo-molotov/ocarina-with-ai-example)
 
@@ -42,7 +41,7 @@ through the normal UI.
 **Verify SUT behaviour empirically.** Probe, `gh api`, or `curl -v`. Never inference. Re-derive each time: a probe answers only for what it ran; a
 prior diagnosis only for that run.
 
-Each rule carries a one-line _why_ so judgment kicks in at the boundary.
+Each rule carries a one-line "_why_."
 
 ## `skills/`
 

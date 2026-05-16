@@ -12,8 +12,7 @@ head:
 
 # Utiliser Ocarina avec l'IA
 
-Un setup de travail : un cycle de test complet construit avec Claude Code et Ocarina, contre la démo publique Katalon CURA. Descriptif — ce qui est
-là, ce que ça fait.
+Un setup de travail : un cycle de test complet construit avec Claude Code et Ocarina, contre la démo publique Katalon CURA.
 
 [📖 Munissez-vous de l'exemple avec IA comme référence.](https://github.com/mojo-molotov/ocarina-with-ai-example)
 
@@ -32,17 +31,17 @@ Les étapes d'onboarding (venv, `pip install`, `ruff` / `mypy` / `pre-commit`, s
 
 Les règles :
 
-**Les tests de sécurité sont fonctionnels et statiques, jamais actifs.** Pas de payloads, pas de requêtes fabriquées, pas de manipulation du DOM via
+**Les tests de sécurité sont fonctionnels et statiques, jamais actifs.** Pas de payloads, pas de requêtes forgées, pas de manipulation du DOM via
 DevTools. Les scénarios black-hat passent par une UI normale.
 
 **Utiliser des constantes.** Les valeurs nommées ne sont pas inlinées.
 
-**Les datasets sont des décisions humaines.** Proposer n'exécute pas.
+**Les datasets sont des décisions humaines.** Proposer, PAS exécuter.
 
 **Vérifier empiriquement le comportement du SUT.** Sonde, `gh api`, ou `curl -v`. Jamais d'inférence. Re-dériver à chaque fois : une sonde ne répond
 que pour ce qu'elle a exécuté ; un diagnostic antérieur ne répond que pour cette exécution-là.
 
-Chaque règle porte un _pourquoi_ d'une ligne pour que le jugement se déclenche à la frontière.
+Chaque règle contient un "_pourquoi_" d'une ligne.
 
 ## `skills/`
 
@@ -53,23 +52,23 @@ Un fichier Markdown par skill, frontmatter YAML + corps. Neuf familles.
 Lectures statiques ; remontent des constats.
 
 - `review-spec-gaps` — questions de clarification sur les SFD.
-- `review-watcher-misuse` — `watcher.report(...)` au regard du « négatif uniquement ».
-- `review-compartmentalisation-leaks` — URLs, sélecteurs, nombres magiques mal placés.
+- `review-watcher-misuse` — `watcher.report(...)` principe de « négatif uniquement ».
+- `review-compartmentalisation-leaks` — URLs, sélecteurs, nombres magiques aux mauvais endroits.
 - `review-report` — classifie chaque FAIL / SKIP d'une exécution.
-- Et aussi : `review-type-ignore`, `review-match-candidates`, `review-unverified-transitions`, `review-submit-dispatchers`, `review-comment-drift`,
+- Et : `review-type-ignore`, `review-match-candidates`, `review-unverified-transitions`, `review-submit-dispatchers`, `review-comment-drift`,
   `review-suite-stability`, `review-intent-collisions`, `review-watcher-emissions`.
 
 ### Analyse (4)
 
 - `analyse-flakiness` — élargit le filet des erreurs transitoires ; les morts chroniques sont de vraies flakes.
 - `analyse-fixture-flakiness` — instrumente setup/teardown ; rend visibles les contaminations entre tests.
-- `analyse-watcher-flakiness` — avec/sans chaque watcher, balayage d'intervalles.
+- `analyse-watcher-flakiness` — analyse la fiabilité des watchers.
 - `analyse-screenshot-flakiness` — regroupe par `(test, étape, navigateur)`, détecte les différences.
 
 ### Black-hat (6)
 
 - `business-attack-ideation` — faire tomber le produit.
-- `incoherence-attack-ideation` — chaque étape légale, l'ensemble impossible.
+- `incoherence-attack-ideation` — chaque étape légale prise isolément, incohérent quand combinées pour construire un ensemble invalide.
 - `persistence-attack-ideation` — tentatives répétées sur une action bloquée.
 - `permission-appropriateness-audit` — le modèle d'accès est-il lui-même approprié ?
 - `bfcache-exposure-ideation` — attaques BFCache.
@@ -94,7 +93,7 @@ Chacun produit un livrable.
 
 - `empiricism` — vérifier avant d'encoder ; ne pas écraser un test gap en échec intentionnel.
 - `write-a-probe` — script jetable, gitignored.
-- `extend-coverage` — étend la couverture à partir des assets existants.
+- `extend-coverage` — étend la couverture à partir du patrimoine existant.
 - `update-frd-and-tests` — propage une mise à jour de spec.
 - `manual-reproduction-guide` — repro exécutable par un humain.
 - `manage-backlog` — `BACKLOG.md`.
@@ -115,8 +114,8 @@ Chacun produit un livrable.
 
 ## Chaînes récurrentes
 
-**Suite pas au vert :** `review-report` → `analyse-*` → `write-a-probe` → la trouvaille atterrit dans `IDENTIFIED_GAPS.md` / les SFD / un commentaire
-de scénario → sonde supprimée.
+**Cycle en échec :** `review-report` → `analyse-*` → `write-a-probe` → trouvailles propagées dans `IDENTIFIED_GAPS.md` / les SFD / un commentaire de
+scénario → sonde supprimée.
 
 **Scénario black-hat prometteur :** `empiricism` → `extend-coverage` (souvent en échec intentionnel).
 

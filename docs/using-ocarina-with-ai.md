@@ -25,7 +25,7 @@ public Katalon CURA demo. The goal here is purely descriptive: what files exist,
 
 ## `CLAUDE.md`
 
-The file encodes the rules that don't change between turns. A few load-bearing examples from the CURA side.
+The file encodes the rules that don't change between turns.
 
 **Security testing is functional and static, never active.** The whole black-hat family (saturation, persistence, lateral access, BFCache exposures)
 is bound by this rule. No injection payloads. No request crafting. No DevTools DOM manipulation. Every attack scenario must be reachable through a
@@ -156,8 +156,7 @@ with the resolution date. All in one motion via `update-frd-and-tests`.
 callbacks; `review-watcher-emissions` reads run output knowing every emission is, by convention, undesirable.
 
 **Horizontal scaling first.** When a coordination layer is proposed, the question is _"does this work at one process, three processes, N processes?"_
-In-memory state at the Ocarina-worker level is rejected by construction. Distributed primitives only: Redis-backed counters, distributed locks,
-reservation systems.
+In-memory state at the Ocarina-worker level is rejected by construction. Distributed primitives only.
 
 **Identify generated artifacts by mtime.** Screenshots, logs, reports all carry random UUID suffixes. The three `pick-*` skills exist to prevent
 lexicographic sorting.
@@ -170,6 +169,14 @@ This setup does NOT:
 - Patch hallucinations in CI. A failing test triggers `review-report` and an `analyse-*` skill.
 - Rewrite the spec. The FRD is edited only via `update-frd-and-tests`, with a revision-history line.
 - Run active security tests. Not now, not ever.
+
+## Exposed resources
+
+- https://mojo-molotov.github.io/ocarina-holy-book/llms.txt
+- https://mojo-molotov.github.io/ocarina-holy-book/llms-full.txt
+- https://mojo-molotov.github.io/ocarina-holy-book/CLAUDE.md
+- https://mojo-molotov.github.io/ocarina-holy-book/ocarina-en.pdf
+- https://mojo-molotov.github.io/ocarina-holy-book/ocarina-fr.pdf
 
 <llm-exclude>
 

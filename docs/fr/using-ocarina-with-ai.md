@@ -26,11 +26,11 @@ la démo publique Katalon CURA. L'objectif ici est purement descriptif : quels f
 
 ## `CLAUDE.md`
 
-Le fichier encode les règles qui ne changent pas entre les tours. Quelques exemples portants côté CURA.
+Le fichier encode les règles qui ne changent pas entre les tours.
 
 **Les tests de sécurité sont fonctionnels et statiques, jamais actifs.** Toute la famille black-hat (saturation, persistance, accès latéral,
 expositions BFCache) est tenue par cette règle. Pas de payload d'injection. Pas de fabrication de requête. Pas de manipulation du DOM via les
-DevTools. Chaque scénario d'attaque doit être atteignable par une motion UI normale.
+DevTools. Chaque scénario d'attaque doit être atteignable par une utilisation normale.
 
 **Utiliser des constantes.** Si une valeur a un nom (`DEMO_USERNAME`, `LOGIN_URL`), on n'inline pas.
 
@@ -151,24 +151,23 @@ Les skills se combinent. Quelques enchaînements qui reviennent souvent :
 
 Plusieurs patterns se retrouvent dans toutes les procédures.
 
-**Remonter, ne pas appliquer.** Chaque skill se termine de la même façon : imprimer le catalogue, s'arrêter, laisser l'utilisateur trancher.
+**Remonter, ne pas appliquer.** Chaque skill se termine de la même façon : donner des pistes, s'arrêter, laisser l'utilisateur trancher.
 
 **Empirique plutôt qu'assertif.** Toute affirmation sur le comportement du SUT est adossée à une observation, citée sur place, datée. La phrase
 rituelle : _« Juste remarque, je suppose. Je vérifie empiriquement. »_ Elle déclenche un `write-a-probe`, la sonde capture la vérité, la trouvaille
 atterrit, la sonde est supprimée.
 
-**Les tests gap sont reformulés, pas basculés au vert.** Quand CURA corrige un gap §9, le test en échec intentionnel ne peut pas être simplement édité
-pour correspondre au nouveau comportement. La discipline : inverser l'assertion, renommer le test, déplacer sa ligne dans le doc de stratégie de la
-catégorie intentional-fail vers pass-everywhere, mettre à jour `IDENTIFIED_GAPS.md` avec la date de résolution. Le tout en une seule motion via
+**Les tests gap sont reformulés, pas basculés au vert.** Quand un correctif est livré et validé, le test en échec intentionnel ne peut pas être
+simplement édité pour correspondre au nouveau comportement. La discipline : inverser l'assertion, renommer le test, déplacer sa ligne dans le doc de
+stratégie de la catégorie intentional-fail vers pass-everywhere, mettre à jour `IDENTIFIED_GAPS.md` avec la date de résolution. Le tout via
 `update-frd-and-tests`.
 
-**Les émissions des watchers sont systématiquement des signaux négatifs.** Un watcher qui émet _« login réussi »_ casse le contrat.
+**Les signaux des watchers sont systématiquement des signaux négatifs.** Un watcher qui émet _« login réussi »_ casse le contrat.
 `review-watcher-misuse` audite les callbacks ; `review-watcher-emissions` lit les sorties d'exécution en sachant que toute émission est, par
 convention, indésirable.
 
 **Priorité au scaling horizontal.** Quand une couche de coordination est proposée, la question est _« est-ce que ça fonctionne avec un process, trois
-process, N process ? »_. L'état en mémoire au niveau du worker Ocarina est rejeté par construction. Primitives distribuées uniquement : compteurs
-adossés à Redis, verrous distribués, systèmes de réservation.
+process, N process ? »_. L'état en mémoire au niveau du worker Ocarina est rejeté par construction. Primitives distribuées uniquement.
 
 **Identification des artefacts générés d'après leur date.** Captures d'écran, logs, rapports : tous portent un suffixe UUID aléatoire. Les trois
 skills `pick-*` existent pour empêcher tout tri lexicographique.
@@ -179,6 +178,14 @@ skills `pick-*` existent pour empêcher tout tri lexicographique.
 - Patcher des hallucinations en CI. Un test qui échoue déclenche `review-report` et un skill `analyse-*`.
 - Réécrire la spec. Le document de suivi des SFD n'est édité que via `update-frd-and-tests`, avec une ligne d'historique de révision.
 - Faire des tests de sécurité actifs. Ni maintenant, ni jamais.
+
+## Ressources exposées
+
+- https://mojo-molotov.github.io/ocarina-holy-book/llms.txt
+- https://mojo-molotov.github.io/ocarina-holy-book/llms-full.txt
+- https://mojo-molotov.github.io/ocarina-holy-book/CLAUDE.md
+- https://mojo-molotov.github.io/ocarina-holy-book/ocarina-en.pdf
+- https://mojo-molotov.github.io/ocarina-holy-book/ocarina-fr.pdf
 
 <llm-exclude>
 

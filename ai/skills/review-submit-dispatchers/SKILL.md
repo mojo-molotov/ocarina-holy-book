@@ -20,14 +20,14 @@ The discipline (from `CLAUDE.md` → "Form submission paths"):
 
 - `element.click()` on the submit `<button>` — always legitimate.
 - `send_keys(Keys.ENTER)` on a focused text `<input>` — HTML implicit submission, legitimate **unless** a JS widget bound to that input intercepts
-  Enter (CURA's Bootstrap datepicker on `txt_visit_date` is the example — Enter there toggles the calendar instead of submitting).
+  Enter (the SUT's Bootstrap datepicker on `txt_visit_date` is the example — Enter there toggles the calendar instead of submitting).
 - `send_keys(Keys.ENTER)` on a focused `<button type="submit">` — a focused button activates on Enter; legitimate.
 
 The audit surfaces gaps. **It never edits POMs.** A dispatcher is a deliberate API choice; the audit only makes the gap visible.
 
 Default target: `src/pages/`. For a different target, ask the user.
 
-## The pattern (worked examples in this repo)
+## The pattern
 
 `LoginPage._submit_dispatchers` — 4 paths:
 
@@ -77,8 +77,8 @@ multiple cycles) covers the full path set across runs — no need to exercise ev
 A POM method qualifies when **all** of these are true:
 
 - It commits an intent (sends data, finalises an interaction, navigates _because_ of an explicit user click). Examples: a form submit, a "Confirm"
-  button, "Send", "Save", "Place order", and — at the borderline — discrete commit-flavoured clicks like "Go to Homepage" on the empty-history page
-  (REQ-HIST-4).
+  button, "Send", "Save", "Place order", and — at the borderline — discrete commit-flavoured clicks like "Go to Homepage" on an empty-state page (a
+  borderline case from <https://github.com/mojo-molotov/ocarina-with-ai-example>).
 - It maps to a single underlying browser command (a click) but the same outcome is reachable via Enter on the focused button — and, for form submits
   with text inputs upstream, via Enter on those inputs.
 - A miss on any one of those paths would be a real defect from a user's point of view.
@@ -95,11 +95,11 @@ It does **not** qualify when:
 
 Search POMs for methods matching these patterns — first-pass candidates:
 
-| Pattern                                                  | Examples in this repo                              |
+| Pattern                                                  | Generic examples                                   |
 | -------------------------------------------------------- | -------------------------------------------------- |
 | `submit*`, `*_submit*`                                   | `LoginPage.submit_login`, `AppointmentPage.submit` |
 | `confirm*`                                               | (none currently — would qualify if added)          |
-| `book*`, `place*`, `send*`, `save*`                      | (none in this repo — generic patterns)             |
+| `book*`, `place*`, `send*`, `save*`                      | (generic patterns)                                 |
 | `click_*` where the destination of the click is a commit | `HistoryPage.click_go_to_homepage` — borderline    |
 
 The first two rows are **canonical commits**; flag if no dispatcher. The bottom rows are **borderline**; surface as judgment calls.
@@ -174,7 +174,7 @@ Why it matters: <one or two sentences — what regression a missing path would h
 
 ````
 
-Print the report; do not write it to a file unless the user asks. Also update `CURA_TEST_STRATEGY.md` §4's dispatcher table when the user accepts a change — but never as part of the audit; that's the follow-up edit.
+Print the report; do not write it to a file unless the user asks. Also update the test-strategy doc §4's dispatcher table when the user accepts a change — but never as part of the audit; that's the follow-up edit.
 
 ### 6. Stop. The user decides.
 
@@ -235,9 +235,9 @@ def submit_search(self) -> SearchPage:
 
 ### Borderline — would surface as **Maybe**
 
-`HistoryPage.click_go_to_homepage`: an `<a>`-tag click on the empty-history "Go to Homepage" button (REQ-HIST-4). A click is the user-canonical path;
-Enter on the focused anchor is also a valid user action. Report would note the path is single-click, flag it as Maybe, and let the user decide whether
-the symmetry warrants a 2-path dispatcher here.
+`HistoryPage.click_go_to_homepage` (worked example): an `<a>`-tag click on the empty-history "Go to Homepage" button. A click is the user-canonical
+path; Enter on the focused anchor is also a valid user action. Report would note the path is single-click, flag it as Maybe, and let the user decide
+whether the symmetry warrants a 2-path dispatcher here.
 
 ## When to run this skill
 
@@ -255,5 +255,5 @@ You may run it without prompting if a diff you're already reviewing adds a `subm
   are realistic and a miss is a real defect.
 - It does not enforce running every combination per test — `random.choice` + `--workers N` cloning + cycle repetition is by design how coverage adds
   up across runs. The audit only checks that the dispatcher exists; running it is the framework's job.
-- It does not maintain `CURA_TEST_STRATEGY.md` §4's dispatcher table. When a dispatcher is added or removed, that table updates in the same PR as the
+- It does not maintain the test-strategy doc §4's dispatcher table. When a dispatcher is added or removed, that table updates in the same PR as the
   POM change — but that's authoring, not auditing.

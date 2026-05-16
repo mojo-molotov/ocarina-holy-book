@@ -8,9 +8,9 @@ description:
   step + browser, surfaces the visually anomalous frames, and **triages each anomaly into an adaptation strategy**: (a) a non-blocking overlay
   (notification, ad, toast) → candidate for an Ocarina `Watcher` that observes-and-reports without interrupting; (b) a structurally recognizable
   intermediate page (cookie banner with Accept, an interstitial modal, a consent gate) → candidate for an Ocarina `match_page` branch that dismisses
-  it deterministically; (c) a transient artifact of the run (mid-redirect frame, BFcache stale frame) → no adaptation, cross-reference to
-  `IDENTIFIED_GAPS.md`. Use whenever the user asks to compare screenshots across runs, find what's making screenshots different, decide whether to add
-  a watcher or a match_page branch, or triage visual flakes."
+  it deterministically; (c) a transient artifact of the run (mid-redirect frame, BFcache stale frame) → no adaptation, cross-reference to the gap
+  inventory. Use whenever the user asks to compare screenshots across runs, find what's making screenshots different, decide whether to add a watcher
+  or a match_page branch, or triage visual flakes."
 ---
 
 # Analyse screenshot flakiness — what's in the picture that shouldn't be?
@@ -66,8 +66,8 @@ When the overlay is **not** a real UI element but an artifact of the _capture mo
 - A BFcache stale frame (Chrome restored a snapshot of a previous page) — already documented as `§B-BROWSER-1`.
 - A driver-level rendering glitch (chromedriver captured before paint).
 
-No Ocarina adaptation fixes this — it's not a UI element to handle. The adaptation is a cross-reference: the symptom already lives in
-`IDENTIFIED_GAPS.md`, or it should be filed as a new entry.
+No Ocarina adaptation fixes this — it's not a UI element to handle. The adaptation is a cross-reference: the symptom already lives in the gap
+inventory, or it should be filed as a new entry.
 
 Recommend cross-reference when: the anomaly isn't a real DOM element but a transport / cache / timing artifact.
 
@@ -173,12 +173,12 @@ Triage criteria, in order:
 
 ### Path C — Cross-references (no adaptation)
 
-- `<anomaly>` matches `IDENTIFIED_GAPS.md §<ref>` — already documented.
+- `<anomaly>` matches `the gap inventory <entry-ref>` — already documented.
 - `<anomaly>` is new → file as `B-*` / `A-ENV-*` / `G-*` (user picks the prefix).
 
 ## Cross-references
 
-- `IDENTIFIED_GAPS.md` §<refs>.
+- the gap inventory <entry-refs>.
 - `analyse-watcher-flakiness` (for Path A planning).
 - `pick-screenshots` (for the source rule used to pick these shots).
 
@@ -201,7 +201,7 @@ Each recommendation resolves as:
 - **Path A applied** — author the watcher (the _user_ writes the scenario change; this skill doesn't), then run `analyse-watcher-flakiness` before
   merging.
 - **Path B applied** — extend the scenario with a `match_page` branch + dismissal step. The skill _describes_ the branch shape; the user writes it.
-- **Path C applied** — extend `IDENTIFIED_GAPS.md` (via `update-frd-and-tests` or a direct edit) so the next reader doesn't re-investigate.
+- **Path C applied** — extend the gap inventory (via `update-frd-and-tests` or a direct edit) so the next reader doesn't re-investigate.
 - **Defer** — interesting but rare; revisit if it recurs.
 
 ## Hard rules
@@ -220,7 +220,7 @@ Each recommendation resolves as:
 ## When to run this skill
 
 - A test fails intermittently and the failure screenshots look subtly different across runs.
-- After a CURA deployment — has anything new started appearing in screenshots?
+- After a SUT deployment — has anything new started appearing in screenshots?
 - Before adding a `Watcher` or a `match_page` branch — confirm with empirical screenshot evidence that the overlay is real and recurrent.
 - During a `review-suite-stability` pass that surfaces a SURPRISE RED on a previously-stable test — visual comparison often reveals an overlay landed
   in the test path.
@@ -233,6 +233,6 @@ Each recommendation resolves as:
 - It does not run probes. If an anomaly's DOM origin is unclear, the next motion is `write-a-probe` (capture `outerHTML` at the suspected moment), not
   more screenshot staring.
 - It does not modify Ocarina's `Watcher` / `match_page` contracts. Audit those via `analyse-watcher-flakiness`.
-- It does not update `IDENTIFIED_GAPS.md` directly. Cross-references are _recommended_; the entry itself is a follow-up via `update-frd-and-tests`.
+- It does not update the gap inventory directly. Cross-references are _recommended_; the entry itself is a follow-up via `update-frd-and-tests`.
 - It does not include attack-shape inputs in any sample. An overlay carrying suspicious content (e.g. a clickjacked iframe) is filed as a gap, not
   probed actively.

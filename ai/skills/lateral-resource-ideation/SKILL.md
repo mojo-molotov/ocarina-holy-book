@@ -72,8 +72,8 @@ For each, walk the SUT's URL surface and ask whether the dimension yields encoda
 
 The user changes a numeric ID by ±1 (or by larger steps) in the address bar.
 
-- **CURA example**: CURA's session-based model doesn't expose resource IDs in URLs prominently (verify per `empiricism`). For SUTs that do: walk every
-  numeric-ID URL and pair each with a ±1, ±10, ±1000 lateral move.
+- **Concrete example**: the SUT's session-based model doesn't expose resource IDs in URLs prominently (verify per `empiricism`). For SUTs that do:
+  walk every numeric-ID URL and pair each with a ±1, ±10, ±1000 lateral move.
 - **Detection question**: does the SUT respond with content, with a generic 403/404, or with a tailored "you don't have access to this record"?
 - **Note**: a tailored response can be itself a side channel (existence-vs-permission disclosure); the audit surfaces _both_ the access question and
   the response-shape question.
@@ -90,8 +90,8 @@ The IDs follow a pattern (date, sequence with padding, predictable slug). The us
 
 The user keeps the same ID but changes the resource type in the path.
 
-- **CURA example**: `…/appointment/<id>` → `…/history/<id>` → `…/profile/<id>`. Do the URLs even share an ID space? If yes, swapping the segment may
-  expose neighbouring data.
+- **Concrete example**: `…/appointment/<id>` → `…/history/<id>` → `…/profile/<id>`. Do the URLs even share an ID space? If yes, swapping the segment
+  may expose neighbouring data.
 - **Detection question**: does the SUT validate that the ID belongs to the resource type, or just looks it up?
 
 ### 4. Query-parameter scope expansion
@@ -131,15 +131,16 @@ URLs with state encoded in the fragment (`#…`). The user changes the fragment.
 
 ```bash
 grep -rn -i "_URL\|url\|path\|route\|endpoint" src/constants
-grep -rn "REQ-" CURA_FRD.md | grep -i "url\|page\|resource"
+grep -rn "REQ-" the FRD | grep -i "url\|page\|resource"
 ```
 
 Build the list of URLs the SUT exposes — including those embedded in code as constants, mentioned in the FRD's form table, or visible in routing
 configs. For each URL, note: does it contain an ID? What kind (numeric, slug, UUID, date)? Are there query parameters or fragments?
 
-For CURA specifically: the URL surface is short — `LOGIN_URL`, `HOME_URL`, `HISTORY_URL`, the appointment form URL, the profile URL. Most have **no
-exposed IDs** (session-scoped). The audit's output will be brief; the first finding is therefore _"CURA exposes few resource IDs in URLs — the attack
-surface is narrow by construction"_. The lens stays ready for future URL additions.
+As a concrete example (see <https://github.com/mojo-molotov/ocarina-with-ai-example>): the URL surface is short — `LOGIN_URL`, `HOME_URL`,
+`HISTORY_URL`, the appointment form URL, the profile URL. Most have **no exposed IDs** (session-scoped). The audit's output will be brief; the first
+finding is therefore _"the SUT exposes few resource IDs in URLs — the attack surface is narrow by construction"_. The lens stays ready for future URL
+additions.
 
 ### Step 2 — Walk the seven dimensions × URLs
 
@@ -147,13 +148,13 @@ For each URL × dimension:
 
 - Is the dimension applicable? (No ID → §1, §2 don't apply.)
 - What's the _neighbouring_ resource the user shouldn't see? Pin a concrete example.
-- Does the SUT have multi-user data that _could_ be exposed laterally? (CURA's single demo account makes this delicate — the "other user's data" is
+- Does the SUT have multi-user data that _could_ be exposed laterally? (the SUT's single demo account makes this delicate — the "other user's data" is
   the same account; cross-tab tests may still apply.)
 - Is encoding the scenario through the address bar alone?
 
 ### Step 3 — Cross-check against existing artifacts
 
-- Already documented in `IDENTIFIED_GAPS.md`? Cross-reference.
+- Already documented in the gap inventory? Cross-reference.
 - Adjacent `review-spec-gaps` finding? Cross-reference — most lateral-access questions also surface as "the spec doesn't say what happens".
 - Adjacent `permission-appropriateness-audit §6` (implicit roles) or `§7` (resource-grouping)? Cross-reference.
 
@@ -176,7 +177,7 @@ Per proposal: does the test shape require headers, intercepted requests, or anyt
 ### Sequential ID enumeration
 
 - **`<url>` ID ±N**: <concrete example>. Detection question: <one sentence>. Test shape: drive `<owned URL>` → type `<lateral URL>` in address bar →
-  observe response. Cross-reference: `IDENTIFIED_GAPS.md §<ref>` | new.
+  observe response. Cross-reference: `the gap inventory <entry-ref>` | new.
 
 ### Predictable-pattern guessing
 
@@ -235,7 +236,7 @@ Print the catalogue.
 Each encodable candidate resolves as:
 
 - **Encode** — `empiricism` to verify, then `extend-coverage` to author. Expect: tests often present as _intentional fails_ until the SUT enforces
-  row-level access, mirroring the project's §9 gap-test discipline.
+  row-level access, mirroring the project's gap-test discipline (intentional reds documented in the gap inventory + spec's known-bugs section).
 - **Discuss** — many lateral-access boundaries are product decisions (sharing a public URL is fine; sharing a record URL with a non-recipient is not —
   team draws the line).
 - **Defer** — record for the next coverage push.
@@ -272,6 +273,6 @@ Static observations don't get encoded; they feed `review-spec-gaps` or `update-f
 - It does not intercept, craft, or modify HTTP requests. No proxies, no curl, no DevTools replay.
 - It does not run anything against the SUT. Static ideation only.
 - It does not produce attack payloads, ID dictionaries, or enumeration tooling.
-- It does not file `IDENTIFIED_GAPS.md` entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
+- It does not file the gap inventory entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
 - It does not pick the team's protection model — the team decides where to enforce row-level access, where to rely on opaqueness, where to accept
   exposure.

@@ -36,7 +36,7 @@ Ocarina pulls a driver from a pool (`create_drivers_pool.py`). Flake shapes here
 The driver is open but the browser hasn't navigated yet:
 
 - Cold profile vs warm profile (clean Chrome with password-manager off vs profile-reuse).
-- Heroku dyno cold-start (the _server_ not warm — surfaces as a slow first GET).
+- Hosting-tier cold-start, e.g. Heroku eco dyno (the _server_ not warm — surfaces as a slow first GET).
 
 ### 3. Login fixture / authentication state
 
@@ -51,14 +51,14 @@ The test arrives expecting `DEMO_USERNAME` to be logged in (or expecting _not_ t
 The test assumes the browser is at `LOGIN_URL` / `HOME_URL` / wherever. Flake shape:
 
 - Previous test left the browser elsewhere; setup forgot to navigate.
-- The fixture navigated but Chrome's BFcache served a stale snapshot (the §B-BROWSER-1 shape).
+- The fixture navigated but Chrome's BFcache served a stale snapshot (§B-BROWSER-1 shape).
 
 ### 5. Test body executes — out of scope here, see `analyse-flakiness`.
 
 ### 6. Teardown — post-action cleanup
 
 - Did logout actually fire?
-- Did the test leave a created appointment in the demo account? (CURA's demo backend is shared — leaked appointments contaminate `REQ-HIST-*` tests.)
+- Did the test leave state in a shared backend (a record, an artifact)? Leaked state contaminates downstream history-like tests.
 - Did the test set cookies that the next test will mis-interpret?
 - Did the screenshot-on-failure step itself fail silently and lose evidence?
 
@@ -189,11 +189,11 @@ For each worker, across all replays, build the sequence:
 worker 1, replay 1:
   T+0.00s  acquire_driver  enter
   T+0.42s  acquire_driver  exit          (clean)
-  T+0.43s  login           enter         url=/profile.php#login cookies=0
-  T+2.18s  login           exit          url=/ cookies=1 (PHPSESSID)
+  T+0.43s  login           enter         url=/login cookies=0
+  T+2.18s  login           exit          url=/ cookies=1 (SESSION)
   T+2.20s  test_A          (starts)
   T+12.4s  test_A          (passed)
-  T+12.4s  teardown        enter         url=/history.php cookies=1
+  T+12.4s  teardown        enter         url=/history cookies=1
   T+13.1s  teardown        exit          url=/ cookies=0
   T+13.1s  release         enter
   T+13.2s  release         exit          (clean)
@@ -219,7 +219,8 @@ For each anomaly:
 
 - **Chronic** — same anomaly across ≥ 2 replays. Real boundary flake.
 - **One-off** — single replay. Probably noise, but record for a future pass.
-- **Cross-references** — does the anomaly match `§A-ENV-1` (rapid-POST contention), `§A-ENV-2` (password modal), `§B-BROWSER-1` (BFcache), or none?
+- **Cross-references** — does the anomaly match `§A-ENV-1` (rapid-POST shared-dyno contention), `§A-ENV-2` (Chrome password-breach modal),
+  `§B-BROWSER-1` (Chrome BFcache restore after logout), or none?
 
 ### Step 8 — Surface the findings
 
@@ -233,11 +234,11 @@ For each anomaly:
 
 ## Chronic boundary anomalies
 
-| Worker / replay | Surface         | Anomaly                                                   | Symptom in test                                             | Cross-ref                                                          |
-| --------------- | --------------- | --------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------ |
-| w2 / r1,r3      | teardown_logout | exit without redirect; cookies still set                  | next test (test_B) failed at first action with "wrong page" | §B-BROWSER-1 (BFcache stale page)                                  |
-| w1 / r2,r3      | release         | enter then 8s gap before next acquire                     | worker appeared wedged in CI summary                        | none — new finding                                                 |
-| w3 / r1,r2,r3   | login           | password modal symptom (selector miss on `#txt-password`) | first action timed out                                      | §A-ENV-2 (clean Chrome should fix; was it applied to this driver?) |
+| Worker / replay | Surface         | Anomaly                                                   | Symptom in test                                             | Cross-ref                                                           |
+| --------------- | --------------- | --------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| w2 / r1,r3      | teardown_logout | exit without redirect; cookies still set                  | next test (test_B) failed at first action with "wrong page" | §B-BROWSER-1 (BFcache stale page)                                   |
+| w1 / r2,r3      | release         | enter then 8s gap before next acquire                     | worker appeared wedged in CI summary                        | none — new finding                                                  |
+| w3 / r1,r2,r3   | login           | password modal symptom (selector miss on `#txt-password`) | first action timed out                                      | §A-ENV-2 — clean Chrome should fix; was it applied to this driver?) |
 
 ## One-offs (recorded, not actionable)
 
@@ -245,7 +246,7 @@ For each anomaly:
 
 ## Cross-references
 
-- `IDENTIFIED_GAPS.md` §<refs>.
+- the gap inventory <entry-refs>.
 - `src/<fixture file>.py:<line>` — site of the anomaly.
 
 ## Open follow-ups
@@ -265,7 +266,7 @@ git checkout -- <each instrumented file>
 ```
 
 Confirm the restore with a second `git diff`. Boundary instrumentation is throwaway; the _findings_ land elsewhere (a comment on the fixture, an entry
-in `IDENTIFIED_GAPS.md`, a deliberate refactor of the fixture).
+in the gap inventory, a deliberate refactor of the fixture).
 
 If the analysis surfaced a permanent log call worth keeping (rare — production-grade fixture observability), that's a separate signed-off change, not
 "leave the diff in".
@@ -284,8 +285,8 @@ Each chronic anomaly can resolve as:
 - **Never commit the instrumentation.** It's a probe of the boundary. The restore is mandatory.
 - **Don't dump cookie / credential contents into logs.** Counts and names only. The demo creds are public, but anything _issued by the server_
   (session tokens) shouldn't land in a log file you might paste into a PR.
-- **Stress is amplification, not abuse.** Bumping workers to amplify contention is fine. Hammering the Heroku dyno with thousands of requests is not —
-  it's a free-tier deployment.
+- **Stress is amplification, not abuse.** Bumping workers to amplify contention is fine. Hammering a free-tier hosting instance (Heroku eco dyno,
+  Fly.io free, etc.) with thousands of requests is not — respect the deployment's tier limits.
 - **Multiple replays are mandatory.** A single replay's gap could be a CI hiccup. Default 5 here (one more than the in-test analysis), because
   boundary flakes are rarer per-test than in-test ones.
 - **Distinguish from `analyse-flakiness`.** If a "boundary" symptom turns out to be the _test body's_ first action genuinely failing (e.g. a selector

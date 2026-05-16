@@ -1,12 +1,12 @@
 ---
 name: pr-report
-description: Write the PR description for this repo, picking the right *shape* of report for the PR. The discipline: a refactoring PR gets a **refactoring report** (what was reshaped, what stayed the same, net delta, risk surface, minimal test plan) — not the test-strategy template (hierarchy slice, suite/campaign tree, expected pass/fail) that's appropriate when test boundaries shift. Use whenever the user asks to write a PR description, draft a PR body, summarise a branch for review, prepare a release-candidate PR, or run `gh pr create`. Detect the PR type before reaching for a template; if the diff doesn't add/remove/relocate any test, it's a refactor — the report frames the *reshape*, not the *test plan*.
+description: Write the PR description for the current branch, picking the right *shape* of report for the PR. The discipline: a refactoring PR gets a **refactoring report** (what was reshaped, what stayed the same, net delta, risk surface, minimal test plan) — not the test-strategy template (hierarchy slice, suite/campaign tree, expected pass/fail) that's appropriate when test boundaries shift. Use whenever the user asks to write a PR description, draft a PR body, summarise a branch for review, prepare a release-candidate PR, or run `gh pr create`. Detect the PR type before reaching for a template; if the diff doesn't add/remove/relocate any test, it's a refactor — the report frames the *reshape*, not the *test plan*.
 ---
 
 # Write a PR report — the right shape for the PR
 
-The repo's `CLAUDE.md` ships a default PR-description shape that leans heavily on test strategy — `## Summary` + `## Test plan` + a _hierarchy slice_
-when the cycle/campaign/suite/test tree shifts. That shape is right when the PR moves test boundaries. When the PR is a **refactor** — internal
+The project's `CLAUDE.md` ships a default PR-description shape that leans heavily on test strategy — `## Summary` + `## Test plan` + a _hierarchy
+slice_ when the cycle/campaign/suite/test tree shifts. That shape is right when the PR moves test boundaries. When the PR is a **refactor** — internal
 reshape, type hygiene, consolidation, dead-code removal, a discipline applied uniformly to existing tests — the report should frame the _refactor_,
 not the test plan. A long Test plan and a hierarchy slice on a refactor PR are noise; they push the actual change out of view.
 

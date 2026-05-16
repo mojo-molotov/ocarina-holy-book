@@ -149,7 +149,7 @@ Raw JSON totals would say "<X> failures, <Y> skipped"; the real reading is above
 - Exception: `<class>` at `<scenario/POM file>:<line>` (log: line `<N>` in `<log file>`).
 - Lives used: <1 | all> of <N>.
 - Screenshot burst: `<file>`, `<file>` (in `<gitignored>/screenshots/`).
-- Cross-reference: matches `IDENTIFIED_GAPS.md §<ref>` | new candidate.
+- Cross-reference: matches `the gap inventory <entry-ref>` | new candidate.
 - Diagnostic next step: <re-run in isolation | `write-a-probe` to isolate | `analyse-flakiness` on the transient classification | already-explained,
   no action>.
 
@@ -194,7 +194,7 @@ Raw JSON totals would say "<X> failures, <Y> skipped"; the real reading is above
 
 ## Cross-references
 
-- `IDENTIFIED_GAPS.md` §<refs>.
+- the gap inventory <entry-refs>.
 - Diagnostic skills suggested: <`analyse-flakiness`, `analyse-fixture-flakiness`, `analyse-screenshot-flakiness`, `write-a-probe`>.
 
 ## Verdict
@@ -223,7 +223,7 @@ Each incident class maps to a different next motion:
 - **Setup-error SKIPs are not low-priority.** They're forced skips from a real precondition failure. Read with the same gravity as a Setup FAIL.
 - **Smoke-gate SKIPs are not failures.** They're the _consequence_ of the smoke FAIL. Don't double-count.
 - **Always cross-reference to the log line.** A FAIL without a log line is unverifiable; a screenshot without a log line is unprovenanced.
-- **Always cross-reference to `IDENTIFIED_GAPS.md`.** Many incidents are already-explained; not noting that is duplicate investigation.
+- **Always cross-reference to the gap inventory.** Many incidents are already-explained; not noting that is duplicate investigation.
 - **Mtime-sort everything.** Reports, logs, screenshots. Per `pick-reports` / `pick-logs` / `pick-screenshots`.
 
 ## When to run this skill
@@ -240,5 +240,5 @@ Each incident class maps to a different next motion:
 - It does not run multi-replay analysis. Use `review-suite-stability` for that.
 - It does not investigate root causes. It surfaces incidents with their classification and the _suggested_ next motion; the next motion is a separate
   skill invocation.
-- It does not update `IDENTIFIED_GAPS.md` or the FRD. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
+- It does not update the gap inventory or the FRD. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
 - It does not modify the report files or the logs. Read-only.

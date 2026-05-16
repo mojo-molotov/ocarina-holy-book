@@ -86,12 +86,12 @@ Two practical points:
   the menu in — no navigation — has nothing for this skill to flag. The screenshot rule's exception may still apply to it (was the slide-in visible to
   the user?), but that is a different audit.
 
-In current code, the post-logout test family (`post_logout_bfcache_exposure`, `post_logout_server_invalidation`, `post_logout_access`,
-`post_logout_frenetic_navigation`, `rapid_logout_relogin`'s cycle logouts, and `logout.py`'s two data-driven cases) all have a `drive_page` whose
-terminal act is `logout_session` / `logout_via_sidebar`. Each one is exactly the case this rule targets. Expect them to surface as **Violations** on a
-first run — and check the proposed fix per file: in most of them the homepage isn't the focus, so the cheapest fix is a small intermediate
-`drive_page` with `act(on_home, verify_homepage)`; in `logout.py` the verify is _already_ present (it owns the homepage frame), so it's the correct
-shape, not a violation.
+In the worked example (<https://github.com/mojo-molotov/ocarina-with-ai-example>), the post-logout test family (`post_logout_bfcache_exposure`,
+`post_logout_server_invalidation`, `post_logout_access`, `post_logout_frenetic_navigation`, `rapid_logout_relogin`'s cycle logouts, and `logout.py`'s
+two data-driven cases) all have a `drive_page` whose terminal act is `logout_session` / `logout_via_sidebar`. Each one is exactly the case this rule
+targets. Expect them to surface as **Violations** on a first run — and check the proposed fix per file: in most of them the homepage isn't the focus,
+so the cheapest fix is a small intermediate `drive_page` with `act(on_home, verify_homepage)`; in `logout.py` the verify is _already_ present (it owns
+the homepage frame), so it's the correct shape, not a violation.
 
 ## What is NOT a transitioning action (do not flag)
 

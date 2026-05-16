@@ -184,7 +184,7 @@ For each finding, cite the supporting rule:
 ### Step 5 — Surface the audit
 
 ```markdown
-# Compartmentalisation-leak audit — the project root (<date>)
+# Compartmentalisation-leak audit — <project-name> (<date>)
 
 ## Canonical modules
 
@@ -269,7 +269,7 @@ Each finding resolves as:
 - **Batch fixes by leak kind in one PR.** A "URL hygiene" PR is easier to review than a mixed-bag refactor. The skill recommends the batching shape;
   the user implements.
 - **Don't recommend creating a canonical module without surfacing first.** A new constants module is a project-shape decision (the project's memory
-  notes: scope is the project root only — confirm with the user before adding structure).
+  notes: scope is the project only — confirm with the user before adding structure).
 - **Distinguish hard, soft, missing-module, intentional inline.** Not every literal is a leak. The classification matters.
 - **Cite the CLAUDE.md rule that justifies each finding.** Otherwise the audit becomes opinion.
 - **Don't propose moving literals that exist for behavioural detection.** A test that intentionally asserts against a hardcoded `"Login failed!"`

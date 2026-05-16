@@ -9,7 +9,7 @@ Same rule as `pick-screenshots`. Each cycle run produces a directory tree like:
 
 ```
 <configured-logs-root>/
-  CURA E2E/
+  <SUT-NAME> E2E/
     <Campaign name>/
       <Suite name>/
         <Test name>.log

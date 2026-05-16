@@ -2,7 +2,7 @@
 name: review-comment-drift
 description:
   Audit Python comments and docstrings for **drift** — claims that no longer match the code or the SUT. Walk POMs first (call-site comments asserting
-  CURA behaviour are the highest-rot risk — they outlive the deployment that motivated them), then scenario inline comments and dataset annotations,
+  SUT behaviour are the highest-rot risk — they outlive the deployment that motivated them), then scenario inline comments and dataset annotations,
   then the scenario top docstring (the `Flow:` arrow chain and the `Pre-fragments:` list — these are also mechanically checkable against the actual
   `drive_page` sequence and the `pre_test_scenarios_fragments` kwarg). Surface drifted comments with the empirical contradiction; never silently
   rewrite a comment — a stale comment may signal a stale *test*, and "fixing" the comment to match the code can paper over the real defect. Use
@@ -14,8 +14,8 @@ description:
 Audits a Python source tree for **comments and docstrings that have drifted from the code or the SUT they describe**. The order is deliberate,
 weakest-link first:
 
-1. **POMs** — call-site and selector comments asserting things like _"CURA does X"_, _"the deployed form has no CSRF"_, _"this Bootstrap 3 hook
-   intercepts Enter"_. These rot the moment CURA or the deployment changes. They're often _the only_ place that "why" is recorded; when wrong, they
+1. **POMs** — call-site and selector comments asserting things like _"the SUT does X"_, _"the deployed form has no CSRF"_, _"this Bootstrap 3 hook
+   intercepts Enter"_. These rot the moment the SUT or the deployment changes. They're often _the only_ place that "why" is recorded; when wrong, they
    actively mislead.
 2. **Scenario inline comments + dataset annotations** — call-site comments inside scenario files, and comments around dataset constants (`_FACILITY`,
    `_VISIT_DATES`, `booking_cases`). These rot when the dataset changes or when a connector signature evolves.
@@ -28,20 +28,20 @@ update both.
 
 Default target: `src/`. For a different target, ask the user.
 
-## What "drift" looks like in this repo
+## What "drift" looks like
 
 Concrete patterns the audit goes looking for:
 
 | Drift class                                                               | Where                                                                                                                                                                         | How to detect                                                                                                                           |
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| **SUT claim no longer matches the deployment**                            | POMs (call-site comments around `driver.execute_script`, `send_keys`, `click()`); `IDENTIFIED_GAPS.md` entries already covered by tests                                       | Re-verify the claim against current PHP / live HTML / a probe. The CLAUDE.md "Verify SUT behaviour — don't theorise" rule applies.      |
+| **SUT claim no longer matches the deployment**                            | POMs (call-site comments around `driver.execute_script`, `send_keys`, `click()`); the gap inventory entries already covered by tests                                          | Re-verify the claim against current PHP / live HTML / a probe. The CLAUDE.md "Verify SUT behaviour — don't theorise" rule applies.      |
 | **Scenario `Flow:` chain doesn't match the actual `drive_page` sequence** | Scenario top docstring                                                                                                                                                        | Count `drive_page(...)` blocks; for each, list the connectors used in the chain order; compare against the arrows in the docstring.     |
 | **`Pre-fragments:` / `Post-fragments:` list doesn't match the kwarg**     | Scenario top docstring                                                                                                                                                        | Parse `create_selenium_test(... pre_test_scenarios_fragments=[...], post_test_scenarios_fragments=[...])` and compare to the docstring. |
 | **File / class / method reference no longer exists**                      | Any comment naming a path or symbol (e.g. `# see logout.py`, `# delegates to AppointmentPage.logout()`)                                                                       | grep the named path / symbol. Missing → drift.                                                                                          |
 | **Line-number reference is stale**                                        | Comments like `# see line 42 of foo.py`                                                                                                                                       | Resolve the cited line — does it still match the described content?                                                                     |
 | **Selector comment doesn't match the locator / DOM**                      | POM selector blocks (`_btn_login = (..., "button[type='submit']")  # matches the login submit`)                                                                               | Verify against rendered HTML (probe) when the description is specific.                                                                  |
 | **Dataset comment doesn't match the dataset**                             | Dataset modules and inline `_FACILITY = "..."`-style constants with a justifying comment                                                                                      | Match the comment against the literal value(s).                                                                                         |
-| **"Why" comment cites an incident that's resolved**                       | Anywhere — `# because Chrome's password modal swallows input` is fine _after_ the driver adapter fix; `# because Chrome's password modal still swallows input` would be wrong | Read the comment; trace the cited issue to `IDENTIFIED_GAPS.md` (is it marked resolved? what's its current status?).                    |
+| **"Why" comment cites an incident that's resolved**                       | Anywhere — `# because Chrome's password modal swallows input` is fine _after_ the driver adapter fix; `# because Chrome's password modal still swallows input` would be wrong | Read the comment; trace the cited issue to the gap inventory (is it marked resolved? what's its current status?).                       |
 
 ## Procedure
 
@@ -58,11 +58,11 @@ For each POM file:
 
 1. Read every `#` comment and method docstring.
 2. Classify each:
-   - **SUT claim** (asserts something about CURA's runtime behaviour) — flag for empirical re-verification per the `empiricism` skill / CLAUDE.md
+   - **SUT claim** (asserts something about the SUT's runtime behaviour) — flag for empirical re-verification per the `empiricism` skill / CLAUDE.md
      "Verify SUT behaviour".
-   - **Code-shape claim** (asserts something about _this codebase_'s shape — naming a file/method/selector, citing a line) — flag for mechanical
+   - **Code-shape claim** (asserts something about _the codebase_'s shape — naming a file/method/selector, citing a line) — flag for mechanical
      re-verification (grep / line resolution).
-   - **Rationale / why** — flag for re-verification against `IDENTIFIED_GAPS.md` and recent PRs.
+   - **Rationale / why** — flag for re-verification against the gap inventory and recent PRs.
 
 For SUT claims, pick the cheapest verification (PHP read → live HTML → probe). If the audit context is read-only, mark the finding _"not verified —
 read-only audit; cite path-to-verification in report."_
@@ -104,12 +104,12 @@ Parse `create_selenium_test(...)` calls (one or more in a single file for data-d
 Note: the docstring should say `(none)` rather than omit a section — _that_ convention is documented in CLAUDE.md's "Scenario file structure" rule. If
 the docstring omits a section, flag it too.
 
-### Layer 4 (optional) — `IDENTIFIED_GAPS.md` and `CURA_FRD.md`
+### Layer 4 (optional) — the gap inventory and the FRD
 
 If the user wants to extend the audit:
 
-- Each `IDENTIFIED_GAPS.md` entry citing a file / line / function — verify the reference still resolves (the renamed-file trap).
-- Each `IDENTIFIED_GAPS.md` entry whose "resolution" cites a code change — verify the cited code is still present (e.g. §A-ENV-2 cites
+- Each the gap inventory entry citing a file / line / function — verify the reference still resolves (the renamed-file trap).
+- Each the gap inventory entry whose "resolution" cites a code change — verify the cited code is still present (e.g. §A-ENV-2 cites
   `create_drivers_pool.py` disabling the password manager; verify those options are still set).
 
 ## Classify each finding
@@ -201,7 +201,7 @@ def logout(self) -> AppointmentPage:
 The comment claims a _jQuery dispatch race_ makes the sidebar path unreliable in headless Chrome. A probe (`gh api` on the rendered HTML + a
 clean-Chrome session) shows the Logout link is a plain `<a href>` — no jQuery dispatches the navigation. The comment is wrong; the "race" was the
 Chrome password-breach modal misdiagnosed. The audit's report cites the probe evidence; the user decides whether to rewrite the comment or restore the
-missing context elsewhere (in this codebase, the comment was already corrected when `Sidebar.logout()` moved off `AppointmentPage`).
+missing context elsewhere (in the codebase, the comment was already corrected when `Sidebar.logout()` moved off `AppointmentPage`).
 
 ### High — `Flow:` mismatch
 
@@ -241,9 +241,8 @@ match.
 # clicks after the demo password is entered.
 ```
 
-The rationale is correct (per `IDENTIFIED_GAPS.md` §A-ENV-2). The audit would surface this as **Low / Ok** — verifies against the GAPS file; no drift.
-But if `IDENTIFIED_GAPS.md` later marks §A-ENV-2 as obsolete (Google removed leak detection, say), this comment would become **Maybe** and need a
-fresh evaluation.
+The rationale is correct (per §A-ENV-2). The audit would surface this as **Low / Ok** — verifies against the GAPS file; no drift. But if the gap
+inventory later marks §A-ENV-2 as obsolete (Google removed leak detection, say), this comment would become **Maybe** and need a fresh evaluation.
 
 ## Hard filters — what this skill does NOT surface
 
@@ -257,7 +256,7 @@ fresh evaluation.
 
 - The user asks: "audit comments", "are comments still accurate", "vet doc-drift", "review docstrings", "is this docstring still right?"
 - After a refactor that touched POMs or scenario shapes (the most fertile soil for `Flow:` and `Pre-fragments:` drift).
-- After CURA's deployment changes or after an `IDENTIFIED_GAPS.md` entry is added / resolved.
+- After the SUT's deployment changes or after a gap-inventory entry is added / resolved.
 - Before a release-hardening pass.
 
 ## What this skill does NOT do

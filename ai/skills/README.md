@@ -1,7 +1,13 @@
 # Skills — index by family
 
-Project-level skills for the project CURA E2E suite. Each entry below points to a `<skill-name>/SKILL.md`. Skills stay flat on disk (so discovery
-keeps working); this document groups them by family for navigation.
+Skills for working in any Ocarina-based browser test suite. Each entry below points to a `<skill-name>/SKILL.md`. Skills stay flat on disk (so
+discovery keeps working); this document groups them by family for navigation.
+
+These skills are couple-light by design — they lean on Ocarina (the framework), the browsers Ocarina drives (Firefox, Chrome, Edge, Safari), and
+the host OSes (macOS, Windows, Linux). Everything else — the SUT's backend stack, the spec format (Markdown, Jira, Confluence, OpenAPI, PDF, JSON),
+the project layout — is interoperable. Worked examples cite <https://github.com/mojo-molotov/ocarina-example> or
+<https://github.com/mojo-molotov/ocarina-with-ai-example>; the framework itself is at <https://github.com/mojo-molotov/ocarina> and the docs at
+<https://github.com/mojo-molotov/ocarina-holy-book>.
 
 The prefix convention (`review-*`, `analyse-*`, `assess-*`, `pick-*`, `understand-*`) does most of the grouping at the filename level. The families
 below add the prefix-less skills (ideation, refactoring, authoring, state-probing).
@@ -25,7 +31,7 @@ Read the codebase or specs and surface findings; never edit.
 - [review-comment-drift](review-comment-drift/SKILL.md) — comments that no longer match the code they annotate.
 - [review-suite-stability](review-suite-stability/SKILL.md) — multi-replay × multi-browser run; per-test category audit against the strategy doc.
 - [review-intent-collisions](review-intent-collisions/SKILL.md) — happy-path tests that collide with intentional-fail gap tests.
-- [review-spec-gaps](review-spec-gaps/SKILL.md) — benevolent QA-style FRD review; surface clarification questions.
+- [review-spec-gaps](review-spec-gaps/SKILL.md) — benevolent QA-style spec review; surface clarification questions.
 - [review-report](review-report/SKILL.md) — classify every FAIL and SKIP in a single run report (body/setup/teardown × static/smoke-gate/setup-error/cycle-policy).
 - [review-watcher-emissions](review-watcher-emissions/SKILL.md) — find watcher-emitted artifacts hiding in run output; emissions are always negative signals.
 - [review-watcher-misuse](review-watcher-misuse/SKILL.md) — audit watcher callbacks for the negative-only convention.
@@ -48,7 +54,7 @@ Generate attack catalogues — every action through the normal UI, never injecti
 - [incoherence-attack-ideation](incoherence-attack-ideation/SKILL.md) — each step legitimate, the set impossible (temporal / spatial / biographical / causal / quantitative / relational).
 - [persistence-attack-ideation](persistence-attack-ideation/SKILL.md) — hardening through insistent legitimate retry; seven insistence dimensions.
 - [permission-appropriateness-audit](permission-appropriateness-audit/SKILL.md) — is the SUT's access model itself appropriate, even when perfectly enforced?
-- [bfcache-exposure-ideation](bfcache-exposure-ideation/SKILL.md) — back-button restores pre-access-change pages; generalises `§B-BROWSER-1`.
+- [bfcache-exposure-ideation](bfcache-exposure-ideation/SKILL.md) — back-button restores pre-access-change pages; a generic BFcache exposure pattern.
 - [lateral-resource-ideation](lateral-resource-ideation/SKILL.md) — IDOR-spirited, address-bar-only; sibling-ID guessing through the URL.
 
 ## Comprehend (assessment & understanding)
@@ -100,6 +106,6 @@ A few recurring chains:
 - `review-report` → `analyse-flakiness` / `analyse-fixture-flakiness` / `analyse-screenshot-flakiness` / `write-a-probe` depending on incident class.
 - `review-suite-stability` → `review-report` for the per-run unit, then `analyse-*` for chronic shapes.
 - Black-hat ideation → `empiricism` to verify the SUT's current behaviour → `extend-coverage` to author the test.
-- Spec change → `update-frd-and-tests` (FRD first, tests follow, gap tests reframed not flipped).
-- New flake suspect → `empiricism` → `write-a-probe` → finding lands in `IDENTIFIED_GAPS.md` / scenario comment / FRD → probe deleted.
+- Spec change → `update-frd-and-tests` (spec doc first, tests follow, gap tests reframed not flipped).
+- New flake suspect → `empiricism` → `write-a-probe` → finding lands in the gap inventory / scenario comment / spec doc → probe deleted.
 - Any framework question → `understand-ocarina` (Holy Book first, then source / example clones).

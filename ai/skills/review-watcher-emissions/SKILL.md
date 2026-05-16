@@ -78,8 +78,8 @@ silently (per `analyse-watcher-flakiness §2`: swallowed callback exceptions).
 grep -rn "Watcher\[\|watchers=" src
 ```
 
-For each watcher: name, callback, where attached. If the inventory is empty for this project (currently true for the project root), then this skill's
-output is also empty — surface that explicitly: _"No watchers registered; no emissions possible."_
+For each watcher: name, callback, where attached. If the inventory is empty for the project, then this skill's output is also empty — surface that
+explicitly: _"No watchers registered; no emissions possible."_
 
 If watchers exist, list them; the inventory becomes the per-watcher lens for Steps 3–5.
 
@@ -138,7 +138,7 @@ For each known-fire watcher (one with a deterministic trigger):
 - Screenshot: `<file in <gitignored>/screenshots/>` (cross-referenced by timestamp).
 - Test status: <PASS | FAIL — note both; emission stands either way>.
 - **Reading (per Ocarina convention)**: the watcher reported, therefore something **undesirable** was observed: `<one-sentence interpretation>`.
-- Cross-reference: matches `IDENTIFIED_GAPS.md §<ref>` | new finding candidate.
+- Cross-reference: matches `the gap inventory <entry-ref>` | new finding candidate.
 
 (One block per emission.)
 
@@ -158,7 +158,7 @@ For each known-fire watcher (one with a deterministic trigger):
 
 ## Cross-references
 
-- `IDENTIFIED_GAPS.md` §<refs>.
+- the gap inventory <entry-refs>.
 - Diagnostic next motions: `analyse-watcher-flakiness` (for watcher-side concerns), `analyse-screenshot-flakiness` (for visual triage),
   `update-frd-and-tests` (if a recurring emission warrants a §9 gap entry).
 
@@ -176,8 +176,8 @@ For each known-fire watcher (one with a deterministic trigger):
 
 Each emission can resolve as:
 
-- **File as gap** — recurring undesirable observed → `IDENTIFIED_GAPS.md` entry via `update-frd-and-tests`.
-- **Already explained** — emission matches an existing §9 / §A-ENV-_ / §B-BROWSER-_ entry → cross-reference, no new action.
+- **File as gap** — recurring undesirable observed → the gap inventory entry via `update-frd-and-tests`.
+- **Already explained** — emission matches an existing known-bug / environmental / browser entry → cross-reference, no new action.
 - **Watcher-side concern** — emission looks like a watcher bug → `analyse-watcher-flakiness`.
 - **DOM uncertainty** — interpretation unclear → `write-a-probe` for the moment in question.
 - **Defer** — rare or low-impact; revisit if it recurs.

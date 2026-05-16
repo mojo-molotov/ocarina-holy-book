@@ -60,7 +60,7 @@ For each existing access / permission / auth test, walk these seven dimensions a
 
 The user attempts the same forbidden action N times in rapid succession.
 
-- **CURA example**: wrong-password login retried 20 times in 30 seconds. Polite test: 1 attempt, observe rejection. Hardened test: 20 attempts,
+- **Concrete example**: wrong-password login retried 20 times in 30 seconds. Polite test: 1 attempt, observe rejection. Hardened test: 20 attempts,
   observe whether the Nth one still shows the same rejection, whether any starts succeeding (rate-limit-then-bypass shape), whether the SUT eventually
   locks the account, whether the SUT degrades visibly (slow response, weird UI state).
 - **Detection question**: does the SUT enforce a rate-limit? If yes, does it kick in _deterministically_ or only after the dyno wakes up? If no, what
@@ -70,9 +70,9 @@ The user attempts the same forbidden action N times in rapid succession.
 
 The user issues UI events to elements that _appear_ disabled — disabled by CSS, by `aria-disabled`, by visual greying, by a missing onclick handler.
 
-- **CURA example**: the "Book Appointment" button might be disabled until all required fields are filled. Polite test waits for it to enable. Hardened
-  test: focus the disabled button + press Enter, or click via JavaScript-free pure UI dispatch (Selenium's `.click()` is a real click event; whether
-  the page handles it depends on the page's gating logic, not on the visual state).
+- **Concrete example**: the "Book Appointment" button might be disabled until all required fields are filled. Polite test waits for it to enable.
+  Hardened test: focus the disabled button + press Enter, or click via JavaScript-free pure UI dispatch (Selenium's `.click()` is a real click event;
+  whether the page handles it depends on the page's gating logic, not on the visual state).
 - **Detection question**: is the disabled state _functional_ (the SUT rejects the submission) or only _visual_ (the click goes through, the form
   submits, the SUT processes a half-filled record)?
 - **Note**: in the project's existing dispatcher work, the _random submit dispatchers_ (cross-ref `review-submit-dispatchers`) test different paths to
@@ -82,7 +82,7 @@ The user issues UI events to elements that _appear_ disabled — disabled by CSS
 
 The user types a URL directly into the address bar, never visiting the page that normally links to it.
 
-- **CURA example**: type `…/history.php` while logged out. Polite test does this once, observes redirect. Hardened test: type the URL, then press
+- **Concrete example**: type `…/history.php` while logged out. Polite test does this once, observes redirect. Hardened test: type the URL, then press
   Back, then re-type, then refresh, then open in three tabs. Does the redirect hold under all those motions?
 - **Detection question**: is there a one-frame window where the protected page renders before the redirect fires? (BFcache investigations like
   `§B-BROWSER-1` already touch this. The hardening lens extends it.)
@@ -91,7 +91,7 @@ The user types a URL directly into the address bar, never visiting the page that
 
 The user uses the browser's history navigation to revisit a state they shouldn't be able to revisit.
 
-- **CURA example**: logout, then press Back 5 times. Polite test: one Back. Hardened test: 5 Backs, 5 Forwards, 1 Refresh, repeat.
+- **Concrete example**: logout, then press Back 5 times. Polite test: one Back. Hardened test: 5 Backs, 5 Forwards, 1 Refresh, repeat.
 - **Detection question**: does the SUT's auth gate hold through every navigation primitive? (Cross-ref `§B-BROWSER-1` — the BFcache pair finding is
   exactly this shape on one back-press.)
 
@@ -99,8 +99,8 @@ The user uses the browser's history navigation to revisit a state they shouldn't
 
 The user opens the same URL or starts the same flow in multiple tabs simultaneously.
 
-- **CURA example**: open the appointment form in three tabs, fill them with different (or identical) data, submit in rapid succession. Does the SUT
-  treat them as three distinct bookings, dedup them, or behave inconsistently?
+- **Concrete example**: open the appointment form in three tabs, fill them with different (or identical) data, submit in rapid succession. Does the
+  SUT treat them as three distinct bookings, dedup them, or behave inconsistently?
 - **Detection question**: is the SUT's state model per-session or per-request? If per-session, do parallel tabs share state correctly?
 
 ### 6. Pre-emptive submission (form filled, gate not yet open)
@@ -108,7 +108,7 @@ The user opens the same URL or starts the same flow in multiple tabs simultaneou
 The user fills a form before the gating condition is met (e.g. session still loading, user just-logged-out but the form is still rendered), and
 submits.
 
-- **CURA example**: open the appointment form, immediately click logout _in another tab_, then submit the form in the original tab. The session is
+- **Concrete example**: open the appointment form, immediately click logout _in another tab_, then submit the form in the original tab. The session is
   dead but the form was filled while it lived.
 - **Detection question**: is the submission validated against the _current_ session state, or against the state at form-load?
 
@@ -116,8 +116,8 @@ submits.
 
 The user replays a previously-valid action after the conditions for it have changed.
 
-- **CURA example**: book an appointment, then duplicate the tab (or copy the URL), then re-submit. Or: log in, copy a URL, log out, navigate to the
-  copied URL in a new session.
+- **Concrete example**: book an appointment, then duplicate the tab (or copy the URL), then re-submit. Or: log in, copy a URL, log out, navigate to
+  the copied URL in a new session.
 - **Detection question**: does the SUT carry any state in URLs / query params that survives session change?
 
 ## Procedure
@@ -147,7 +147,7 @@ _insistence_, not about reaching past the UI.
 ### Step 4 — Cross-check against existing artifacts
 
 - Already encoded? Silent.
-- Already in `IDENTIFIED_GAPS.md`? Cross-reference.
+- Already in the gap inventory? Cross-reference.
 - Adjacent to a `review-spec-gaps` finding? Note the linkage — the FRD often won't define what the hardened behaviour _should_ be, so this is also a
   spec-gap pass.
 - Adjacent to a `business-attack-ideation` or `incoherence-attack-ideation` finding? Note overlap.
@@ -168,10 +168,10 @@ _insistence_, not about reaching past the UI.
 - **Polite behaviour today**: <one sentence>.
 - **Insistence to add**: <concrete action sequence — all UI>.
 - **Detection question**: <what new behaviour the hardened test would observe>.
-- **Expected SUT response per FRD**: <quoted | "FRD silent — also a spec-gap finding">.
+- **Expected SUT response per the FRD**: <quoted | "spec silent — also a spec-gap finding">.
 - **Business impact if SUT degrades under insistence**: <one sentence>.
 - **Test shape (suggested)**: <encode as new test | extend existing test with parametrisation>.
-- **Cross-reference**: `review-spec-gaps §<n>` | `IDENTIFIED_GAPS.md §<ref>` | `review-submit-dispatchers` | etc.
+- **Cross-reference**: `review-spec-gaps §<n>` | `the gap inventory <entry-ref>` | `review-submit-dispatchers` | etc.
 
 ## Out-of-scope ideas considered and dropped
 
@@ -214,7 +214,7 @@ Each proposal resolves as:
 - **No rate-limit _bypass_ attempts.** The hardened test confirms the rate-limit _exists_ (or surfaces that it doesn't). It does not try to evade an
   existing rate-limit through clever timing — that crosses the line.
 - **Spec gaps are expected.** The FRD usually doesn't define hardened behaviour. Cross-referencing `review-spec-gaps` is part of the motion.
-- **Verify before asserting.** A hardened test that _asserts_ "the 21st login attempt is locked out" needs `empiricism` to observe CURA's current
+- **Verify before asserting.** A hardened test that _asserts_ "the 21st login attempt is locked out" needs `empiricism` to observe the SUT's current
   behaviour before encoding the assertion.
 
 ## When to run this skill
@@ -222,7 +222,7 @@ Each proposal resolves as:
 - Coverage planning for access / auth / permission tests — what insistence dimensions are missing?
 - After a `business-attack-ideation` or `incoherence-attack-ideation` pass — completes the black-hat trio.
 - Before a security review (the _functional_ part) — hardened tests demonstrate that gates hold under insistence, not just on the polite first try.
-- After CURA adds (or changes) any access gate — does the new gate hold under the seven dimensions?
+- After the SUT adds (or changes) any access gate — does the new gate hold under the seven dimensions?
 - During stakeholder review of product robustness — the catalogue is a discussion artifact.
 
 ## What this skill does NOT do
@@ -230,6 +230,6 @@ Each proposal resolves as:
 - It does not encode the tests. Use `empiricism` + `extend-coverage` after the user picks proposals.
 - It does not propose DevTools manipulation, DOM editing, console-based bypass, or any technique beyond normal UI interaction.
 - It does not produce injection payloads, brute-force tooling, or active-security techniques. Hard rule.
-- It does not file `IDENTIFIED_GAPS.md` entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
+- It does not file the gap inventory entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
 - It does not run anything against the SUT. Static ideation only.
 - It does not assess whether the SUT _should_ enforce a given gate harder — that's a product decision, not a test decision.

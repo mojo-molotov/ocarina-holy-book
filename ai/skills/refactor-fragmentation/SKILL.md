@@ -36,9 +36,9 @@ Heuristics, soft thresholds:
 
 These are not hard cutoffs. A 4-test suite with 100% identical 8-step setups might still benefit; a 30-test suite with all-unique flows won't.
 
-For the current project (the project root), count `src/tests/scenarios/**/*.py` (excluding `__init__.py`, `datasets/`). If the count is under the soft
-threshold, the audit's verdict line names that explicitly: _"Codebase has N test files; fragmentation likely premature — proceed only if a specific
-6+-step pattern repeats verbatim across 3+ tests."_
+For the current project, count `src/tests/scenarios/**/*.py` (excluding `__init__.py`, `datasets/`). If the count is under the soft threshold, the
+audit's verdict line names that explicitly: _"Codebase has N test files; fragmentation likely premature — proceed only if a specific 6+-step pattern
+repeats verbatim across 3+ tests."_
 
 ### Gate 2 — What's the user's DRY policy?
 
@@ -139,7 +139,7 @@ For each, identify the connectors / POMs involved and the file that should _own_
 ### Step 6 — Surface the catalogue
 
 ```markdown
-# Fragmentation audit — the project root (<date>)
+# Fragmentation audit — <project-name> (<date>)
 
 ## Gates
 

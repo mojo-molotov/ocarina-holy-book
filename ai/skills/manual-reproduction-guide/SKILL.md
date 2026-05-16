@@ -2,8 +2,8 @@
 name: manual-reproduction-guide
 description:
   Produce a structured, step-by-step **manual reproduction guide** that a human can follow in a real browser to reproduce a behaviour, a bug, or a
-  documented finding — **plus** the hypothesis-confirmation paths (DevTools, `curl`, PHP read, comparison to `IDENTIFIED_GAPS.md`) the user can run
-  when their first observation is fuzzy — **plus**, when a cross-browser contrast is part of the finding, the same steps repeated in the contrasting
+  documented finding — **plus** the hypothesis-confirmation paths (DevTools, `curl`, PHP read, comparison to the gap inventory) the user can run when
+  their first observation is fuzzy — **plus**, when a cross-browser contrast is part of the finding, the same steps repeated in the contrasting
   browser with the differences called out. Use whenever the user asks to write a repro recipe, document a manual repro, capture a finding so a human
   can verify it, share a bug for review, or build the user-facing companion to a Selenium probe.
 ---
@@ -21,8 +21,8 @@ Three layers, used in order. Layers 2 and 3 are optional.
 3. **Cross-browser contrast** — only when the finding _is_ a cross-browser difference. Same steps in the other browser, the difference called out at
    the exact step it appears.
 
-The guide is the artifact. It can be printed in chat, saved into an `IDENTIFIED_GAPS.md` entry as a "Confirmation recipe" block (the project already
-uses this — see §B-BROWSER-1), or stored as a one-off in `<gitignored>/` if it's for a single session's investigation.
+The guide is the artifact. It can be printed in chat, saved into a gap-inventory entry as a "Confirmation recipe" block (the project already uses this
+— see §B-BROWSER-1), or stored as a one-off in `<gitignored>/` if it's for a single session's investigation.
 
 ## When to use which layer
 
@@ -47,7 +47,7 @@ What every step needs:
   reproduced it or stumbled into something else.
 - **The URL** at each navigation step — verbatim, including the fragment.
 
-Standard template (mirror the shape used in `IDENTIFIED_GAPS.md` §B-BROWSER-1's manual recipe):
+Standard template (mirror the shape used in §B-BROWSER-1's manual recipe):
 
 ```markdown
 ## Manual reproduction
@@ -63,8 +63,8 @@ Standard template (mirror the shape used in `IDENTIFIED_GAPS.md` §B-BROWSER-1's
 
 Always include the URL at the top of each navigation step — that's the one observation a screen-share can't accidentally mislead you about.
 
-Demo credentials are intentionally exposed in `src/constants/credentials.py` (CURA is a public demo). Cite the constants, don't hardcode the values,
-so the guide stays in sync if those ever change.
+Demo credentials are intentionally exposed in `src/constants/credentials.py` (the SUT is a public demo). Cite the constants, don't hardcode the
+values, so the guide stays in sync if those ever change.
 
 ## Layer 2 — hypothesis-confirmation paths
 
@@ -73,16 +73,16 @@ behaviour is unclear". The user has an initial impression; the layer gives them 
 
 The confirmation tools, in order of cost (cheapest first):
 
-| Tool                                                     | When                                                                          | How                                                                                                                                                       |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **DevTools — Network tab**                               | "Did this navigation hit the server?" / "What did the server return?"         | F12 → Network → repeat the step. Inspect status, headers, response.                                                                                       |
-| **DevTools — Application → Back/forward cache** (Chrome) | "Was that page served from BFcache?"                                          | F12 → Application → Back/forward cache → "Test back/forward cache".                                                                                       |
-| **DevTools — Application → Storage**                     | "What's in the session cookie?" / "Did the cookie expire?"                    | F12 → Application → Storage → Cookies → `<domain>`.                                                                                                       |
-| **DevTools — Console**                                   | "What did the page's JS log?"                                                 | F12 → Console.                                                                                                                                            |
-| **Reload (`Cmd+R` / `F5`)**                              | "Was this restored from cache vs a real fresh request?"                       | A reload forces a server round-trip. If `back()` shows X but reload shows Y, you have a cache layer involved.                                             |
-| **`curl -v <URL>`**                                      | "What does the server actually return on a request from outside the browser?" | Terminal. `-v` for headers, `-I` for HEAD-only.                                                                                                           |
-| **PHP source**                                           | "What does the deployed server logic actually do?"                            | `gh api repos/katalon-studio/katalon-demo-cura/contents/<file>.php --jq '.content' \| base64 -d`                                                          |
-| **Comparison to `IDENTIFIED_GAPS.md`**                   | "Is this already a documented gap / env artifact?"                            | Read the file. If the symptom matches §A-ENV-1 (rapid-POST flake), §A-ENV-2 (password modal), or a `G-*` / `B-*` entry, the explanation is already there. |
+| Tool                                                     | When                                                                          | How                                                                                                                   |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **DevTools — Network tab**                               | "Did this navigation hit the server?" / "What did the server return?"         | F12 → Network → repeat the step. Inspect status, headers, response.                                                   |
+| **DevTools — Application → Back/forward cache** (Chrome) | "Was that page served from BFcache?"                                          | F12 → Application → Back/forward cache → "Test back/forward cache".                                                   |
+| **DevTools — Application → Storage**                     | "What's in the session cookie?" / "Did the cookie expire?"                    | F12 → Application → Storage → Cookies → `<domain>`.                                                                   |
+| **DevTools — Console**                                   | "What did the page's JS log?"                                                 | F12 → Console.                                                                                                        |
+| **Reload (`Cmd+R` / `F5`)**                              | "Was this restored from cache vs a real fresh request?"                       | A reload forces a server round-trip. If `back()` shows X but reload shows Y, you have a cache layer involved.         |
+| **`curl -v <URL>`**                                      | "What does the server actually return on a request from outside the browser?" | Terminal. `-v` for headers, `-I` for HEAD-only.                                                                       |
+| **PHP source**                                           | "What does the deployed server logic actually do?"                            | `gh api repos/<sut-org>/<sut-repo>/contents/<file>.php --jq '.content' \| base64 -d`                                  |
+| **Comparison to the gap inventory**                      | "Is this already a documented gap / env artifact?"                            | Read the file. If the symptom matches §A-ENV-1, §A-ENV-2, or a `G-*` / `B-*` entry, the explanation is already there. |
 
 Render this layer as a small section that follows the manual repro:
 
@@ -93,7 +93,7 @@ The observation can be ambiguous on first sight. Tools to firm it up:
 
 - **<Suspected cause A>**: <tool> + <one-line how to read the result>.
 - **<Suspected cause B>**: <tool> + <one-line how to read the result>.
-- **The symptom might match a documented artifact**: see `IDENTIFIED_GAPS.md` §<ref> if it fits.
+- **The symptom might match a documented artifact**: see the gap inventory <entry-ref> if it fits.
 ```
 
 Keep it short. The point is to _unblock_ the user, not to walk them through every diagnostic in the kitchen.
@@ -124,7 +124,7 @@ there isn't necessarily a layer-1 / layer-3 split, just two side-by-side reprodu
 ### 1. State the finding in one sentence
 
 "After logout, pressing Back in Chrome leaves the History page on screen; in Firefox the same press redirects to the homepage." Or: "On the
-appointment form, pressing Enter in the date field does not submit." Or: "An appointment for yesterday is silently accepted by CURA and confirmed."
+appointment form, pressing Enter in the date field does not submit." Or: "An appointment for yesterday is silently accepted by the SUT and confirmed."
 
 ### 2. Pick the layers
 
@@ -147,8 +147,8 @@ Repeat steps in the other browser; mark the divergence at the exact step it appe
 
 Render the assembled guide. Default: print in chat. If the user wants to keep it:
 
-- **As a recipe in `IDENTIFIED_GAPS.md`** — append a "Manual reproduction" / "Confirmation recipe" block to the relevant entry. (The project already
-  does this for §B-BROWSER-1; mirror the shape.)
+- **As a recipe in the gap inventory** — append a "Manual reproduction" / "Confirmation recipe" block to the relevant entry. (The project already does
+  this for §B-BROWSER-1; mirror the shape.)
 - **As a one-off in `<gitignored>/repro_<topic>.md`** — for findings still under investigation, not yet ready for the gaps file.
 
 Use this exact template for the assembled guide:
@@ -159,7 +159,7 @@ Use this exact template for the assembled guide:
 ## Setup
 
 - Browser: `<browser, version>` (note: not the OS unless OS-specific).
-- Target: <https://katalon-demo-cura.herokuapp.com/> (the deployed app; not the github source).
+- Target: <https://<sut-url>/> (the deployed app; not the github source).
 - Credentials: `DEMO_USERNAME` / `DEMO_PASSWORD` from `src/constants/credentials.py` (public).
 
 ## Manual reproduction
@@ -176,7 +176,7 @@ Use this exact template for the assembled guide:
 
 ## Cross-references
 
-- Documented in: `IDENTIFIED_GAPS.md` §<ref>, `CURA_FRD.md` §<ref> (if applicable).
+- Documented in: the gap inventory <entry-ref>, the FRD §<ref> (if applicable).
 - Related Selenium test: `<test name>` in `<scenario file>`.
 - Related probe: `<probe file>` (deleted; see `write-a-probe`).
 ```
@@ -185,16 +185,18 @@ Use this exact template for the assembled guide:
 
 The skill produces the document. Running it is on the user — this is a human-driven artifact by design.
 
-## Worked example (from this session)
+## Worked example
+
+From a session against <https://github.com/mojo-molotov/ocarina-with-ai-example>:
 
 Finding: _"After logout, pressing Back in Chrome leaves the History page on screen; in Firefox the same press redirects to the homepage. The
 difference is Chrome's back-forward cache restoring a `no-store` page."_
 
 Layer 1 — manual repro (Chrome):
 
-1. Open Chrome, navigate to `https://katalon-demo-cura.herokuapp.com/profile.php#login`.
+1. Open Chrome, navigate to `https://<sut-url>/profile.php#login`.
 2. Log in as `DEMO_USERNAME` / `DEMO_PASSWORD`. Land on the "Make Appointment" page.
-3. Navigate to `https://katalon-demo-cura.herokuapp.com/history.php`. See "History" heading + "No appointment." + "Go to Homepage" button.
+3. Navigate to `https://<sut-url>/history.php`. See "History" heading + "No appointment." + "Go to Homepage" button.
 4. Open the hamburger menu (top-right `☰`) → click `Logout`. Land on the marketing homepage.
 5. Press the browser Back button (◀ or `Cmd+[`).
 6. **Observe** — Chrome shows the History page again (URL = `…/history.php`).
@@ -209,7 +211,7 @@ Layer 3 — contrast (Firefox):
 - Repeat steps 1–5 in Firefox. At step 6, Firefox re-requests `/history.php`, the server sees no session, returns a 302 to `/`. You land on the
   marketing homepage, no stale History view.
 
-Cross-references: documented in `IDENTIFIED_GAPS.md` §B-BROWSER-1, FRD §9.11.
+Cross-references: documented in the gap inventory (§B-BROWSER-1) and in the FRD's known-bugs section.
 
 That's the artifact. It went into the GAPS entry and stayed there.
 
@@ -219,7 +221,7 @@ That's the artifact. It went into the GAPS entry and stayed there.
 - After a Selenium probe (`write-a-probe`) confirms a finding — produce the human-runnable companion so the finding is verifiable without running
   Python.
 - After `review-suite-stability` surfaces a flake the user wants to chase manually.
-- When adding an entry to `IDENTIFIED_GAPS.md` — the recipe block lives there for future readers.
+- When adding an entry to the gap inventory — the recipe block lives there for future readers.
 
 ## What this skill does NOT do
 

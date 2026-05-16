@@ -106,9 +106,9 @@ The lens forces "resource" to be examined at the granularity the **business** ca
 
 ### Step 1 — Locate the access surface
 
-For CURA specifically: the FRD names only one demo user role. The audit's output will be short — most of the seven lenses don't produce findings on a
-single-role SUT. **The first finding is therefore the absence of a permission matrix itself**: surface that and note the audit's other lenses are
-ready for the next role.
+As a concrete example (see <https://github.com/mojo-molotov/ocarina-with-ai-example>): the FRD names only one demo user role. The audit's output will
+be short — most of the seven lenses don't produce findings on a single-role SUT. **The first finding is therefore the absence of a permission matrix
+itself**: surface that and note the audit's other lenses are ready for the next role.
 
 For SUTs with a real matrix:
 
@@ -143,7 +143,7 @@ Filter:
 For each surfaced question:
 
 - Adjacent `review-spec-gaps` finding? Cross-reference.
-- Already in `IDENTIFIED_GAPS.md`? Cross-reference.
+- Already in the gap inventory? Cross-reference.
 - Adjacent sibling-skill finding (`business-attack-ideation` etc.)? Cross-reference.
 
 ### Step 4 — Cross-check against the hard line
@@ -204,7 +204,7 @@ Use a _benevolent_ tone throughout, like `review-spec-gaps`:
 ## Cross-references
 
 - `review-spec-gaps §<n>` — adjacent spec-clarity findings.
-- `IDENTIFIED_GAPS.md §<refs>`.
+- `the gap inventory <entry-refs>`.
 - Sibling skills (`business-attack-ideation`, `incoherence-attack-ideation`, `persistence-attack-ideation`).
 
 ## Recommended next motions
@@ -257,7 +257,8 @@ The audit doesn't pick. It surfaces.
 - It does not bypass anything. The SUT is not touched.
 - It does not encode tests. Use `extend-coverage` / `empiricism` after the team decides which questions to act on.
 - It does not propose DevTools manipulation, role-switching tricks, or any active-security technique.
-- It does not file `IDENTIFIED_GAPS.md` entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
+- It does not file the gap inventory entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
 - It does not pick the answer to any appropriateness question. The audit surfaces; the team decides.
 - It does not produce attack payloads. Even illustrative ones.
-- It does not assess single-role SUTs deeply — for CURA the audit is brief (no matrix → surface that; lenses are ready when the role model grows).
+- It does not assess single-role SUTs deeply — for a single-role SUT the audit is brief (no matrix → surface that; lenses are ready when the role
+  model grows).

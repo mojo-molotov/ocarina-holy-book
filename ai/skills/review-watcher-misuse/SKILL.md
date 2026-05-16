@@ -108,8 +108,8 @@ These get a one-line mention if observed, but they are not what this skill is fo
 grep -rn "Watcher\[\|watchers=" src
 ```
 
-If empty (currently true for the project root), the review is empty — surface that. _"No watchers registered; nothing to audit."_ The skill stays
-useful as a pre-flight checklist for the next watcher to land in a PR.
+If empty, the review is empty — surface that. _"No watchers registered; nothing to audit."_ The skill stays useful as a pre-flight checklist for the
+next watcher to land in a PR.
 
 For each watcher found: name, callback file:line, attached scenario(s).
 

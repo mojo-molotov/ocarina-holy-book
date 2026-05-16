@@ -114,8 +114,8 @@ grep -rn "Watcher\[" src
 grep -rn "watchers=" src
 ```
 
-If the result is empty (currently true for this project), the skill's output is a **pre-flight checklist** for the _next_ watcher to land — useful
-when reviewing a PR that introduces one. If non-empty, list each: name, callback, `poll_interval`, where attached (which scenario / suite).
+If the result is empty (currently true for the project), the skill's output is a **pre-flight checklist** for the _next_ watcher to land — useful when
+reviewing a PR that introduces one. If non-empty, list each: name, callback, `poll_interval`, where attached (which scenario / suite).
 
 ### Step 2 — Restate the hypothesis
 
@@ -180,7 +180,7 @@ Minimal additions, then revert at the end:
   `<gitignored>/ocarina/`**; the project's memory documents that path. Make the edit there, run, revert. Never commit changes to the Ocarina source
   from this skill.
 
-Run `ruff format && ruff check && mypy` on the project root side.
+Run `ruff format && ruff check && mypy` on the project side.
 
 ### Step 5 — Run the experiment passes
 
@@ -227,7 +227,7 @@ trigger.
 
 ## Cross-references
 
-- `IDENTIFIED_GAPS.md` §<refs> — does any watcher-induced flake match an existing entry?
+- the gap inventory <entry-refs> — does any watcher-induced flake match an existing entry?
 - `CLAUDE.md` rule on <topic> — supported / could be tightened?
 - Ocarina source `.../watcher.py:<line>` — observed behaviour.
 
@@ -254,8 +254,8 @@ cd -
 ```
 
 Confirm with a final `git diff` in both trees. The watcher itself, the scenario attachment, and the Ocarina audit edits all revert. The _findings_
-land elsewhere (a comment on the callback citing this analysis, an `IDENTIFIED_GAPS.md` entry, or a deliberate PR adjusting `poll_interval` with this
-analysis as the empirical basis).
+land elsewhere (a comment on the callback citing this analysis, a gap-inventory entry, or a deliberate PR adjusting `poll_interval` with this analysis
+as the empirical basis).
 
 ### Step 9 — Stop. The user decides.
 
@@ -263,13 +263,13 @@ Each finding can resolve as:
 
 - **Adjust the watcher** — change `poll_interval`, rewrite the callback for cheaper polling, swap to event-driven detection.
 - **Remove the watcher** — if it costs more flake than it catches.
-- **File as gap** — a Selenium / chromedriver concurrency artifact landing in `IDENTIFIED_GAPS.md`.
+- **File as gap** — a Selenium / chromedriver concurrency artifact landing in the gap inventory.
 - **Promote** — if the watcher is solid, document its operating point in a comment on the callback
   (`# poll_interval=1.0 is the empirical safe point; see <date> analysis`).
 
 ## Hard rules
 
-- **Never commit the instrumentation.** Ai_proof side and Ocarina side both. Restore is mandatory.
+- **Never commit the instrumentation.** Project side and Ocarina side both. Restore is mandatory.
 - **Never run a watcher with attack-shape side effects.** Per `CLAUDE.md` → "Security testing is functional and static — never active". A watcher that
   _probes_ the SUT (extra requests, injection-shaped reads) is out of scope; a watcher that _observes_ via the existing browser session is fine.
 - **Multiple replays + with/without pairs are mandatory.** A watcher's effect on flake rate is only visible against its detached baseline.
@@ -289,7 +289,7 @@ Each finding can resolve as:
 ## What this skill does NOT do
 
 - It does not run automatically. The user signs off on the experiment plan.
-- It does not leave instrumentation behind. Both the project root and Ocarina source revert.
+- It does not leave instrumentation behind. Both the project and Ocarina source revert.
 - It does not fix the watcher. Fixes are a follow-up motion (a deliberate PR with the analysis cited).
 - It does not modify the Ocarina framework's contracts (e.g. removing the callback `suppress` permanently). Audit edits there are local + reverted.
 - It does not investigate in-test or boundary flakes — use `analyse-flakiness` or `analyse-fixture-flakiness`.

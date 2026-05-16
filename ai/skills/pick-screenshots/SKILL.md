@@ -67,7 +67,7 @@ find <screenshots-dir> -name "*.png" -printf '%T@ %p\n' 2>/dev/null | sort -rn |
 The Ocarina log writes a line per shot:
 
 ```
-[UTC_DATE::…] ℹ️  CURA E2E/Authentication/Session management/Logout - Session Cleared (via sidebar link) — Screenshot: /…/PASS_<uuid>.png
+[UTC_DATE::…] ℹ️  <SUT-NAME> E2E/Authentication/Session management/Logout - Session Cleared (via sidebar link) — Screenshot: /…/PASS_<uuid>.png
 ```
 
 The line carries: the test path (campaign / suite / test name), and the absolute path of the file. Grep across the most recent log tree:
@@ -134,8 +134,8 @@ The skill picks and surfaces. Decisions about what to view come from the user.
 ls -t <screenshots-dir>/*.png | head -12
 ```
 
-Result: 4 FAIL*<uuid>*<1..4>.png (one burst, the back-button BFcache test failing on Chrome as expected — `IDENTIFIED_GAPS.md` §B-BROWSER-1), and 8
-PASS shots from the surrounding tests. The table groups the four FAIL shots as one event so the listing reads as **5 events**, not 12 unsorted files.
+Result: 4 FAIL*<uuid>*<1..4>.png (one burst, the back-button BFcache test failing on Chrome as expected — §B-BROWSER-1), and 8 PASS shots from the
+surrounding tests. The table groups the four FAIL shots as one event so the listing reads as **5 events**, not 12 unsorted files.
 
 ### After a clean run (no failures)
 

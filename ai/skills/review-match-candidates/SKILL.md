@@ -19,7 +19,7 @@ Default target: `src/`. For a different target, ask the user.
 The audit surfaces candidates only. **It never rewrites code.** A bad `match` rewrite costs the reader more than a clear `if/elif`. The job is to
 surface chains where `match` would genuinely improve clarity, and to _not_ surface chains where it wouldn't.
 
-`match` was added in Python 3.10 (this project is 3.14, so it is available everywhere).
+`match` was added in Python 3.10 (assuming the project targets 3.10+, it is available everywhere).
 
 ## When `match` is the right tool — and when it isn't
 

@@ -43,8 +43,8 @@ POM retries are not a fix-all. They're appropriate for a narrow signature:
 - The failure is **observable but transient** — a `TimeoutException`, a `StaleElementReferenceException`, a click that doesn't take effect on first
   try.
 - The retry **with the exact same call** succeeds; no input change, no environmental fix needed.
-- The flake **is not explained by a known environment artifact** (cross-check against `IDENTIFIED_GAPS.md §A-ENV-*`). If `§A-ENV-1` rapid-POST
-  contention explains it, the fix is environmental, not POM-level.
+- The flake **is not explained by a known environment artifact** (cross-check against `the gap inventory (environmental section)`). If `§A-ENV-1`
+  rapid-POST contention explains it, the fix is environmental, not POM-level.
 - The flake **is not explained by a missing wait condition**. If the operation reliably succeeds after adding a `wait_for(...)`, the fix is the wait,
   not a retry loop. _Retries are for when waits don't help_ — the operation needs to be _re-attempted_, not just waited on.
 
@@ -95,7 +95,7 @@ For each method, walk the five-question signature:
 - Same operation, same inputs, intermittent failure?
 - Failure observable but transient (`TimeoutException` / `StaleElementReferenceException` / silent no-op)?
 - Retry with the exact same call succeeds?
-- Not explained by `IDENTIFIED_GAPS.md §A-ENV-*`?
+- Not explained by `the gap inventory (environmental section)`?
 - Not solvable by adding a wait condition instead?
 
 If all five → candidate. If any one fails → not a POM-retry case; surface the cross-reference to the better tool (environment fix, wait condition,
@@ -107,7 +107,7 @@ For each candidate, look at recent run reports (`pick-reports`) / logs (`pick-lo
 
 - How often did the POM operation fail intermittently?
 - Did the test-life budget catch it (i.e., the _whole test_ re-ran successfully)?
-- Is the test currently classified as `Pass everywhere` in `CURA_TEST_STRATEGY.md §7`, or already flagged as flaky?
+- Is the test currently classified as `Pass everywhere` in the test-strategy doc, or already flagged as flaky?
 
 If the test-life budget is consistently absorbing the flake, POM-level retries may be unnecessary — the existing layer is doing its job. Surface the
 question.
@@ -116,8 +116,8 @@ question.
 
 For each confirmed candidate:
 
-- **First-try variant**: existing test renamed / cloned, calling the POM operation with `retries=0`. This becomes an intentional fail. Filed in
-  `CURA_TEST_STRATEGY.md §7` under intentional-gap-fails; filed in `IDENTIFIED_GAPS.md` with the flake description and the observed signature.
+- **First-try variant**: existing test renamed / cloned, calling the POM operation with `retries=0`. This becomes an intentional fail. Filed in the
+  test-strategy doc under intentional-gap-fails; filed in the gap inventory with the flake description and the observed signature.
 - **With-retries variant**: existing test (or new sibling), calling the POM operation with `retries=N` for an explicit N. The N is the user's call —
   start with 1 or 2; if more is needed, the flake is severe enough to surface differently (probably a SUT bug worth filing in its own right).
 
@@ -127,7 +127,7 @@ variant's test name reads as a question to the SUT team: _"the SUT should accept
 ### Step 5 — Surface the catalogue
 
 ```markdown
-# POM-retry candidates — the project root (<date>)
+# POM-retry candidates — <project-name> (<date>)
 
 ## Candidates
 
@@ -136,13 +136,14 @@ variant's test name reads as a question to the SUT team: _"the SUT should accept
 - **Flake signature**: <one-sentence description with empirical evidence — log line counts, exception classes>.
 - **Five-question checklist**: same op same inputs ✓ | observable transient ✓ | retry succeeds ✓ | not env artifact ✓ | not waitable ✓.
 - **Currently absorbing layer**: <test-life budget masks it / no current absorption>.
-- **Cross-reference**: `IDENTIFIED_GAPS.md §<ref>` if matches | new flake to file.
+- **Cross-reference**: `the gap inventory <entry-ref>` if matches | new flake to file.
 - **Proposed retry shape**: `retries: int = 0` parameter, types `<list>` retryable, backoff `<seconds>` from new constant `<name>` in
   `src/constants/<file>.py`.
 - **Two-test split**:
-  - First-try variant: `<test name (first-try)>` — `retries=0`, intentional fail, file in `CURA_TEST_STRATEGY.md §7`, log in `IDENTIFIED_GAPS.md` as
-    `<G-X.Y>`.
-  - With-retries variant: `<test name (with-retries)>` — `retries=<N>`, expected pass, file in §7 as `Pass everywhere` (or per the policy).
+  - First-try variant: `<test name (first-try)>` — `retries=0`, intentional fail, file in the test-strategy doc, log in the gap inventory under a new
+    entry-ref.
+  - With-retries variant: `<test name (with-retries)>` — `retries=<N>`, expected pass, file in the test-strategy doc as `Pass everywhere` (or per the
+    policy).
 - **Closure trigger**: when SUT is fixed, the first-try variant starts passing → merge the split (or keep both as regression guards, user's call).
 
 ## Not POM-retry candidates (cross-reference)
@@ -155,7 +156,7 @@ variant's test name reads as a question to the SUT team: _"the SUT should accept
 
 - `src/lib/errors.py` (transient classification — the existing retry layer).
 - Ocarina test-life budget — the wrap-the-whole-test layer.
-- `IDENTIFIED_GAPS.md §A-ENV-*` — environment artifacts (rule out before recommending POM retries).
+- `the gap inventory (environmental section)` — environment artifacts (rule out before recommending POM retries).
 - Sister skills: `analyse-flakiness` (transient classifier widening), `analyse-fixture-flakiness` (boundary instrumentation),
   `understand-sut-constraints` (when the flake is a SUT bound).
 
@@ -164,7 +165,7 @@ variant's test name reads as a question to the SUT team: _"the SUT should accept
 - For each candidate: a refactor PR per POM method (or one PR per page if changes are tightly coupled). The skill describes the move; the user authors
   the implementation and the two-test split.
 - For each "not POM-retry" cross-reference: the linked motion (env fix / wait addition / no change).
-- For each two-test split: update `CURA_TEST_STRATEGY.md §7` categories and `IDENTIFIED_GAPS.md` entries via `update-frd-and-tests`.
+- For each two-test split: update the test-strategy doc categories and the gap inventory entries via `update-frd-and-tests`.
 
 ## Verdict
 
@@ -192,7 +193,7 @@ Each candidate resolves as:
 - **Explicit exception types.** No `except Exception`. Each retryable type is named.
 - **Backoff is a named constant.** Per the compartmentalisation discipline; no magic numbers.
 - **Log every attempt.** The retry count is the empirical evidence of the flake; without it, the split is unjustified.
-- **Cross-check `§A-ENV-*` before recommending.** Environment artifacts are not POM-fixable.
+- **Cross-check the environmental section of the gap inventory before recommending.** Environment artifacts are not POM-fixable.
 - **Static review only.** The skill surfaces; the user applies. The retry implementation is authoring data — per the project's discipline.
 - **The N (retry count) is the user's call.** The skill suggests 1 or 2; the user picks. A POM that needs 5+ retries to be reliable is surfacing a SUT
   defect worth filing separately, not a tuning question.
@@ -213,8 +214,8 @@ Each candidate resolves as:
 - It does not modify any POM. Surfaces; user applies.
 - It does not unilaterally add retries to suppress flakes. The two-test split is the philosophy — silencing without demonstrating is rejected.
 - It does not pick the retry count N. Suggests 1 or 2; user decides.
-- It does not author the two-test split's test names or the `CURA_TEST_STRATEGY.md` / `IDENTIFIED_GAPS.md` updates. Recommends the shape; the user
-  (via `update-frd-and-tests`) applies.
+- It does not author the two-test split's test names or the test-strategy doc / the gap inventory updates. Recommends the shape; the user (via
+  `update-frd-and-tests`) applies.
 - It does not run the suite to validate the retry shape. Verification is the user's motion.
 - It does not modify Ocarina internals (the test-life budget, the transient classifier). Those layers are out of scope; this skill stays at the POM
   layer.

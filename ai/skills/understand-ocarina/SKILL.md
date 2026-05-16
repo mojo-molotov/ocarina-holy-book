@@ -1,19 +1,20 @@
 ---
 name: understand-ocarina
 description:
-  "**Deep-comprehension skill for Ocarina — the test framework this project's suite is built on.** The primary source of LLM-oriented Ocarina
+  "**Deep-comprehension skill for Ocarina — the test framework an Ocarina suite is built on.** The primary source of LLM-oriented Ocarina
   documentation is the **Ocarina Holy Book**, publicly hosted at `http://mojo-molotov.github.io/ocarina-holy-book` once published. The skill fetches
   the Holy Book's pages directly when the site is reachable; if it isn't (not yet published, offline, redirect failure), the skill **clones** the Holy
-  Book source repo, builds it locally, and reads the built artifacts. Secondary sources — the Ocarina source clone (`<gitignored>/ocarina/`) and the
-  Ocarina example clone (`<gitignored>/ocarina-example/`) — supplement the Holy Book for code-level questions the docs don't cover. Use whenever the
-  user asks to understand Ocarina, look up a framework primitive (TestChain, drive_page, match_page, Watcher, fragments, scenarios, suites, campaigns,
-  cycles), audit a project's Ocarina usage, or onboard onto the framework. The skill answers the *framework* question; project-specific questions
-  (POMs, scenarios in the project root) are out of scope — those are covered by `assess-test-base`."
+  Book source repo, builds it locally, and reads the built artifacts. Secondary sources — the Ocarina source clone (`<gitignored>/ocarina/`), the
+  Ocarina example clone (`<gitignored>/ocarina-example/`), and the AI-proof example (`<gitignored>/ocarina-with-ai-example/`) — supplement the Holy
+  Book for code-level questions the docs don't cover. Use whenever the user asks to understand Ocarina, look up a framework primitive (TestChain,
+  drive_page, match_page, Watcher, fragments, scenarios, suites, campaigns, cycles), audit a project's Ocarina usage, or onboard onto the framework.
+  The skill answers the *framework* question; project-specific questions (POMs, scenarios in the project root) are out of scope — those are covered by
+  `assess-test-base`."
 ---
 
 # Understand Ocarina — start with the Holy Book
 
-A comprehension skill. Ocarina is the framework this project's suite is built on; understanding its primitives, conventions, and contracts is a
+A comprehension skill. Ocarina is the framework an Ocarina suite is built on; understanding its primitives, conventions, and contracts is a
 prerequisite for most authoring and review motions. The skill walks the documentation tiers, in priority order, until the question is answered.
 
 ## The documentation tiers
@@ -55,12 +56,14 @@ authority on behaviour but the worst authority on intent (the Holy Book is for i
 Already present per memory:
 
 - `<gitignored>/ocarina` — the Ocarina source.
-- `<gitignored>/ocarina-example` — example project showing canonical patterns.
+- `<gitignored>/ocarina-example` — minimal example project showing canonical patterns.
+- `<gitignored>/ocarina-with-ai-example` — richer example project (gap inventory, AI proof, dispatcher dataset, full cycle).
 
-### Tier 4 — Ocarina-example (`<gitignored>/ocarina-example/`)
+### Tier 4 — Ocarina-example clones (`<gitignored>/ocarina-example/`, `<gitignored>/ocarina-with-ai-example/`)
 
 Canonical reference for _how to use_ the primitives, not just what they are. When the Holy Book describes a concept abstractly and you need the
-working shape, the example is the canonical _shape_ source.
+working shape, the example clones are the canonical _shape_ source. `ocarina-example` is the minimal demo; `ocarina-with-ai-example` is the richer
+project with a gap inventory and AI-friendly conventions.
 
 ## The lookup priority
 
@@ -81,7 +84,8 @@ provide.
 ### Step 1 — Frame the question
 
 "How does `match_page` work?" — concept lookup, Tier 1 first. "What's the exact signature of `TestScenarioFragment`?" — Tier 1, fall to Tier 3 if
-needed. "What's a canonical Watcher callback shape?" — Tier 4 (example) primarily, Tier 1 for the abstract framing.
+needed. "What's a canonical Watcher callback shape?" — Tier 4 (example clones) primarily, Tier 1 for the abstract framing. Prefer `ocarina-example`
+for the simplest shape, `ocarina-with-ai-example` for the richer demonstration.
 
 Narrow questions need targeted fetches; broad questions ("walk me through Ocarina's test hierarchy") may need a page or two of the Holy Book.
 
@@ -132,9 +136,10 @@ _built_ form is preferred because it matches what the public site would serve.
 ```bash
 ls <gitignored>/ocarina
 ls <gitignored>/ocarina-example
+ls <gitignored>/ocarina-with-ai-example
 ```
 
-Both should be present per `reference_ocarina_repos.md` memory. If absent, surface the gap and ask the user before cloning (the URLs are not
+All three should be present per the local-clones memory. If any are absent, surface the gap and ask the user before cloning (the URLs are not
 unilaterally confirmed by this skill).
 
 `grep` for the symbol; `Read` for the file:
@@ -142,6 +147,7 @@ unilaterally confirmed by this skill).
 ```bash
 grep -rn "<symbol>" <gitignored>/ocarina/src
 grep -rn "<symbol>" <gitignored>/ocarina-example
+grep -rn "<symbol>" <gitignored>/ocarina-with-ai-example
 ```
 
 ### Step 5 — Synthesise the answer
@@ -151,7 +157,7 @@ For any answer, capture:
 - **Source tier(s) used** — Holy Book (page URL) / source (file:line) / example (file:line).
 - **The contract** — type signature, lifecycle, exceptions, side effects.
 - **The shape** — a minimal working example (from the example clone, or sketched from the Holy Book).
-- **Cross-references** — related skills in this project that touch the same primitive.
+- **Cross-references** — related skills in the project that touch the same primitive.
 
 The synthesis is the deliverable; the raw fetches are scaffolding.
 
@@ -165,7 +171,7 @@ The synthesis is the deliverable; the raw fetches are scaffolding.
 - Tier 1 (Holy Book online): <page URL | "unreachable: <reason>">.
 - Tier 2 (Holy Book cloned): <built page path | "not needed" | "fell back, built at <path>">.
 - Tier 3 (Ocarina source): <file:line | "not needed">.
-- Tier 4 (Ocarina example): <file:line | "not needed">.
+- Tier 4 (Ocarina example clones): <file:line | "not needed">.
 
 ## Answer
 
@@ -203,7 +209,7 @@ a different motion handled by another skill.
   framing.
 - **Never assume the build system of the Holy Book repo.** Read its README first; build per its instructions.
 - **Never clone unconfirmed repos unilaterally.** The skill confirms the URL with the user before cloning the Holy Book (or any new repo). The
-  existing Ocarina / Ocarina-example clones are already in memory; those are pre-confirmed.
+  existing Ocarina / `ocarina-example` / `ocarina-with-ai-example` clones are already in memory; those are pre-confirmed.
 - **Cite tier + location for every load-bearing claim.** Holy Book URL, source file:line, example file:line. A claim without a citation can't be
   re-verified.
 - **Don't copy Holy Book content into project files.** Cross-reference URLs. The Holy Book is the canonical source; mirroring it in the project root makes
@@ -231,8 +237,8 @@ a different motion handled by another skill.
 - It does not commit clones (the `<gitignored>/` path is gitignored by project convention).
 - It does not mirror Holy Book content into the project. Cross-references the URL.
 - It does not build the Holy Book unless Tier 1 is unreachable. Building is the fallback, not the default.
-- It does not unilaterally clone repos. Confirms with the user before any new clone (Ocarina / Ocarina-example are already in memory; the Holy Book
-  repo is not yet confirmed at the skill's authoring date).
+- It does not unilaterally clone repos. Confirms with the user before any new clone (Ocarina / `ocarina-example` / `ocarina-with-ai-example` are
+  already in memory; the Holy Book repo is not yet confirmed at the skill's authoring date).
 - It does not include attack-shape questions in any Holy Book / source query. Per `CLAUDE.md` → "Security testing is functional and static —
   never active".
 ```

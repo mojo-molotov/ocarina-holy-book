@@ -2,11 +2,11 @@
 name: bfcache-exposure-ideation
 description:
   "**Black-hat skill focused on back-button / BFcache exposures** — every place in the SUT where pressing the browser's Back button (or Forward, or
-  restoring a tab, or revisiting via history) might display sensitive state from *before* an access-changing event. The canonical example, already
-  documented in this project as `§B-BROWSER-1`: user on the authenticated history page → logs out → presses Back → Chrome's back-forward cache
-  restores the history page with all its content, even though the server-side session is gone and a refresh redirects correctly. The skill generalises
-  that single finding into a systematic ideation lens: walk every access-changing event (logout, session expiry, role switch, consent withdrawal,
-  record deletion, cancel, save) and ask *'is the pre-event page reachable via Back after the event?'*. Each exposure is observable through the normal
+  restoring a tab, or revisiting via history) might display sensitive state from *before* an access-changing event. The canonical example, documented
+  in CURA's gap inventory as `§B-BROWSER-1`: user on the authenticated history page → logs out → presses Back → Chrome's back-forward cache restores
+  the history page with all its content, even though the server-side session is gone and a refresh redirects correctly. The skill generalises that
+  single finding into a systematic ideation lens: walk every access-changing event (logout, session expiry, role switch, consent withdrawal, record
+  deletion, cancel, save) and ask *'is the pre-event page reachable via Back after the event?'*. Each exposure is observable through the normal
   browser — no curl, no DevTools, no protocol tricks. Generates a catalogue of exposure scenarios with the test shape (functional, UI-only) that would
   observe each, cross-referenced to the existing `BackForwardCacheExposureError` work and `§B-BROWSER-1`. Use whenever the user asks to audit
   back-button exposures, find BFcache attack surfaces, extend the BFcache coverage beyond `§B-BROWSER-1`, or harden navigation-related access tests."
@@ -20,9 +20,9 @@ A black-hat ideation skill, sibling to `business-attack-ideation`, `incoherence-
 > _The browser's back-forward cache (BFcache) keeps the previous page **as it rendered**. After an access-changing event — logout, expiry, role switch
 > — the server-side state has moved on, but pressing Back can restore the pre-event render. Whatever was on that page is now exposed._
 
-The project already has one BFcache finding: `§B-BROWSER-1` in `IDENTIFIED_GAPS.md`, with the dedicated `BackForwardCacheExposureError` exception and
-the Chrome-vs-Firefox contrast pair. That finding is one _instance_ of a broader pattern. This skill systematically walks every access-changing event
-in the SUT and surfaces every place the same pattern could expose data.
+The project already has one BFcache finding: `§B-BROWSER-1` in the gap inventory, with the dedicated `BackForwardCacheExposureError` exception and the
+Chrome-vs-Firefox contrast pair. That finding is one _instance_ of a broader pattern. This skill systematically walks every access-changing event in
+the SUT and surfaces every place the same pattern could expose data.
 
 Same hard rule as the rest of the trio: functional, UI-only. Per `CLAUDE.md` → _"Security testing is functional and static — never active"_. The user
 presses Back. The browser shows what it shows. The audit observes.
@@ -63,7 +63,7 @@ For each event, ask: _immediately before this event, what page might be in the u
 
 The original `§B-BROWSER-1` shape. The user logs out from a page that was authenticated; Back restores that page.
 
-- **CURA example**: documented — logged-in history page → logout → Back → history page restored (Chrome). Firefox redirects (the contrast pair).
+- **Concrete example**: documented — logged-in history page → logout → Back → history page restored (Chrome). Firefox redirects (the contrast pair).
 - **Detection question**: which authenticated pages, if visited last before logout, are still rendered on Back?
 - **Per-page enumeration**: walk every page reachable while authenticated (login-redirected pages, history, profile, appointment form, etc.) and pair
   each with the logout event.
@@ -80,22 +80,22 @@ The user's session expires while they're elsewhere; they come back, press Back. 
 In multi-role SUTs, switching from a high-privilege role to a lower-privilege one — or ending an impersonation session — leaves the high-privilege
 page in history.
 
-- **CURA example**: not applicable (single role). For multi-role SUTs: surface as a checklist item.
+- **Concrete example**: not applicable (single role). For multi-role SUTs: surface as a checklist item.
 - **Detection question**: after switching from admin to user, does Back restore the admin dashboard?
 
 ### 4. Consent withdrawal
 
 The user withdrew consent for a feature; the previous page rendered with the feature enabled. Back restores.
 
-- **CURA example**: not directly applicable. For SUTs with GDPR-shaped consent gates, this is high-value.
+- **Concrete example**: not directly applicable. For SUTs with GDPR-shaped consent gates, this is high-value.
 - **Detection question**: is the previously-consented content reachable via Back?
 
 ### 5. Record deletion
 
 The user deleted a record; the previous page showed the record. Back restores a view of a record that "no longer exists".
 
-- **CURA example**: cancel an appointment, press Back — does the appointment-detail page restore? The cancellation is real server-side, the Back view
-  is a phantom.
+- **Concrete example**: cancel an appointment, press Back — does the appointment-detail page restore? The cancellation is real server-side, the Back
+  view is a phantom.
 - **Detection question**: does the SUT's content remain accessible after deletion? Even if just for a Back-restored view, that's an audit-trail
   question.
 
@@ -109,7 +109,7 @@ The user was editing a draft (with sensitive content in the form), navigated awa
 
 The user has tab A authenticated; logs out in tab B; goes back to tab A and presses Back. Tab A's history hasn't seen the logout event.
 
-- **CURA example**: surface for multi-tab CURA flows.
+- **Concrete example**: surface for multi-tab SUT flows.
 - **Detection question**: does the SUT have a mechanism (e.g. broadcast channel, polling) to invalidate tab A's history? If not, Back in tab A may
   restore pre-logout views.
 
@@ -127,10 +127,11 @@ DOM from cache.
 
 ```bash
 grep -rn -i "auth\|login\|role\|consent\|sensitive" src/pages
-grep -rn -i "REQ-" CURA_FRD.md | grep -i "auth\|access"
+grep -rn -i "REQ-" the FRD | grep -i "auth\|access"
 ```
 
-Build the list. For CURA: every page reachable after `DEMO_USERNAME` login (history, profile, appointment form, the booking confirmation).
+Build the list. For example, in <https://github.com/mojo-molotov/ocarina-with-ai-example>: every page reachable after `DEMO_USERNAME` login (history,
+profile, appointment form, the booking confirmation).
 
 ### Step 2 — Walk the eight events × pages matrix
 
@@ -138,13 +139,14 @@ For each (page × event), ask:
 
 - Is this combination plausible (does the page exist in the user's flow before the event)?
 - Is the page's content sensitive enough that exposure via Back would matter?
-- Has anyone already encoded this? (Check the existing scenario set — CURA's BFcache work covers logout × history.)
-- Is the event applicable to CURA? (Role switch, consent withdrawal don't apply to single-role / no-consent SUTs — note as "checklist for future".)
+- Has anyone already encoded this? (Check the existing scenario set — the SUT's BFcache work covers logout × history.)
+- Is the event applicable to this SUT? (Role switch, consent withdrawal don't apply to single-role / no-consent SUTs — note as "checklist for
+  future".)
 
 ### Step 3 — Cross-check against existing artifacts
 
-- Documented in `IDENTIFIED_GAPS.md §B-BROWSER-1`? — cross-reference, don't duplicate.
-- Encoded as a test? Most BFcache work in this project is around the `BackForwardCacheExposureError` exception flow. List which (page × event) combos
+- Documented in `§B-BROWSER-1`? — cross-reference, don't duplicate.
+- Encoded as a test? Most BFcache work in the project is around the `BackForwardCacheExposureError` exception flow. List which (page × event) combos
   are already covered.
 - Adjacent `persistence-attack-ideation §4` (back/forward/refresh insistence)? — note the relationship; this skill focuses on the _single-Back
   exposure_, the sibling on _insistent_ navigation.
@@ -168,7 +170,7 @@ For each proposal: does the test shape require anything beyond pressing Back and
 ### Logout
 
 - **Page `<name>` → logout → Back**: <observation per existing finding | candidate for new test>.
-  - Cross-reference: `IDENTIFIED_GAPS.md §B-BROWSER-1` (history page covered) | new.
+  - Cross-reference: `§B-BROWSER-1` (history page covered) | new.
   - Test shape: drive `<page>` → logout → `driver.back()` → assert `BackForwardCacheExposureError`-style raise (or whichever assertion shape the suite
     uses for the existing finding).
   - Detection question: <one sentence>.
@@ -199,20 +201,20 @@ For each proposal: does the test shape require anything beyond pressing Back and
 
 ## Cross-references
 
-- `IDENTIFIED_GAPS.md §B-BROWSER-1` — the existing finding; this skill generalises around it.
+- `§B-BROWSER-1` — the existing finding; this skill generalises around it.
 - `BackForwardCacheExposureError` (`src/lib/errors.py`) — the non-transient exception used for the existing assertion shape.
 - Sister skills: `persistence-attack-ideation §4` (insistent back-navigation), `business-attack-ideation`, `incoherence-attack-ideation`,
   `permission-appropriateness-audit`.
 
 ## Recommended next motions
 
-- For each candidate: `empiricism` to observe CURA's behaviour, then `extend-coverage` to author the test (likely as a Chrome-fail / Firefox-pass
+- For each candidate: `empiricism` to observe the SUT's behaviour, then `extend-coverage` to author the test (likely as a Chrome-fail / Firefox-pass
   pair, mirroring `§B-BROWSER-1`).
-- For each N/A-future-checklist event: note for the FRD; when CURA acquires roles / consent, the lens is ready.
+- For each N/A-future-checklist event: note for the FRD; when the SUT acquires roles / consent, the lens is ready.
 
 ## Verdict
 
-<one-line: N candidates, K already covered, J N/A-for-CURA, nothing material>.
+<one-line: N candidates, K already covered, J N/A-for-this-SUT, nothing material>.
 ```
 
 Print the catalogue.
@@ -221,8 +223,8 @@ Print the catalogue.
 
 Each candidate resolves as:
 
-- **Encode** — `empiricism` to verify the BFcache shape on CURA's deployment (browser-version-sensitive — Chrome's BFcache eligibility rules change),
-  then `extend-coverage` to author the assertion pair (Chrome-fail, Firefox-pass, mirroring the existing finding).
+- **Encode** — `empiricism` to verify the BFcache shape on the SUT's deployment (browser-version-sensitive — Chrome's BFcache eligibility rules
+  change), then `extend-coverage` to author the assertion pair (Chrome-fail, Firefox-pass, mirroring the existing finding).
 - **Discuss** — product/legal call. Some "exposures" are intentional (a typical e-commerce checkout flow's Back restores the cart on purpose).
 - **Defer** — record for the next coverage push.
 
@@ -254,5 +256,5 @@ Each candidate resolves as:
 - It does not run probes. Use `write-a-probe` for the BFcache observation if a candidate's behaviour is unclear.
 - It does not propose DevTools manipulation, DOM editing, eligibility-flag tricks, or any active-security technique.
 - It does not produce attack payloads.
-- It does not file `IDENTIFIED_GAPS.md` entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
+- It does not file the gap inventory entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
 - It does not assess whether an exposure is _acceptable_ — that's a product / legal / compliance call. The audit surfaces; the team decides.

@@ -4,12 +4,12 @@ description:
   "**Stalk the ecosystem** — go read what the wider internet says about the SUT, its dependencies, and the third-party technologies the test suite
   leans on, so the project's view of its own environment widens beyond the repo. Pulls from public docs (Selenium, Chrome / Firefox release notes,
   Heroku platform docs, the SUT's upstream repo, framework release notes), blog posts / Stack Overflow / GitHub issues that mention the SUT or a
-  load-bearing dependency, and similar public testbeds. Produces an **ecosystem map** — what's out there, what's load-bearing on this project, what
+  load-bearing dependency, and similar public testbeds. Produces an **ecosystem map** — what's out there, what's load-bearing on the project, what
   might be re-usable (a published selector list, a known-quirk catalogue, an upstream issue that explains a flake). The depth is **bounded by a token
   budget**, not by a page count: at invocation, estimate the remaining context-window tokens and allocate a fraction (default **1/3**) to the
   assessment; stop fetching when that budget is spent. Use whenever the user asks to scan the ecosystem, look for prior art, find upstream context for
-  a flake, check what other people say about CURA / Selenium / Heroku / a specific Chrome version, or onboard onto a new technology in the stack.
-  Never confuse what an external source claims with what the SUT actually does — the empirical-verification rule still owns the truth."
+  a flake, check what other people say about the SUT / Selenium / the hosting platform / a specific Chrome version, or onboard onto a new technology
+  in the stack. Never confuse what an external source claims with what the SUT actually does — the empirical-verification rule still owns the truth."
 ---
 
 # Assess the ecosystem — bounded public-research pass
@@ -48,19 +48,20 @@ State the budget at the top of the map: _"Allocated ~20k tokens (1/3 of estimate
 
 ## What to look for — eight ecosystem surfaces
 
-For each surface, decide before fetching: _is this load-bearing on this project?_ If yes — include in the shortlist. If incidental — note in the map
+For each surface, decide before fetching: _is this load-bearing on the project?_ If yes — include in the shortlist. If incidental — note in the map
 without fetching.
 
 ### 1. The SUT's upstream
 
-Where does the SUT live? For CURA: `github.com/katalon-studio/katalon-demo-cura`. Read:
+Where does the SUT live? (`github.com/<sut-org>/<sut-repo>` is one example shape — when the SUT is open source.) Read:
 
-- The README / wiki — anything CURA-team says about _intended_ behaviour (vs the deployed app).
+- The README / wiki — anything the SUT maintainers say about _intended_ behaviour (vs the deployed app).
 - Open + closed issues — bugs others have filed, especially around the same gaps your project tracks.
-- The PHP source layout — what files are deployed, what endpoints exist beyond the form-rendered ones.
+- The source layout — what files are deployed, what endpoints exist beyond the form-rendered ones.
 - Commit history — recent fixes that might explain a gap flipping resolved.
 
-The SUT's upstream often confirms or refutes `IDENTIFIED_GAPS.md` entries: if a §9 gap matches an open upstream issue, that's external corroboration.
+The SUT's upstream often confirms or refutes the gap inventory entries: if a documented gap matches an open upstream issue, that's external
+corroboration.
 
 ### 2. Selenium + WebDriver protocol
 
@@ -79,16 +80,16 @@ Chrome, Firefox. The release notes are where BFcache, autoplay, password-manager
 - `chromereleases.googleblog.com` and the Chromium status / feature flags pages.
 - `firefox-source-docs.mozilla.org` and Mozilla's release notes.
 
-Critical when a cross-browser finding (`§B-BROWSER-1`) might be explained by a documented browser change rather than a SUT quirk.
+Critical when a cross-browser finding (e.g. a known BFcache exposure) might be explained by a documented browser change rather than a SUT quirk.
 
 ### 4. Hosting / infra platform
 
-For CURA: Heroku. Read:
+If the SUT is on Heroku (one common platform):
 
 - Heroku's eco / free-tier docs — dyno sleep behaviour, request timeouts, concurrency limits.
 - Heroku's incident history for the platform region.
 
-`§A-ENV-1` (rapid-POST contention on a shared eco dyno) is exactly the kind of finding that Heroku docs can confirm — _yes, eco dynos serialize this
+A finding like rapid-POST contention on a shared eco dyno is exactly the kind of finding that Heroku docs can confirm — _yes, eco dynos serialize this
 way under load._
 
 ### 5. Test framework / harness
@@ -102,11 +103,11 @@ This surface is small for proprietary frameworks; for popular ones (pytest, Play
 
 ### 6. Public discussion of the SUT
 
-People talk about CURA on the internet. Search:
+People talk about the SUT on the internet. Search:
 
-- Stack Overflow for `katalon-demo-cura` or `katalon cura`.
-- GitHub for repos that fork / import CURA tests — they may have already discovered selectors, gaps, flakes.
-- Blog posts / tutorials — Katalon's own tutorials, third-party walkthroughs.
+- Stack Overflow for `<sut-name>` or `<sut-name>`.
+- GitHub for repos that fork / import the SUT's tests — they may have already discovered selectors, gaps, flakes.
+- Blog posts / tutorials — the SUT vendor's own tutorials, vendor walkthroughs, third-party guides.
 
 This is where **re-usable artifacts** live: a published selector list, an already-mapped form flow, a community-noted gap.
 
@@ -132,7 +133,7 @@ Cross-pollination — if another testbed solved the same problem, the solution s
 
 ### Step 1 — Restate the question
 
-"Map the ecosystem around CURA generally." Or "find upstream context for the BFcache cross-browser finding." Or "what does Selenium 4.x say about
+"Map the ecosystem around the SUT generally." Or "find upstream context for the BFcache cross-browser finding." Or "what does Selenium 4.x say about
 `element_to_be_clickable` that might explain the post-modal flake?" Or "onboard onto Heroku eco dyno behaviour."
 
 Narrow questions get tight budgets and tight shortlists. Broad questions get the default 1/3.
@@ -145,15 +146,15 @@ If the user gave an explicit fraction or cap, use theirs.
 
 ### Step 3 — Build the fetch shortlist
 
-Walk the eight surfaces. For each: _load-bearing on this project? worth a fetch within the budget?_ Produce an ordered list:
+Walk the eight surfaces. For each: _load-bearing on the project? worth a fetch within the budget?_ Produce an ordered list:
 
 ```markdown
 Shortlist (in priority order, est. tokens):
 
-1. github.com/katalon-studio/katalon-demo-cura README + open issues — ≈6k
+1. github.com/<sut-org>/<sut-repo> README + open issues — ≈6k
 2. Chrome release notes around BFcache (v124–v132 range) — ≈5k
 3. Heroku eco-dyno docs (request handling, concurrency) — ≈3k
-4. Stack Overflow `katalon-demo-cura` tag — ≈2k
+4. Stack Overflow `<sut-name>` tag — ≈2k
 5. Selenium 4.x expected_conditions docs — ≈2k
 
 Total est: ~18k / 20k budget. OK.
@@ -176,7 +177,7 @@ If a fetch overshoots its estimate by >2x, stop and reassess — the page may be
 For each fetched source, capture in 2–4 bullets:
 
 - **What it says** (one sentence).
-- **Whether it's load-bearing** on this project (one phrase).
+- **Whether it's load-bearing** on the project (one phrase).
 - **What it could re-use / confirm / refute** (one phrase).
 - **URL** for citation.
 
@@ -224,13 +225,13 @@ Use this exact template:
 
 ## Re-usable artifacts found
 
-- <a published selector list / a documented gap / an upstream issue that matches §9.X> — at <URL>.
+- <a published selector list / a documented gap / an upstream issue that matches a known gap> — at <URL>.
 - <…>.
 
 ## Cross-references to existing project artifacts
 
-- `IDENTIFIED_GAPS.md` §<ref> — corroborated / contradicted by <finding>.
-- `CURA_FRD.md` §<ref> — context added by <finding>.
+- the gap inventory <entry-ref> — corroborated / contradicted by <finding>.
+- the FRD §<ref> — context added by <finding>.
 - `CLAUDE.md` rule on <topic> — supported / could be tightened by <finding>.
 
 ## Open follow-ups (not pursued — budget bounded)
@@ -248,7 +249,7 @@ Print the map. Do not write it to a file unless the user asks.
 
 The map is the artifact. Findings load-bearing on a test still need the `empiricism` motion before they reshape an assertion. The user picks:
 
-- **Pull a re-usable artifact in** — cite the URL in a POM comment / `IDENTIFIED_GAPS.md` entry.
+- **Pull a re-usable artifact in** — cite the URL in a POM comment / the gap inventory entry.
 - **Re-verify a contradiction empirically** — invoke `empiricism` / `write-a-probe`.
 - **Defer** — the finding is interesting but not actionable this pass.
 - **Widen** — run the skill again with a larger budget / a narrower question.
@@ -257,10 +258,10 @@ The audit doesn't apply findings. It maps them.
 
 ## Hard rules
 
-- **External claims are not SUT truth.** A Stack Overflow answer saying "CURA does X" is a _hypothesis_; the empirical verification rule (`CLAUDE.md`
-  → "Verify SUT behaviour") still owns the answer.
+- **External claims are not SUT truth.** A Stack Overflow answer saying "the SUT does X" is a _hypothesis_; the empirical verification rule
+  (`CLAUDE.md` → "Verify SUT behaviour") still owns the answer.
 - **Never fetch with attack-shape inputs.** Per `CLAUDE.md` → "Security testing is functional and static — never active". A Google search for
-  `site:exploit-db.com cura` is out of scope; a search for `site:github.com katalon-demo-cura issues` is fine.
+  `site:exploit-db.com <sut-name>` is out of scope; a search for `site:github.com <sut-name> issues` is fine.
 - **Cite every load-bearing finding.** A finding without a URL is a rumour. The map is only useful if the next reader can re-open the source.
 - **Respect the budget.** If you've spent 90% and the last item is a 10k-page dump, stop. Note it as a follow-up; don't blow through.
 - **Don't auto-edit project files.** The map surfaces; the user (or a follow-up skill invocation) applies.
@@ -268,7 +269,7 @@ The audit doesn't apply findings. It maps them.
 ## When to run this skill
 
 - The user asks: "what does the internet say about X?", "scan the ecosystem", "find upstream context for this flake", "are there public selector lists
-  for CURA?", "onboard me onto Heroku eco dynos".
+  for the SUT?", "onboard me onto Heroku eco dynos".
 - A new third-party dependency lands in `pyproject.toml` — what's its quirk catalogue?
 - A `review-suite-stability` audit surfaces a flake with no internal explanation — widen to see if anyone outside has hit it.
 - A `B-BROWSER-*` entry could be explained by a documented browser change — check the release notes.
@@ -277,7 +278,7 @@ The audit doesn't apply findings. It maps them.
 ## What this skill does NOT do
 
 - It does not run probes against the SUT. (That's `write-a-probe`.)
-- It does not update `IDENTIFIED_GAPS.md` / `CURA_FRD.md` / POM comments. (Those are user-driven follow-ups, via `update-frd-and-tests` etc.)
+- It does not update the gap inventory / the FRD / POM comments. (Those are user-driven follow-ups, via `update-frd-and-tests` etc.)
 - It does not fetch unbounded — the token budget is the bound. Default 1/3 of remaining; never more than 1/2.
 - It does not run security scanners, vulnerability tools, or active probes against external services. Public docs + public discussions only.
 - It does not summarize entire pages into the map. The map captures _findings_; the URLs let the next reader re-open the source.

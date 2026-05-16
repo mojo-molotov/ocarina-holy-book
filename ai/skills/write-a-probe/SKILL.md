@@ -1,6 +1,6 @@
 ---
 name: write-a-probe
-description: Author a one-off **probe** — a throwaway Python script that drives the browser (or raw HTTP) through a suspect flow and prints concrete runtime state (URL, page title, form HTML, hidden inputs, cookies, network observations) so you can see what the SUT actually does before encoding it as a test or accepting a claim about it. Probes bypass Ocarina entirely (no `create_selenium_test`, no suites, no assertions), live in a gitignored directory (`<gitignored>/`), are never committed, and are deleted once the finding lands in a durable artifact (a test, a source-cited comment, `IDENTIFIED_GAPS.md`, `CURA_FRD.md`). Use whenever the user asks to probe a flow, verify a behaviour empirically, capture rendered HTML, observe a redirect chain, measure inter-request timing, confirm a deployment-vs-source discrepancy, or settle a "does CURA actually do X?" question. The hard rule: a probe must exercise the **exact** locator, screen, wait condition, and action the production code uses — never an "equivalent".
+description: Author a one-off **probe** — a throwaway Python script that drives the browser (or raw HTTP) through a suspect flow and prints concrete runtime state (URL, page title, form HTML, hidden inputs, cookies, network observations) so you can see what the SUT actually does before encoding it as a test or accepting a claim about it. Probes bypass Ocarina entirely (no `create_selenium_test`, no suites, no assertions), live in a gitignored directory (`<gitignored>/`), are never committed, and are deleted once the finding lands in a durable artifact (a test, a source-cited comment, the gap inventory, the FRD). Use whenever the user asks to probe a flow, verify a behaviour empirically, capture rendered HTML, observe a redirect chain, measure inter-request timing, confirm a deployment-vs-source discrepancy, or settle a "does the SUT actually do X?" question. The hard rule: a probe must exercise the **exact** locator, screen, wait condition, and action the production code uses — never an "equivalent".
 ---
 
 # Write a probe — experiment on the app before formalising
@@ -23,8 +23,8 @@ not a probe action.
 
 ### Step 1 — One-sentence question
 
-"Does CURA's `history.php` actually return `Cache-Control: no-store` headers on a logged-out GET?" Or "Does Chrome restore the history page from
-BFcache after `back()` post-logout — deterministically?" Or "Is the `LoginPage._btn_login` selector still `button[type='submit']` on the deployed
+"Does the SUT's `/history` endpoint actually return `Cache-Control: no-store` headers on a logged-out GET?" Or "Does Chrome restore the history page
+from BFcache after `back()` post-logout — deterministically?" Or "Is the `LoginPage._btn_login` selector still `button[type='submit']` on the deployed
 app?"
 
 If the question takes more than one sentence to phrase, split it into multiple probes.
@@ -33,20 +33,20 @@ If the question takes more than one sentence to phrase, split it into multiple p
 
 List **all four** dimensions explicitly:
 
-| Dimension               | What it means                                                                                                                                                   |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Locator**             | The exact `By.X, "..."` the production code uses. Not an equivalent.                                                                                            |
-| **Screen / page state** | The exact page (login, appointment, history, post-logout homepage, etc.) and the exact state (authenticated / logged out / post-back-navigation / post-reload). |
-| **Wait condition**      | What the production code waits on (`element_to_be_clickable`, `presence_of_element_located`, `url_changes`, etc.).                                              |
-| **Action**              | What the production code does (`.click()`, `.send_keys(Keys.ENTER)`, `driver.back()`, `driver.refresh()`, `driver.get(...)`).                                   |
+| Dimension               | What it means                                                                                                                                            |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Locator**             | The exact `By.X, "..."` the production code uses. Not an equivalent.                                                                                     |
+| **Screen / page state** | The exact page (login, form, history, post-logout homepage, etc.) and the exact state (authenticated / logged out / post-back-navigation / post-reload). |
+| **Wait condition**      | What the production code waits on (`element_to_be_clickable`, `presence_of_element_located`, `url_changes`, etc.).                                       |
+| **Action**              | What the production code does (`.click()`, `.send_keys(Keys.ENTER)`, `driver.back()`, `driver.refresh()`, `driver.get(...)`).                            |
 
 If the production code reads from a constant (`HISTORY_URL`, `LOGIN_URL`, demo credentials), import the same constants — don't copy the string. The
 probe diverging from the constants is exactly the "close enough" trap the rule exists to kill.
 
 ### Step 3 — Pick the browser shape
 
-For Chrome, **mirror `create_drivers_pool.py`** — disable the consumer password manager, otherwise post-login probes hit the breach modal and the
-result is the modal's behaviour, not the SUT's:
+For Chrome, **mirror your project's `create_drivers_pool.py`** — disable the consumer password manager, otherwise post-login probes hit the breach
+modal and the result is the modal's behaviour, not the SUT's:
 
 ```python
 opts = Options()
@@ -75,7 +75,7 @@ Standard preamble for probes that need a login first:
 <2–4 sentence problem statement: what triggered this probe, what claim is
 load-bearing, what evidence the probe is going to produce.>
 
-Throwaway — delete once the finding lands in <test / comment / GAPS / FRD>.
+Throwaway — delete once the finding lands in <test / comment / gap inventory / FRD>.
 """
 
 from __future__ import annotations
@@ -89,8 +89,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-SITE = "https://katalon-demo-cura.herokuapp.com"
-LOGIN_URL = f"{SITE}/profile.php#login"
+SITE = "<your-sut-url>"
+LOGIN_URL = f"{SITE}/<login-path>"
 # Import other URLs / selectors *exactly* as the production code uses them.
 CHROMEDRIVER = sys.argv[1] if len(sys.argv) > 1 else "chromedriver"
 ATTEMPTS = 4   # default; determinism check
@@ -120,11 +120,11 @@ driver) and run both. Don't fold them into one if it complicates the code path �
 
 The output is the answer. Read it. Phrase the finding in one or two sentences with the empirical numbers:
 
-- "Chrome stays on `/history.php` after `back()` post-logout (4/4 attempts), and a forced `refresh()` then redirects to `/` — confirms a BFcache hit
-  on a `no-store` page."
+- "Chrome stays on `/history` after `back()` post-logout (4/4 attempts), and a forced `refresh()` then redirects to `/` — confirms a BFcache hit on a
+  `no-store` page."
 - "The sidebar Logout link works 5/5 in clean Chrome with the password manager off. The 'jQuery dispatch race' comment is wrong; it was the breach
   modal misdiagnosed."
-- "`history.php` returns `Cache-Control: no-store, no-cache, must-revalidate` on a logged-out GET — CURA does the right thing server-side; chrome's
+- "`/history` returns `Cache-Control: no-store, no-cache, must-revalidate` on a logged-out GET — the SUT does the right thing server-side; Chrome's
   BFcache restores anyway."
 
 If the output is indeterminate, the probe is not done. Tighten the question, tighten the target, run again.
@@ -133,15 +133,15 @@ If the output is indeterminate, the probe is not done. Tighten the question, tig
 
 The probe is the _instrument_; the **finding** must live somewhere readers will see later:
 
-| Where the finding goes                          | When                                                                                                 |
-| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| A scenario file's docstring / call-site comment | The finding shapes a test's assertion or POM behaviour. Cite path / function / observation.          |
-| `IDENTIFIED_GAPS.md`                            | The finding is a CURA defect, browser-behaviour finding, or test-env artifact (G-… / B-… / A-ENV-…). |
-| `CURA_FRD.md` §9.x                              | The finding is user-facing.                                                                          |
-| `CLAUDE.md` rule body                           | The finding generalises into a project-wide discipline (rare).                                       |
-| A POM call-site comment                         | The finding is a localised "why this code does X" justification. Cite the probe's date + output.     |
+| Where the finding goes                          | When                                                                                             |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| A scenario file's docstring / call-site comment | The finding shapes a test's assertion or POM behaviour. Cite path / function / observation.      |
+| The gap inventory                               | The finding is a SUT defect, browser-behaviour finding, or test-env artifact.                    |
+| The FRD's known-bugs section                    | The finding is user-facing.                                                                      |
+| `CLAUDE.md` rule body                           | The finding generalises into a project-wide discipline (rare).                                   |
+| A POM call-site comment                         | The finding is a localised "why this code does X" justification. Cite the probe's date + output. |
 
-The finding must include a **source citation** — the PHP file/line, the rendered selector, the empirical count. Without it, the next reader can't
+The finding must include a **source citation** — the source file/line, the rendered selector, the empirical count. Without it, the next reader can't
 re-verify in seconds and the finding becomes a stale claim — exactly what `CLAUDE.md` → "Verify SUT behaviour" warns about.
 
 ### Step 9 — Delete the probe
@@ -179,7 +179,7 @@ opts.add_argument("--headless=new")
 driver = webdriver.Chrome(service=Service(sys.argv[1]), options=opts)
 
 try:
-    driver.get("https://katalon-demo-cura.herokuapp.com/<path>")
+    driver.get("<sut-url>/<path>")
     print("url:", driver.current_url)
     print("title:", driver.title)
     # add the specific observation
@@ -204,13 +204,14 @@ print(f"\n{sum(1 for r in results if r)}/{ATTEMPTS} positive")
 
 ### Template C — login + post-login probe (use clean Chrome)
 
-For questions about post-authenticated behaviour:
+For questions about post-authenticated behaviour. Use the project's own demo credentials and selectors — the snippet below mirrors the shape used in
+<https://github.com/mojo-molotov/ocarina-with-ai-example>:
 
 ```python
 def _login(driver, w):
     driver.get(LOGIN_URL)
-    w.until(ec.element_to_be_clickable((By.ID, "txt-username"))).send_keys("John Doe")
-    driver.find_element(By.ID, "txt-password").send_keys("ThisIsNotAPassword")
+    w.until(ec.element_to_be_clickable((By.ID, "txt-username"))).send_keys(USERNAME)
+    driver.find_element(By.ID, "txt-password").send_keys(PASSWORD)
     driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
     w.until(ec.presence_of_element_located((By.XPATH, "//a[contains(text(),'History')]")))
 ```
@@ -230,9 +231,11 @@ path clean.
   vehicle for attack-shape inputs (per `CLAUDE.md` → "Security testing is functional and static — never active"), or a way to "see if a hack works"
   (the source-reading and exact-target rules apply).
 
-## Worked example (from this session)
+## Worked example
 
-Question: "Was the historic `# jQuery dispatch race` comment on `AppointmentPage.logout()` correct, or was it the Chrome password-breach modal
+From a real session in <https://github.com/mojo-molotov/ocarina-with-ai-example>:
+
+Question: "Was the historic `# jQuery dispatch race` comment on the sidebar's `logout()` correct, or was it the Chrome password-breach modal
 misdiagnosed?"
 
 Probe (`<gitignored>/probe_sidebar_logout.py`): builds clean Chrome (password manager off, mirroring `create_drivers_pool.py`) **and** plain Chrome
@@ -240,7 +243,7 @@ Probe (`<gitignored>/probe_sidebar_logout.py`): builds clean Chrome (password ma
 `#sidebar-wrapper a[href='authenticate.php?logout']`) with the **exact** wait condition (`element_to_be_clickable`), 5 attempts each.
 
 Finding: clean Chrome 5/5 (works); plain Chrome breaks at varying post-credential points. Conclusion: the historic comment was wrong; the "race" was
-the breach modal swallowing the click. Finding landed in `IDENTIFIED_GAPS.md §A-ENV-2` (the resolved artifact) and in `Sidebar.logout_via_sidebar`'s
+the breach modal swallowing the click. Finding landed in the gap inventory (resolved-artifact section) and in `Sidebar.logout_via_sidebar`'s
 docstring. Probe deleted.
 
 ## When to run this skill
@@ -254,6 +257,6 @@ docstring. Probe deleted.
 
 - It does not run the probe automatically on the user's machine — it produces the probe; the user (or downstream tool call) runs it.
 - It does not add assertions to the probe. A probe prints; it doesn't pass/fail. If you want assertions, you want a test.
-- It does not write the _finding_ into the durable artifact — the user (or a follow-up call) writes the comment / GAPS entry / FRD update. The probe
-  gathers the evidence; the writing is a separate motion (see `empiricism`).
+- It does not write the _finding_ into the durable artifact — the user (or a follow-up call) writes the comment / gap-inventory entry / spec-doc
+  update. The probe gathers the evidence; the writing is a separate motion (see `empiricism`).
 - It does not skip the deletion step. A probe that survives its finding is a probe that becomes stale and misleads.

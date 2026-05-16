@@ -150,23 +150,23 @@ Output:
 
 ## JSON summary
 
-- counts: `{'success': 29, 'fail': 6}` (from the parse — see note in §7 of `CURA_TEST_STRATEGY.md`: totals are inflated by `--workers` clones;
-  per-test status matters, not the total)
+- counts: `{'success': 29, 'fail': 6}` (from the parse — see note in the test-strategy doc: totals are inflated by `--workers` clones; per-test status
+  matters, not the total)
 - failures:
   - Appointment - Past date booking accepted
   - Appointment - Server accepts empty date when client bypass applied
   - Appointments - Duplicate booking (same facility, date, program)
   - Appointments - Overlapping appointments (same date, different facilities)
   - Journey - History ordered most-recent date first
-  - Logout - Back-button does not restore authenticated history view _(Chrome only; expected per FRD §9.11)_
+  - Logout - Back-button does not restore authenticated history view _(Chrome only; expected per the FRD's known-bugs section)_
 ```
 
 Always include:
 
 - The **latest DOCX run dir** and the **latest JSON file**, with their mtimes — those are the two things 90% of pickings want.
 - A per-test DOCX listing **only when the user asked**, or when investigating one specific test (most users want one DOCX to open, not a dump).
-- The JSON parse **summary**, not the raw JSON dump — and per `CURA_TEST_STRATEGY.md` §7 (and the `review-suite-stability` skill), do not lead with a
-  raw total; the categories are what matter.
+- The JSON parse **summary**, not the raw JSON dump — and per the test-strategy doc's convention (and the `review-suite-stability` skill), do not lead
+  with a raw total; the categories are what matter.
 
 ## Opening a DOCX or reading the JSON
 
@@ -198,7 +198,7 @@ Surface both; user opens the JSON for pass/fail at a glance, or picks one DOCX f
 The user just landed the screenshot-per-`drive_page` rollout. They want one rich scenario's DOCX to confirm the report replays the journey:
 
 ```bash
-find "$latest_docx_run/CURA E2E/User journeys/Cross-feature flows" -name "Journey*.docx"
+find "$latest_docx_run/<SUT-NAME> E2E/User journeys/Cross-feature flows" -name "Journey*.docx"
 ```
 
 Hand the path; user opens it; per-`drive_page` screenshots should make the journey legible end-to-end.
@@ -226,7 +226,7 @@ Use `-t` (sort by mtime). Same rule as in `pick-screenshots` and `pick-logs`. Th
 
 - The user asks: "show me the latest report", "where's the DOCX", "give me the JSON results", "what passed / failed in the latest run?"
 - After a local cycle run.
-- After a screenshot-rule change — eyeball the resulting DOCX to confirm the report replays the journey (the BL-002 follow-up in this project's
+- After a screenshot-rule change — eyeball the resulting DOCX to confirm the report replays the journey (the BL-002 follow-up in the project's
   backlog).
 - Companion to `review-suite-stability` (which consumes JSON across replays).
 - Companion to `pick-screenshots` / `pick-logs` when investigating one specific test (DOCX = visual; logs = chronology; shots = raw frames).
@@ -237,5 +237,5 @@ Use `-t` (sort by mtime). Same rule as in `pick-screenshots` and `pick-logs`. Th
 - It does not delete or move reports.
 - It does not open a DOCX itself — local-app territory.
 - It does not aggregate or grade — `review-suite-stability` is the analysis layer; this is the navigation layer.
-- It does not lead with totals. The JSON parse summary is grouped by status; counts are _informational, not load-bearing_ (see `CURA_TEST_STRATEGY.md`
-  §7's "do not track a total" rule).
+- It does not lead with totals. The JSON parse summary is grouped by status; counts are _informational, not load-bearing_ (see the test-strategy doc
+  the "do not track a total" rule).

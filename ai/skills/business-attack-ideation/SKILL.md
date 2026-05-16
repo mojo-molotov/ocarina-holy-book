@@ -24,8 +24,9 @@ the project's hard rule is in `CLAUDE.md` ("Security testing is functional and s
 exercised in a way the designer didn't anticipate: lots of bookings, well-timed bookings, weirdly-spread bookings, bookings that look like noise but
 aren't.
 
-The output is a **scenario catalogue** with business-impact narratives — the user picks which to encode as functional tests (e.g. the existing
-`saturation_booking` test is a canonical encoding of this skill's first scenario) and which to leave as static analysis only.
+The output is a **scenario catalogue** with business-impact narratives — the user picks which to encode as functional tests (e.g. the worked example
+`saturation_booking` in <https://github.com/mojo-molotov/ocarina-with-ai-example> is a canonical encoding of this skill's first scenario) and which to
+leave as static analysis only.
 
 ## The line — what's in scope, what isn't
 
@@ -38,7 +39,7 @@ In scope (functional encoding allowed):
 - **The user does normal things in a surprising order.** Logout-then-back-button (already a documented finding, §B-BROWSER-1). Book-then-immediately-
   book-again. Confirm-then-confirm-again.
 - **The user creates state that other users have to live with.** A booking on a popular slot. A profile with a name that collides with another user's
-  display name (if such a thing is possible in CURA's data model — verify per `empiricism`).
+  display name (if such a thing is possible in the SUT's data model — verify per `empiricism`).
 
 Out of scope (do not encode, do not even sketch as a probe):
 
@@ -46,21 +47,21 @@ Out of scope (do not encode, do not even sketch as a probe):
 - **Auth bypass.** Forged tokens, replay attacks, fixed-session reuse.
 - **Mass-scale request flooding.** Anything that hits the SUT at HTTP-rate rather than UI-rate.
 - **Side-channel attacks.** Timing oracles, cache probing, error-message scraping.
-- **Anything targeting infrastructure rather than the business flow.** A scenario that exploits Heroku's eco dyno limits as the attack vector belongs
-  in `IDENTIFIED_GAPS.md §A-ENV-*`, not here.
+- **Anything targeting infrastructure rather than the business flow.** A scenario that exploits hosting-tier limits (Heroku eco dyno timeouts,
+  free-tier rate limits, etc.) as the attack vector belongs in the environmental section of the gap inventory, not here.
 
 The line is sharp: **the action is one a legitimate user could take through the UI, the harm is to the business, the test is functional.**
 
 ## The eight attack archetypes
 
-For ideation, walk these archetypes against the SUT. CURA-specific examples for each — adapt the archetype to any SUT.
+For ideation, walk these archetypes against the SUT. Concrete examples for each — adapt the archetype to any SUT.
 
 ### 1. Saturation
 
 The user performs many of a normal action to exhaust a shared resource.
 
-- **CURA example**: book N appointments across N legitimate future dates, leaving no slot for real patients. _Already encoded as
-  `saturation_booking`._
+- **Concrete example**: book N appointments across N legitimate future dates, leaving no slot for real patients. _In the worked example
+  (<https://github.com/mojo-molotov/ocarina-with-ai-example>), already encoded as `saturation_booking`._
 - **Test shape**: loop N iterations of the booking flow, then verify (or simply _observe_ — the audit might be informational rather than assertive)
   the system's state.
 - **Business impact**: real patients can't book; staff has to manually clean up; trust in the system erodes.
@@ -70,7 +71,7 @@ The user performs many of a normal action to exhaust a shared resource.
 A variant of saturation: the user occupies high-value slots that other users want. The action is legitimate (a booking _is_ allowed), the aggregate
 denies access.
 
-- **CURA example**: book every Monday-morning slot for the next year. Each booking is a real, allowed action; the aggregate is a denial.
+- **Concrete example**: book every Monday-morning slot for the next year. Each booking is a real, allowed action; the aggregate is a denial.
 - **Test shape**: book a _pattern_ of slots (every X day at Y time), then observe whether the system enforces any anti-hoarding rule (booking limits
   per user, time-windowed quotas).
 
@@ -78,7 +79,7 @@ denies access.
 
 The user performs many actions when staff is least equipped to respond.
 
-- **CURA example**: book 200 appointments at 03:00 local. Staff arriving at 09:00 face a triage queue.
+- **Concrete example**: book 200 appointments at 03:00 local. Staff arriving at 09:00 face a triage queue.
 - **Test shape**: timestamp-controlled booking burst at a time the SUT might rate-limit or might not. Observe.
 
 ### 4. Repeated identical action (idempotency abuse)
@@ -86,7 +87,7 @@ The user performs many actions when staff is least equipped to respond.
 The user repeats the same action to test the SUT's deduplication behaviour. If the SUT accepts duplicates, the user creates noise; if the SUT rejects
 duplicates, the user has confirmed the deduplication rule and may pivot.
 
-- **CURA example**: click "Book" 5 times in rapid succession on the same form. Each submit is a legitimate POST; the SUT's response is the audit.
+- **Concrete example**: click "Book" 5 times in rapid succession on the same form. Each submit is a legitimate POST; the SUT's response is the audit.
 - **Test shape**: dispatcher-style rapid resubmit (cross-ref `review-submit-dispatchers`).
 - **Business impact**: a single user creates the workload of 5; calendars contain duplicates that staff has to reconcile.
 
@@ -94,7 +95,7 @@ duplicates, the user has confirmed the deduplication rule and may pivot.
 
 The user submits inputs that are _valid_ but at the extreme — the edges the designer probably tested once and forgot about.
 
-- **CURA example**: book a visit date 50 years in the future. Submit a maximum-length comment field. Both are valid per the form's input contract.
+- **Concrete example**: book a visit date 50 years in the future. Submit a maximum-length comment field. Both are valid per the form's input contract.
 - **Test shape**: data-driven test with boundary values.
 - **Business impact**: stale future bookings clutter the schedule indefinitely; oversized comments stress UI rendering downstream.
 
@@ -102,7 +103,7 @@ The user submits inputs that are _valid_ but at the extreme — the edges the de
 
 The user creates state visible to other users via the SUT's shared surfaces.
 
-- **CURA example**: the demo account is shared in this testbed (a documented project quirk). A user who creates a booking and doesn't clean it up
+- **Concrete example**: the demo account is shared in this testbed (a documented project quirk). A user who creates a booking and doesn't clean it up
   affects every other user of the same account. In a real SUT, the equivalent would be a profile picture, a public review, a shared resource.
 - **Test shape**: create state, switch identity, observe whether the state is visible / persistent / removable.
 - **Business impact**: privacy leak, audit-trail confusion, support burden.
@@ -111,7 +112,7 @@ The user creates state visible to other users via the SUT's shared surfaces.
 
 The user performs a sequence of legitimate operations in an order the designer didn't model.
 
-- **CURA example**: book → start logout → cancel logout → continue editing. Or: open form in tab A, log out in tab B, submit in tab A.
+- **Concrete example**: book → start logout → cancel logout → continue editing. Or: open form in tab A, log out in tab B, submit in tab A.
 - **Test shape**: multi-step scenario with the order intentionally adversarial.
 - **Business impact**: ambiguous final state, potential phantom bookings, audit-trail gaps.
 
@@ -119,7 +120,7 @@ The user performs a sequence of legitimate operations in an order the designer d
 
 The user picks an identity choice that collides with another user's identifying field — without actually impersonating, just creating ambiguity.
 
-- **CURA example**: choose a display name identical to another active user. (Verify whether CURA's data model allows this before encoding — per
+- **Concrete example**: choose a display name identical to another active user. (Verify whether the SUT's data model allows this before encoding — per
   `empiricism`.)
 - **Test shape**: create the colliding identity through the normal signup / profile flow.
 - **Business impact**: staff confuses two users, sends one's appointment to the other, etc.
@@ -131,17 +132,18 @@ you do it through the UI, it's a business flaw worth surfacing.
 
 ### Step 1 — Anchor on the SUT's business model
 
-Read enough of `CURA_FRD.md` to know what the SUT _does_ commercially (CURA: appointment booking + medical-history records for a demo clinic). The
-attack archetypes attach to _what the business loses if exploited_ — without anchoring on that, the ideation drifts into technical attacks.
+Read enough of the FRD to know what the SUT _does_ commercially (appointment booking + medical-history records for the demo clinic in
+<https://github.com/mojo-molotov/ocarina-with-ai-example>). The attack archetypes attach to _what the business loses if exploited_ — without anchoring
+on that, the ideation drifts into technical attacks.
 
 ### Step 2 — Walk the eight archetypes against the SUT
 
 For each archetype, ask:
 
-- Is there a CURA flow this maps onto?
+- Is there a SUT flow this maps onto?
 - Is the action _legitimate_ via the normal UI (no protocol-level tricks)?
 - Is the harm _business-shaped_ (humans can't work, consumers can't consume, trust erodes)?
-- Has anyone already encoded this? (Check the existing scenario set — `saturation_booking` is the canonical first.)
+- Has anyone already encoded this? (Check the existing scenario set — in the worked example, `saturation_booking` is the canonical first.)
 
 If yes to all four: candidate scenario. If no to legitimacy or harm-shape: drop.
 
@@ -150,7 +152,7 @@ If yes to all four: candidate scenario. If no to legitimacy or harm-shape: drop.
 For each candidate:
 
 - Is it already in the suite? — silent (don't re-propose).
-- Is it already documented in `IDENTIFIED_GAPS.md`? — cross-reference, don't duplicate.
+- Is it already documented in the gap inventory? — cross-reference, don't duplicate.
 - Is it adjacent to a documented gap? — note the relationship.
 
 ### Step 4 — Cross-check against the hard line
@@ -187,8 +189,8 @@ attack on infrastructure rather than business flow?_ If yes → **out of scope**
 ## Cross-references
 
 - Existing scenarios in suite: <list>.
-- `IDENTIFIED_GAPS.md` §<refs> with adjacent shape.
-- `CURA_FRD.md` §<refs> describing the targeted flows.
+- the gap inventory <entry-refs> with adjacent shape.
+- the FRD §<refs> describing the targeted flows.
 
 ## Recommended next motions
 
@@ -222,8 +224,8 @@ Out-of-scope candidates have no follow-up motion. They're noted; the suite doesn
 - **Don't sketch attack-shape payloads.** A SQL-injection example is out, even as illustration.
 - **Saturation done through the UI is functional.** Saturation done through raw HTTP is not. The same idea on the two sides of the line is in scope on
   one and out on the other.
-- **Cross-reference the existing suite.** Don't re-propose what `saturation_booking` already covers.
-- **Verify SUT-behaviour assumptions before encoding.** A scenario based on "I think CURA allows duplicate bookings" needs the `empiricism` motion
+- **Cross-reference the existing suite.** Don't re-propose what existing scenarios already cover.
+- **Verify SUT-behaviour assumptions before encoding.** A scenario based on "I think the SUT allows duplicate bookings" needs the `empiricism` motion
   first.
 
 ## When to run this skill
@@ -239,6 +241,6 @@ Out-of-scope candidates have no follow-up motion. They're noted; the suite doesn
 - It does not encode the tests. Use `extend-coverage` / `empiricism` after the user picks scenarios.
 - It does not verify SUT behaviour. Use `empiricism` / `write-a-probe` for that.
 - It does not propose injection, fuzzing, brute-force, or active-security techniques. Out of scope, by project rule.
-- It does not file `IDENTIFIED_GAPS.md` entries. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
+- It does not file the gap inventory entries. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
 - It does not produce attack payloads. Even illustrative ones.
 - It does not run anything against a real or demo SUT. Static ideation only.

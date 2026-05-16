@@ -41,9 +41,9 @@ mitigation?_
 
 The SUT caps how many sessions a single account can hold open simultaneously. Tests parallelising on a shared demo account hit the cap.
 
-- **CURA example**: the demo account (`John Doe`) is shared across every parallel worker. If Heroku's CURA enforces a session cap (verify per
-  `empiricism`), heavy `--workers` runs would saturate it. The project's current load doesn't seem to hit it — note as "currently within envelope;
-  capacity unknown".
+- **Concrete example**: CURA's demo account (`John Doe`) is shared across every parallel worker in `ocarina-with-ai-example`. If CURA enforces a
+  session cap (verify per `empiricism`), heavy `--workers` runs would saturate it. The project's current load doesn't seem to hit it — note as
+  "currently within envelope; capacity unknown".
 - **Test-code symptom**: a new login attempt that should succeed gets rejected (or returns the wrong page); the test reads this as "login broken" but
   the app is doing exactly what it was told.
 - **Mitigation**: distributed counter of active sessions per account; tests acquire a slot before logging in, release it on logout/teardown.
@@ -71,8 +71,8 @@ The SUT throttles requests at a rate that's fine for one user but tripped by N p
 The SUT serialises writes to a shared row (e.g. the shared demo profile, a singleton config record). Parallel writers contend; one wins, others wait
 or fail.
 
-- **CURA example**: the demo account's profile / history is shared; tests editing it in parallel may step on each other. This is closer to
-  `IDENTIFIED_GAPS.md §A-ENV-1` (rapid-POST contention on the eco dyno) — confirm whether the contention is row-locking or transport-layer.
+- **Concrete example**: the demo account's profile / history is shared; tests editing it in parallel may step on each other. This is closer to
+  `§A-ENV-1` (rapid-POST shared-dyno contention; CURA gap inventory) — confirm whether the contention is row-locking or transport-layer.
 - **Mitigation**: distributed lock per shared resource; tests acquire-and-release around the contested operation. Or: partition by test-owned sub-rows
   if the SUT's data model allows.
 
@@ -81,15 +81,15 @@ or fail.
 The SUT (or its hosting tier) caps writes per day / hour. Tests that create many records cumulatively exhaust the quota even though no single test is
 above the limit.
 
-- **CURA example**: not directly observed; Heroku's eco tier has its own dyno limits but no per-account write quota that the project is aware of.
+- **Concrete example**: not directly observed; Heroku's eco tier has its own dyno limits but no per-account write quota that the project is aware of.
 - **Mitigation**: distributed write counter; once quota approached, defer or skip non-essential tests. Cleanup tests to release quota where possible.
 
 ### 6. Per-resource exclusivity (a slot, a calendar, a desk)
 
 The SUT models a resource that can only be held by one user at a time. Parallel tests targeting the same slot collide.
 
-- **CURA example**: the `saturation_booking` test (already encoded) intentionally exercises this — different tests for different dates avoid the
-  collision. Adding new appointment tests requires the same discipline.
+- **Concrete example**: in the worked example (<https://github.com/mojo-molotov/ocarina-with-ai-example>), the `saturation_booking` test intentionally
+  exercises this — different tests for different dates avoid the collision. Adding new appointment tests requires the same discipline.
 - **Mitigation**: distributed reservation of slots; tests claim their slot from a pool before driving the SUT.
 
 ### 7. Eventual-consistency windows
@@ -119,11 +119,11 @@ For every mitigation, ask:
 
 ### Step 1 — Inventory the SUT-side constraints
 
-Walk the FRD, the SUT's public docs (per `assess-ecosystem`), and the existing `IDENTIFIED_GAPS.md` for clues:
+Walk the FRD, the SUT's public docs (per `assess-ecosystem`), and the existing gap inventory for clues:
 
 ```bash
-grep -rn -i "limit\|cap\|max\|quota\|rate\|throttle\|concurrent\|session\|otp" the project root
-gh api repos/katalon-studio/katalon-demo-cura/contents/<relevant php> --jq '.content' | base64 -d
+grep -rn -i "limit\|cap\|max\|quota\|rate\|throttle\|concurrent\|session\|otp" .
+gh api repos/<sut-org>/<sut-repo>/contents/<relevant php> --jq '.content' | base64 -d
 ```
 
 For each constraint candidate, capture: **what bound, where it's enforced, where it's documented (if anywhere), whether the project's current
@@ -134,7 +134,7 @@ parallelism load has approached it**.
 For each shape × SUT:
 
 - Does the SUT have this constraint? (Verify per `empiricism` if uncertain.)
-- Is it specified — in the FRD, the SUT's public docs, or `IDENTIFIED_GAPS.md`?
+- Is it specified — in the FRD, the SUT's public docs, or the gap inventory?
 - Is the test fleet's current parallelism load below or above the threshold?
 - If above (or close), is the symptom currently masquerading as something else (a §A-ENV-1 transport flake, an unexplained intermittent failure)?
 
@@ -171,7 +171,7 @@ For each, sketch (don't implement):
 - **Enforced by**: <SUT location | hosting tier | inferred>.
 - **Specified**: <FRD §X | public doc URL | not documented>.
 - **Current parallelism load vs threshold**: <within | near | over | unknown>.
-- **Currently masquerading as**: <`IDENTIFIED_GAPS.md §A-ENV-1` | nothing | unknown>.
+- **Currently masquerading as**: <`§A-ENV-1` | nothing | unknown>.
 - **Anomaly question** (if unspecified): _"Is this constraint intentional, or is the SUT silently capping behaviour?"_
 - **Mitigation proposal** (if over envelope):
   - Primitive: <distributed counter | lock | reservation | token bucket | empirical wait>.
@@ -198,13 +198,13 @@ For each, sketch (don't implement):
 
 - Related skills: `analyse-flakiness` (test-body retry classification), `analyse-fixture-flakiness` (boundary instrumentation),
   `business-attack-ideation` (saturation as deliberate attack), `assess-ecosystem` (third-party constraints from docs).
-- `IDENTIFIED_GAPS.md §A-ENV-*` — current environment artifacts (some may be SUT-constraint symptoms in disguise).
+- `the gap inventory (environmental section)` — current environment artifacts (some may be SUT-constraint symptoms in disguise).
 - `CLAUDE.md` → "Ocarina prioritises horizontal scaling absolutely" (this skill's defining discipline).
 
 ## Recommended next motions
 
-- For each anomaly question: `empiricism` to verify, then `update-frd-and-tests` to specify (if confirmed) or `IDENTIFIED_GAPS.md` to file (if it's a
-  SUT defect).
+- For each anomaly question: `empiricism` to verify, then `update-frd-and-tests` to specify (if confirmed) or the gap inventory to file (if it's a SUT
+  defect).
 - For each mitigation proposal: design discussion with the team — distributed infra is a project-shape decision, not a unilateral one. Author the
   coordination layer as a separate PR with the constraint comprehension cited.
 - For each currently-safe constraint: revisit when the test fleet's parallelism grows.
@@ -220,7 +220,7 @@ Print the report.
 
 Each constraint resolves as:
 
-- **Specify** — extend the FRD / `IDENTIFIED_GAPS.md` with the deliberate bound.
+- **Specify** — extend the FRD / the gap inventory with the deliberate bound.
 - **Mitigate** — design the distributed coordination layer (a separate PR; this skill surfaces the need, doesn't author the layer).
 - **Defer** — currently within envelope; revisit when parallelism grows.
 - **Discuss** — infra decision needs team / stakeholder input.
@@ -238,8 +238,8 @@ The comprehension is the deliverable. The mitigation is a follow-up motion.
   `empiricism`.
 - **Per `CLAUDE.md`: security testing is functional and static — never active.** This skill stays on the comprehension side; it does not propose load
   testing, stress probes, or any active fuzzing of the SUT's limits.
-- **Cross-reference `IDENTIFIED_GAPS.md §A-ENV-*` carefully.** Some current environment artifacts may be SUT-constraint symptoms disguised as
-  transport flakes. The comprehension pass can re-classify them; the re-classification is a `update-frd-and-tests` motion.
+- **Cross-reference `the gap inventory (environmental section)` carefully.** Some current environment artifacts may be SUT-constraint symptoms
+  disguised as transport flakes. The comprehension pass can re-classify them; the re-classification is a `update-frd-and-tests` motion.
 - **Backing-store choice is the user's.** This skill names "Redis" as the canonical example because it's the common default; the actual primitive
   depends on the project's infrastructure. Confirm with the user before recommending a specific store.
 
@@ -260,4 +260,4 @@ The comprehension is the deliverable. The mitigation is a follow-up motion.
 - It does not modify the SUT. SUT-side fixes are the SUT team's domain.
 - It does not encode tests around constraints. Tests that intentionally exercise a constraint (saturation tests) are `business-attack-ideation` /
   `extend-coverage` territory.
-- It does not file `IDENTIFIED_GAPS.md` entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.
+- It does not file the gap inventory entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.

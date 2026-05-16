@@ -23,8 +23,8 @@ Two complementary outputs:
 - **Classification audit** — exceptions currently classified as **non-transient** but which, when widened to transient, recover within the retry
   budget. These are candidates for re-classification.
 
-The skill **never** commits the widened net. The widening is a local experiment; the _findings_ land in `IDENTIFIED_GAPS.md`, a comment on the
-exception class, or a deliberate change to `src/lib/errors.py`. The temporary diff gets reverted at the end.
+The skill **never** commits the widened net. The widening is a local experiment; the _findings_ land in the gap inventory, a comment on the exception
+class, or a deliberate change to `src/lib/errors.py`. The temporary diff gets reverted at the end.
 
 ## The mechanism
 
@@ -84,7 +84,7 @@ Before editing anything, print the plan:
 
 ## Excluded from widening (stay non-transient)
 
-- `BackForwardCacheExposureError` — diagnostic exception; widening would mask the §B-BROWSER-1 finding.
+- `BackForwardCacheExposureError` — diagnostic exception; widening would mask §B-BROWSER-1 finding.
 - <any other intentionally non-transient class — list them>.
 
 ## Run shape
@@ -144,10 +144,10 @@ Then collapse by `(test, browser, exception class, step)`:
 - **Recovered-late** — passed in life > 1 in ≥ 1 replay (the widening helped).
 - **Stable** — passed in life 1 every replay (widening was irrelevant for this test).
 
-Cross-reference the chronic deaths to `IDENTIFIED_GAPS.md`:
+Cross-reference the chronic deaths to the gap inventory:
 
-- Matches `§A-ENV-1` (rapid-POST contention)? — explained, no new finding.
-- Matches `§A-ENV-2` (password modal)? — explained.
+- Matches `§A-ENV-1` (rapid-POST shared-dyno contention)? — explained, no new finding.
+- Matches `§A-ENV-2` (Chrome password-breach modal)? — explained.
 - Matches a `B-BROWSER-*` entry? — explained.
 - Matches none → **new flake candidate**.
 
@@ -182,7 +182,7 @@ Use this exact template:
 
 ## Cross-references
 
-- `IDENTIFIED_GAPS.md` §A-ENV-1 / §A-ENV-2 / §B-BROWSER-1 — which chronic deaths these explain.
+- §A-ENV-1 / §A-ENV-2 / §B-BROWSER-1 — which chronic deaths these explain.
 - `src/lib/errors.py:<line>` — classifier under audit.
 
 ## Open follow-ups
@@ -212,7 +212,7 @@ If the analysis surfaced a _deliberate_ re-classification the user wants to keep
 
 Each finding can resolve as:
 
-- **File** — new entry in `IDENTIFIED_GAPS.md` (`G-*`, `B-*`, or `A-ENV-*` depending on shape).
+- **File** — new entry in the gap inventory (`G-*`, `B-*`, or `A-ENV-*` depending on shape).
 - **Re-classify** — flip `is_transient` for a specific exception class, with a comment citing this analysis.
 - **Probe further** — invoke `write-a-probe` for the chronic death to isolate the root cause.
 - **Defer** — interesting but not actionable this pass.
@@ -225,7 +225,7 @@ The analysis doesn't apply. It surfaces.
 - **Always exclude diagnostic non-transient classes** (`BackForwardCacheExposureError` etc.) from the widening. Those exist _because_ they should kill
   the test; widening them masks the finding they're built to surface.
 - **Multiple replays are mandatory.** A single replay can't distinguish chronic from one-off. Default 3; more for low-signal hypotheses.
-- **Don't conflate widening-uncovered flakes with CURA defects.** A test that dies chronically under the widening can be: a CURA defect (`G-*`), a
+- **Don't conflate widening-uncovered flakes with SUT defects.** A test that dies chronically under the widening can be: a SUT defect (`G-*`), a
   browser quirk (`B-*`), an environment artifact (`A-ENV-*`), or a test-code bug (a stale selector, a race in a POM). The classification is the user's
   call after seeing the cross-refs.
 - **Read `errors.py` before editing.** The current classifier shape might not match the assumptions above; adapt.

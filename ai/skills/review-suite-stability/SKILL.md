@@ -15,23 +15,23 @@ Runs the e2e cycle **N times per browser**, parses every per-run JSON result, bu
 documented expected outcome. The point is **per-test consistency**, not aggregate counts: `--workers 3` clones inflate any total, and a stable suite
 is one where every test's _outcome_ matches its documented category across every replay.
 
-Defaults: 3 replays per browser, browsers = Firefox + Chrome, source of truth = `CURA_TEST_STRATEGY.md` §7. Locally or via GA dispatch; the procedure
-is the same.
+Defaults: 3 replays per browser, browsers = Firefox + Chrome, source of truth = the test-strategy doc. Locally or via GA dispatch; the procedure is
+the same.
 
 The audit does not edit tests, does not silence flakes, does not retry-until-green. It runs, it reads, it reports.
 
 ## Expected outcome categories (the load-bearing dataset — sourced from the strategy doc)
 
-Read these from `CURA_TEST_STRATEGY.md` §7 each run — do not hardcode them in the skill. The categories rotate as the suite evolves. As of the last
-update of this skill, the three categories are:
+Read these from the test-strategy doc each run — do not hardcode them in the skill. The categories rotate as the suite evolves. As a worked example
+(from <https://github.com/mojo-molotov/ocarina-with-ai-example>), the three categories look like:
 
-| Category                                             | Tests                                                                                                                                                                                                                                                                                                                                                   | Expected on Firefox | Expected on Chrome |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------ |
-| **Pass everywhere**                                  | All tests not listed in the other categories                                                                                                                                                                                                                                                                                                            | PASS, every replay  | PASS, every replay |
-| **Intentional gap fails — red on both, by design**   | `Appointment - Past date booking accepted` (§9.7); `Appointment - Server accepts empty date when client bypass applied` (§9.1); `Appointments - Duplicate booking (same facility, date, program)` (§9.6); `Appointments - Overlapping appointments (same date, different facilities)` (§9.6); `Journey - History ordered most-recent date first` (§9.8) | FAIL, every replay  | FAIL, every replay |
-| **Chrome BFcache reds — red Chrome / green Firefox** | `Logout - Back-button does not restore authenticated history view`; `Logout - Session holds under back-forward stress (3 cycles)`                                                                                                                                                                                                                       | PASS, every replay  | FAIL, every replay |
+| Category                                             | Tests                                                                                                                                                                                                                                                                                                                | Expected on Firefox | Expected on Chrome |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------ |
+| **Pass everywhere**                                  | All tests not listed in the other categories                                                                                                                                                                                                                                                                         | PASS, every replay  | PASS, every replay |
+| **Intentional gap fails — red on both, by design**   | `Appointment - Past date booking accepted`; `Appointment - Server accepts empty date when client bypass applied`; `Appointments - Duplicate booking (same facility, date, program)`; `Appointments - Overlapping appointments (same date, different facilities)`; `Journey - History ordered most-recent date first` | FAIL, every replay  | FAIL, every replay |
+| **Chrome BFcache reds — red Chrome / green Firefox** | `Logout - Back-button does not restore authenticated history view`; `Logout - Session holds under back-forward stress (3 cycles)`                                                                                                                                                                                    | PASS, every replay  | FAIL, every replay |
 
-If the strategy doc updates these categories (a new gap landed, a CURA fix flipped one to green), the skill picks them up on the next run because it
+If the strategy doc updates these categories (a new gap landed, a SUT fix flipped one to green), the skill picks them up on the next run because it
 reads the doc — not the skill.
 
 The skill's classification of a per-test outcome:
@@ -41,8 +41,8 @@ The skill's classification of a per-test outcome:
 - **EXPECTED CROSS-BROWSER PASS** — Chrome BFcache test on Firefox, all replays pass.
 - **FLAKE** — same browser, mixed PASS/FAIL across replays.
 - **REGRESSION** — pass-everywhere category, ≥ 1 FAIL on either browser.
-- **SURPRISE GREEN** — intentional-fail or Chrome BFcache test that unexpectedly passed on its expected-red browser. May mean CURA fixed it; may mean
-  §A-ENV-1 contention false-passed it. Verify before celebrating.
+- **SURPRISE GREEN** — intentional-fail or Chrome BFcache test that unexpectedly passed on its expected-red browser. May mean the SUT fixed it; may
+  mean §A-ENV-1 contention false-passed it. Verify before celebrating.
 - **SURPRISE RED ON FIREFOX** — Chrome BFcache test that failed on Firefox. The BFcache exposure is supposed to be Chrome-only.
 
 `[COPY N]`-suffixed tests are clones (`--workers 3` saturation); treat each copy as the same test (their outcomes should match the base test's
@@ -58,7 +58,7 @@ override.
 ### 2. Read the expected categories from the strategy doc
 
 ```bash
-sed -n '/^## 7. /,/^## /p' CURA_TEST_STRATEGY.md
+sed -n '/^## 7. /,/^## /p' the test-strategy doc
 ```
 
 Parse the bullets under "Intentional gap fails" and "Expected cross-browser reds on chrome" for the test names. Anything not listed lands in **Pass
@@ -70,7 +70,7 @@ everywhere**.
 
 ```bash
 # per-browser, per-replay
-cd the project root
+cd <project-root>
 mkdir -p .reports/stability/<run-id>
 for browser in firefox chrome; do
   for i in 1..N; do
@@ -128,7 +128,7 @@ Use this exact template:
 ```markdown
 # Suite stability — <N> replays × Firefox/Chrome on <main HEAD | branch | local snapshot>
 
-## Categories (from `CURA_TEST_STRATEGY.md` §7)
+## Categories (from the test-strategy doc)
 
 - Pass everywhere: <count> tests
 - Intentional gap fails: <list of names>
@@ -153,9 +153,9 @@ Use this exact template:
 
 ### Surprise greens
 
-- <test name> (intentional gap §9.X) — Chrome: P/F/F. One run passed unexpectedly. Likely §A-ENV-1 transport flake (per `IDENTIFIED_GAPS.md` §A-ENV-1
-  — rapid-POST drop under `--workers 3` mimics rejection). Re-run to confirm; do **not** flip the gap test to green without verification (see the
-  `empiricism` skill).
+- <test name> (intentional gap (per the test-strategy doc)) — Chrome: P/F/F. One run passed unexpectedly. Likely §A-ENV-1 transport flake (per
+  §A-ENV-1 — rapid-POST drop under `--workers 3` mimics rejection). Re-run to confirm; do **not** flip the gap test to green without verification (see
+  the `empiricism` skill).
 
 ### Surprise reds on Firefox
 
@@ -175,10 +175,10 @@ over.
 
 ## Things this skill does NOT count
 
-Per `CLAUDE.md` and `CURA_TEST_STRATEGY.md` §7:
+Per `CLAUDE.md` and the test-strategy doc:
 
 - **Total pass/fail across the suite.** Meaningless under `--workers 3` clone inflation; the categories are what matter.
-- **Per-run duration aggregates.** Useful elsewhere (see `IDENTIFIED_GAPS.md` §A-ENV-2's note on the chrome-job time drop), not relevant to stability.
+- **Per-run duration aggregates.** Useful elsewhere (see §A-ENV-2's note on the chrome-job time drop), not relevant to stability.
 - **The `[COPY N]` clones themselves**, except as confirmation: they should match the base test.
 
 ## Investigating a flake
@@ -186,7 +186,7 @@ Per `CLAUDE.md` and `CURA_TEST_STRATEGY.md` §7:
 If the audit surfaces a flake, the next moves (none of which this skill does):
 
 1. Read the per-run logs / screenshots for the failing replays. The autoscreen burst on failure captures four screenshots — use them.
-2. Check `IDENTIFIED_GAPS.md` §A-ENV-1 (shared-dyno contention) — rapid 2nd-in-a-row POSTs on `--workers 3` can flake.
+2. Check §A-ENV-1 (shared-dyno contention) — rapid 2nd-in-a-row POSTs on `--workers 3` can flake.
 3. Check whether the failing replay coincided with a Heroku cold start (the first request after dyno sleep is slow).
 4. If neither, write a probe per the `empiricism` skill.
 

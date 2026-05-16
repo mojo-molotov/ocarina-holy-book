@@ -43,25 +43,25 @@ built from inputs the form will accept.
 
 ## The six incoherence dimensions
 
-For ideation, walk these against the SUT's input model. CURA-specific examples for each — adapt to any SUT.
+For ideation, walk these against the SUT's input model. Concrete examples for each — adapt to any SUT.
 
 ### 1. Temporal incoherence (same actor, overlapping times)
 
 The actor commits to being in two places (or two states) at the same moment.
 
-- **CURA example**: book an appointment with Dr. A at 10:00 and Dr. B at 10:00 on the same day. Each booking is legal; the patient can't be in two
+- **Concrete example**: book an appointment with Dr. A at 10:00 and Dr. B at 10:00 on the same day. Each booking is legal; the patient can't be in two
   exam rooms.
 - **Real-world inspiration**: same hotel guest checked in to two rooms in two cities at overlapping nights.
-- **Test shape**: book A; observe whether B is rejected or silently accepted. Cross-ref `empiricism` to verify CURA's actual behaviour first.
+- **Test shape**: book A; observe whether B is rejected or silently accepted. Cross-ref `empiricism` to verify the SUT's actual behaviour first.
 - **Business impact**: double-booked clinical resources, no-show penalties, billing ambiguity.
 
 ### 2. Spatial incoherence (same actor, infeasible travel)
 
 The actor commits to being in two places whose travel time exceeds the gap between actions.
 
-- **CURA example**: book an appointment at clinic X (city A) at 10:00 and at clinic Y (city B, 300 km away) at 10:30. Geographically impossible.
+- **Concrete example**: book an appointment at clinic X (city A) at 10:00 and at clinic Y (city B, 300 km away) at 10:30. Geographically impossible.
 - **Real-world inspiration**: same passenger boarding two flights with overlapping flight times in different airports.
-- **Test shape**: requires the SUT to expose location for each booking. If CURA doesn't (verify via FRD / source), the scenario is _static analysis
+- **Test shape**: requires the SUT to expose location for each booking. If the SUT doesn't (verify via FRD / source), the scenario is _static analysis
   only_ — note as "SUT lacks location model; incoherence undetectable", not "SUT has a bug".
 - **Business impact**: phantom bookings, fraud-shaped scheduling, audit trail breakage.
 
@@ -69,8 +69,8 @@ The actor commits to being in two places whose travel time exceeds the gap betwe
 
 The actor declares contradictory facts about themselves across forms.
 
-- **CURA example**: register profile with birthdate 1990; later submit a form declaring age 70. Or: declare two different insurance numbers under the
-  same user account, both individually valid.
+- **Concrete example**: register profile with birthdate 1990; later submit a form declaring age 70. Or: declare two different insurance numbers under
+  the same user account, both individually valid.
 - **Real-world inspiration**: same person declaring two different birth countries on visa-adjacent forms.
 - **Test shape**: submit form A, submit form B with contradictory value; observe whether the SUT cross-checks. Most SUTs don't.
 - **Business impact**: insurance fraud, identity-laundering, compliance failure.
@@ -79,7 +79,7 @@ The actor declares contradictory facts about themselves across forms.
 
 The actor performs an action whose timestamp precedes its supposed precondition.
 
-- **CURA example**: book a follow-up appointment dated _before_ the initial consultation. Each is a legal future date when considered alone; the
+- **Concrete example**: book a follow-up appointment dated _before_ the initial consultation. Each is a legal future date when considered alone; the
   ordering violates causal sense.
 - **Real-world inspiration**: a return-flight booking dated before the outbound. A wedding-anniversary entry dated before the marriage record.
 - **Test shape**: create A; create B with a date < A's date and a "follow-up" relationship. Observe.
@@ -89,7 +89,8 @@ The actor performs an action whose timestamp precedes its supposed precondition.
 
 The actor's actions, summed, exceed a real-world physical bound.
 
-- **CURA example**: book appointments totalling 30 hours of clinical time in a single day. Each booking is a legal duration; the sum is impossible.
+- **Concrete example**: book appointments totalling 30 hours of clinical time in a single day. Each booking is a legal duration; the sum is
+  impossible.
 - **Real-world inspiration**: same person claiming gym attendance summing to >24 h in one day.
 - **Test shape**: loop bookings, sum the durations, verify whether the SUT enforces any per-day cap.
 - **Business impact**: resource exhaustion masquerading as legitimate scheduling.
@@ -98,8 +99,8 @@ The actor's actions, summed, exceed a real-world physical bound.
 
 The actor creates two relationships that can't both be true.
 
-- **CURA example**: register as the _patient_ on appointment A and as the _guardian_ on appointment B for a child whose declared birthdate makes A's
-  patient impossible (the patient role would predate the guardian's adulthood).
+- **Concrete example**: register as the _patient_ on appointment A and as the _guardian_ on appointment B for a child whose declared birthdate makes
+  A's patient impossible (the patient role would predate the guardian's adulthood).
 - **Real-world inspiration**: same SSN as both employee and dependent on the same payroll record.
 - **Test shape**: create relationships A and B; verify whether the SUT detects the contradiction.
 - **Business impact**: fraud, benefits abuse, regulatory exposure.
@@ -108,12 +109,13 @@ The actor creates two relationships that can't both be true.
 
 ### Step 1 — Anchor on the SUT's data model
 
-Read enough of `CURA_FRD.md` to know what facts the SUT _stores about a user / booking / clinical record_. The incoherence dimensions only apply where
-the SUT actually has data on both sides of the contradiction. If the SUT doesn't track location for bookings, §2 (spatial) doesn't produce encodable
-tests — it produces a static observation ("SUT lacks the model").
+Read enough of the FRD to know what facts the SUT _stores about a user / booking / clinical record_. The incoherence dimensions only apply where the
+SUT actually has data on both sides of the contradiction. If the SUT doesn't track location for bookings, §2 (spatial) doesn't produce encodable tests
+— it produces a static observation ("SUT lacks the model").
 
-For CURA specifically: the SUT tracks visit date, doctor, "facility" (in the FRD form), and the patient's identity via the demo account. It does _not_
-track location coordinates, durations, or relationships. Adjust the catalogue accordingly.
+As a concrete example (see <https://github.com/mojo-molotov/ocarina-with-ai-example>): the SUT tracks visit date, doctor, "facility" (in the form),
+and the patient's identity via the demo account. It does _not_ track location coordinates, durations, or relationships. Adjust the catalogue
+accordingly.
 
 ### Step 2 — Walk the six dimensions against the SUT
 
@@ -129,7 +131,7 @@ If all yes: encodable candidate. If "SUT lacks the model" → static observation
 ### Step 3 — Cross-check against existing artifacts
 
 - Already in the suite? (Unlikely — this is a less-explored axis than saturation.) Silent if yes.
-- Documented in `IDENTIFIED_GAPS.md`? Cross-reference.
+- Documented in the gap inventory? Cross-reference.
 - Adjacent to a `review-spec-gaps` finding? Note the linkage — incoherence questions often surface as "the spec doesn't define what happens if…".
 
 ### Step 4 — Cross-check against the hard line
@@ -152,7 +154,7 @@ scenario crosses the line, so this check is per-scenario.
 - **Detection question**: <"does the SUT reject step B?" / "does the SUT surface a warning?" / "is the contradiction recorded silently?">.
 - **Business impact**: <who loses, how>.
 - **Test shape (suggested)**: <create A → attempt B → observe response → assert against the FRD's stated behaviour, if any>.
-- **Cross-reference**: `review-spec-gaps §<n>` (the spec may not even define expected behaviour) | `IDENTIFIED_GAPS.md §<ref>`.
+- **Cross-reference**: `review-spec-gaps §<n>` (the spec may not even define expected behaviour) | `the gap inventory <entry-ref>`.
 
 ### Spatial incoherence
 
@@ -173,7 +175,7 @@ scenario crosses the line, so this check is per-scenario.
 
 - Sister skill: `business-attack-ideation` (volume / timing / identity attacks).
 - Spec questions: `review-spec-gaps` is the natural follow-up for any scenario whose expected behaviour isn't in the FRD.
-- `IDENTIFIED_GAPS.md` §<refs>.
+- the gap inventory <entry-refs>.
 
 ## Recommended next motions
 
@@ -191,8 +193,8 @@ Print the catalogue.
 
 Each encodable candidate can resolve as:
 
-- **Encode** — `empiricism` to verify CURA's actual current behaviour, then `extend-coverage` to author the test (often as an intentional fail — the
-  SUT likely doesn't detect the incoherence).
+- **Encode** — `empiricism` to verify the SUT's actual current behaviour, then `extend-coverage` to author the test (often as an intentional fail —
+  the SUT likely doesn't detect the incoherence).
 - **Discuss** — surface to stakeholders / spec authors before encoding. Incoherence detection is often a product decision, not a defect.
 - **Defer** — record for the next coverage push.
 
@@ -212,7 +214,7 @@ the team chooses to declare the model's bounds explicitly).
 - **Don't sketch attack-shape payloads.** Per `CLAUDE.md`. Same line as the sister skill.
 - **Cross-reference the spec.** Most incoherence scenarios collide with `review-spec-gaps` territory — they often surface "the spec doesn't say what
   happens" before they surface "the SUT does the wrong thing".
-- **Verify SUT behaviour empirically before encoding.** A scenario whose test shape assumes "CURA accepts B silently" needs `empiricism` first.
+- **Verify SUT behaviour empirically before encoding.** A scenario whose test shape assumes "the SUT accepts B silently" needs `empiricism` first.
 
 ## When to run this skill
 

@@ -1,6 +1,6 @@
 ---
 name: assess-test-base
-description: Produce a structured **inventory of the test base** — every artifact in this repo (and adjacent — SUT source, deployed app, user-facing docs if any) that a test author can ground new tests on. Walk the specs (FRD, strategy, gaps), the existing test code (scenarios, POMs, connectors, fragments, datasets, the cycle/campaign/suite topology), the SUT artifacts (GitHub PHP source, the live deployment, rendered HTML), the project conventions (`CLAUDE.md`, `README.md`), the constants/configs (URLs, credentials, transient errors), the run history (reports, logs, screenshots), and any external resources (user manuals, help docs — none here, but the slot exists). Produce a catalog: per source, what it contains, how a test author uses it. Use whenever the user asks to inventory the test base, onboard a contributor, plan a test pass, do a release-readiness survey, or answer "what do we have to work from?". Surface gaps in the inventory (sources that *should* exist for this project but don't yet) without inventing them.
+description: Produce a structured **inventory of the test base** — every artifact in the project (and adjacent — SUT source, deployed app, user-facing docs if any) that a test author can ground new tests on. Walk the specs (FRD, strategy doc, gap inventory), the existing test code (scenarios, POMs, connectors, fragments, datasets, the cycle/campaign/suite topology), the SUT artifacts (source if open-source, the live deployment, rendered HTML), the project conventions (`CLAUDE.md`, `README.md`), the constants/configs (URLs, credentials, transient errors), the run history (reports, logs, screenshots), and any external resources (user manuals, help docs, design system, support tickets). Produce a catalog: per source, what it contains, how a test author uses it. Use whenever the user asks to inventory the test base, onboard a contributor, plan a test pass, do a release-readiness survey, or answer "what do we have to work from?". Surface gaps in the inventory (sources that *should* exist for the project but don't yet) without inventing them.
 ---
 
 # Assess test base — inventory of everything new tests can ground on
@@ -14,7 +14,7 @@ Two by-products:
 - **Coverage-planning input.** The author scanning for "what should we cover next?" (see `extend-coverage`) reads the catalog first to know what facts
   are already documented.
 
-Default target: this repo (the project root + `skills/` + the GitHub-source links for CURA). For a different project, ask the user.
+Default target: the project (the project root + `skills/` + the SUT's source if open-source). For a different project, ask the user.
 
 ## What goes in the inventory
 
@@ -22,11 +22,11 @@ Seven categories, in order. Each section names the artifact, summarises what's i
 
 ### 1. Specs
 
-| Artifact                | What it is                                                                                                                                                                                             | How to use                                                                                                                                         |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CURA_FRD.md`           | Reconstructed functional requirements (pages, element IDs, URL map, business rules, §9 known bugs). AI-generated from PHP + live exploration; treat as a test artifact, not ground truth.              | Source of element IDs (POM selectors), URL paths, expected business rules, intentional-fail gap inventory. Read before writing or modifying tests. |
-| `CURA_TEST_STRATEGY.md` | Strategy, taxonomy (happy path / unhappy path / edge case / gap / exploratory), the §5 coverage tables, §6 cycle/campaign/suite tree, §7 expected outcome categories (no totals), §8 known-gaps table. | Read to understand intent before adding tests. The audit `review-suite-stability` reads its §7 each run.                                           |
-| `IDENTIFIED_GAPS.md`    | Source-cited technical inventory of CURA defects + browser-behaviour findings + test-env artifacts (`G-*`, `B-*`, `A-ENV-*`). Each entry pairs symptom with PHP/probe evidence.                        | Read when working on a gap test or when a result surprises. Add entries on new findings; remove on CURA-side resolution.                           |
+| Artifact              | What it is                                                                                                                                                                                                                             | How to use                                                                                                                                         |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The FRD               | Functional requirements (pages, element IDs, URL map, business rules, known-bugs section). May be Markdown, Confluence, Jira, an OpenAPI spec, a PDF — whatever the project uses. Treat as a test artifact, not absolute ground truth. | Source of element IDs (POM selectors), URL paths, expected business rules, intentional-fail gap inventory. Read before writing or modifying tests. |
+| The test-strategy doc | Strategy, taxonomy (happy path / unhappy path / edge case / gap / exploratory), the coverage tables, the cycle/campaign/suite tree, expected outcome categories (no totals), known-gaps table.                                         | Read to understand intent before adding tests. The audit `review-suite-stability` reads it each run.                                               |
+| The gap inventory     | Source-cited technical inventory of SUT defects + browser-behaviour findings + test-env artifacts. Each entry pairs symptom with source/probe evidence.                                                                                | Read when working on a gap test or when a result surprises. Add entries on new findings; remove on SUT-side resolution.                            |
 
 ### 2. Existing test code
 
@@ -46,11 +46,11 @@ topology last (how it's wired).
 
 ### 3. SUT artifacts
 
-| Artifact                                              | What it is                                                                      | How to use                                                                                                                                                                                                                                                                                                                        |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `https://github.com/katalon-studio/katalon-demo-cura` | CURA's PHP source (public). Authoritative for _what the code says_.             | Read when a server-side claim is load-bearing (CSRF, session, redirects, validation). `gh api repos/katalon-studio/katalon-demo-cura/contents/<file>.php --jq '.content' \| base64 -d`. **Note:** the deployed app drifts from the source (`IDENTIFIED_GAPS.md` §G-SEC-1). Trust live observation over source when they disagree. |
-| `https://katalon-demo-cura.herokuapp.com/`            | The deployed app. Authoritative for _what users actually experience_.           | Read when authoring needs the rendered HTML, the visible text, the actual element layout. Open it. Run probes against it. The suite tests _this_, not the github source.                                                                                                                                                          |
-| `.venv/lib/python3.14/site-packages/ocarina/`         | Ocarina framework source (in the venv). Strictly typed, exhaustively annotated. | Read to confirm a public type / kwarg / signature. The skill `review-type-ignore` flags `type: ignore` on this surface as highest-suspicion.                                                                                                                                                                                      |
+| Artifact                                                  | What it is                                                                                                                                                                                | How to use                                                                                                                                                                                                                                                                                                                                                                                              |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `https://github.com/<sut-org>/<sut-repo>` (or equivalent) | The SUT's source — when accessible (open source or you own it). Authoritative for _what the code says_. Stack varies: PHP, Node, Java, Go, Ruby, .NET, Python; the principle is the same. | Read when a server-side claim is load-bearing (CSRF, session, redirects, validation). For PHP via `gh api`: `gh api repos/<sut-org>/<sut-repo>/contents/<file>.php --jq '.content' \| base64 -d`; clone for other stacks; read the OpenAPI / GraphQL schema for a closed-source SUT. **Note:** the deployed app commonly drifts from the source. Trust live observation over source when they disagree. |
+| `https://<sut-url>/`                                      | The deployed app. Authoritative for _what users actually experience_.                                                                                                                     | Read when authoring needs the rendered HTML, the visible text, the actual element layout. Open it. Run probes against it. The suite tests _this_, not the github source.                                                                                                                                                                                                                                |
+| `.venv/lib/python3.14/site-packages/ocarina/`             | Ocarina framework source (in the venv). Strictly typed, exhaustively annotated.                                                                                                           | Read to confirm a public type / kwarg / signature. The skill `review-type-ignore` flags `type: ignore` on this surface as highest-suspicion.                                                                                                                                                                                                                                                            |
 
 ### 4. Project conventions
 
@@ -64,7 +64,7 @@ topology last (how it's wired).
 
 | Artifact                            | What it is                                                                | How to use                                                                                                       |
 | ----------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `src/constants/urls.py`             | Canonical full URLs for every CURA page reachable from the suite.         | Use these in POMs and probes (never inline a URL elsewhere — `CLAUDE.md` rule).                                  |
+| `src/constants/urls.py`             | Canonical full URLs for every SUT page reachable from the suite.          | Use these in POMs and probes (never inline a URL elsewhere — `CLAUDE.md` rule).                                  |
 | `src/constants/credentials.py`      | `DEMO_USERNAME` / `DEMO_PASSWORD` (public, hardcoded).                    | Use the constants by name; never retype the literal (`CLAUDE.md` → "Use the constant — never retype its value"). |
 | `src/constants/transient_errors.py` | Exception types that trigger auto-retry.                                  | Read before adding a new entry — deterministic findings never land here.                                         |
 | `<project-root>/pyproject.toml`     | Project metadata, ruff config, mypy config, dependencies.                 | Source of: the strictness contract (`ruff select = ["ALL"]`, strict mypy). New code respects it.                 |
@@ -83,7 +83,7 @@ topology last (how it's wired).
 
 ### 7. External / user-facing resources
 
-This category is per-project; for CURA specifically it's mostly empty (CURA is a demo, no user manual). For a real product, fill in:
+This category is per-project; for a minimal SUT like this it's mostly empty (the SUT is a demo, no user manual). For a real product, fill in:
 
 | Artifact (when applicable)     | What it is                                      | How to use                                                                                                                  |
 | ------------------------------ | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
@@ -94,7 +94,8 @@ This category is per-project; for CURA specifically it's mostly empty (CURA is a
 | Support tickets / bug reports  | Real user-observed defects.                     | Source of edge cases and adjacent scenarios (feeds `extend-coverage`).                                                      |
 | Analytics / session recordings | Real user behaviour data.                       | Source of which flows are actually used — guides test prioritisation.                                                       |
 
-For CURA-as-SUT, none of these exist. State that explicitly in the report — "user manual: not applicable for CURA (demo)" rather than omitting.
+For this kind of demo SUT, none of these exist. State that explicitly in the report — "user manual: not applicable for this kind of demo SUT" rather
+than omitting.
 
 ## Procedure
 
@@ -103,8 +104,8 @@ For CURA-as-SUT, none of these exist. State that explicitly in the report — "u
 Inventory by directory listing, file read, and (for SUT-source / GA) external query.
 
 ```bash
-# specs
-ls CURA_FRD.md CURA_TEST_STRATEGY.md IDENTIFIED_GAPS.md
+# specs (filenames vary by project — common conventions: the FRD / spec/*.md / a Confluence page export / a PDF)
+ls <path-to-FRD> <path-to-test-strategy-doc> <path-to-gap-inventory>
 
 # test code surfaces
 find src/pages -name "*.py" -not -name "__init__.py"
@@ -134,11 +135,11 @@ Do not paraphrase the artifact's contents at length — the catalog points; the 
 
 ### 3. Flag missing slots
 
-For category 7 (external / user-facing), explicitly list which slots **don't exist for this project** rather than omitting them. "User manual: not
-applicable (CURA is a demo)" is information.
+For category 7 (external / user-facing), explicitly list which slots **don't exist for the project** rather than omitting them. "User manual: not
+applicable (the SUT is a demo)" is information.
 
-For any other category where a _normally-present_ artifact is absent — e.g. no `IDENTIFIED_GAPS.md` (would be unusual here), no `CURA_FRD.md` (would
-block test authoring) — surface as a **structural gap**.
+For any other category where a _normally-present_ artifact is absent — e.g. no the gap inventory (would be unusual here), no the FRD (would block test
+authoring) — surface as a **structural gap**.
 
 ### 4. Surface — produce the catalog
 
@@ -212,5 +213,5 @@ The catalog is the deliverable. Decisions about what to read deeper, what to ext
 - It does not deep-paraphrase artifacts. The catalog points; the reader opens.
 - It does not list every per-file fact (every selector, every connector signature). The granularity is "what's in this file / directory / source";
   deeper reads are follow-up motions.
-- It does not produce metrics or counts that don't matter — "N tests pass" is meaningless per `CURA_TEST_STRATEGY.md` §7 ("don't track a total").
-  Per-category counts where they help (POM count, scenario count) are fine.
+- It does not produce metrics or counts that don't matter — "N tests pass" is meaningless per the test-strategy doc convention ("don't track a
+  total"). Per-category counts where they help (POM count, scenario count) are fine.

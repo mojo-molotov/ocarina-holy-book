@@ -4,10 +4,10 @@ import path from 'path';
 import fs from 'fs';
 
 const SKILLS_DIR = path.resolve(__dirname, '../../../ai/skills');
-const CLAUDE_MD = path.resolve(__dirname, '../../../ai/CLAUDE.md');
+const AI_DIR = path.resolve(__dirname, '../../../ai');
+const CLAUDE_FILES = ['CLAUDE.md', 'CLAUDE.slim.md'] as const;
 const DIST_DIR = path.resolve(__dirname, '../dist');
 const PUBLIC_PREFIX = '/skills';
-const CLAUDE_PUBLIC_PATH = '/CLAUDE.md';
 
 export function generateSkills(): Plugin[] {
   return [
@@ -19,9 +19,10 @@ export function generateSkills(): Plugin[] {
           appendToLlms(files);
         }
 
-        if (fs.existsSync(CLAUDE_MD)) {
-          copyClaudeMd();
-          appendClaudeMdToLlms();
+        const claudeFiles = CLAUDE_FILES.filter((name) => fs.existsSync(path.join(AI_DIR, name)));
+        if (claudeFiles.length > 0) {
+          for (const name of claudeFiles) copyClaudeFile(name);
+          appendClaudeFilesToLlms(claudeFiles);
         }
       },
       name: 'generate-skills:emit',
@@ -49,6 +50,21 @@ function appendToLlms(files: { abs: string; rel: string }[]) {
   }
 }
 
+function appendClaudeFilesToLlms(names: readonly string[]) {
+  const lines = ['', '## Claude Context', ''];
+  for (const name of names) {
+    const title = extractTitle(fs.readFileSync(path.join(AI_DIR, name), 'utf-8')) ?? name;
+    lines.push(`- [${title}](/${name})`);
+  }
+  lines.push('');
+  const block = lines.join('\n');
+
+  const targets = fs.readdirSync(DIST_DIR).filter((f) => f === 'llms.txt' || /^llms-full(\.[a-z]+)?\.txt$/.test(f));
+  for (const name of targets) {
+    fs.appendFileSync(path.join(DIST_DIR, name), block);
+  }
+}
+
 function collectFiles(root: string): { abs: string; rel: string }[] {
   const out: { abs: string; rel: string }[] = [];
   const walk = (dir: string) => {
@@ -60,16 +76,6 @@ function collectFiles(root: string): { abs: string; rel: string }[] {
   };
   walk(root);
   return out;
-}
-
-function appendClaudeMdToLlms() {
-  const title = extractTitle(fs.readFileSync(CLAUDE_MD, 'utf-8')) ?? 'CLAUDE.md';
-  const block = `\n## Claude Context\n\n- [${title}](${CLAUDE_PUBLIC_PATH})\n`;
-
-  const targets = fs.readdirSync(DIST_DIR).filter((f) => f === 'llms.txt' || /^llms-full(\.[a-z]+)?\.txt$/.test(f));
-  for (const name of targets) {
-    fs.appendFileSync(path.join(DIST_DIR, name), block);
-  }
 }
 
 function copyToPublic(files: { abs: string; rel: string }[]) {
@@ -87,8 +93,8 @@ function extractTitle(content: string) {
   return content.match(/^#\s+(.+)$/m)?.[1] ?? null;
 }
 
-function copyClaudeMd() {
-  const target = path.join(DIST_DIR, CLAUDE_PUBLIC_PATH);
+function copyClaudeFile(name: string) {
+  const target = path.join(DIST_DIR, name);
   fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.copyFileSync(CLAUDE_MD, target);
+  fs.copyFileSync(path.join(AI_DIR, name), target);
 }

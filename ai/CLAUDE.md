@@ -358,10 +358,13 @@ the visibility gap, not where you are in the test lifecycle:
 A probe is **not** a test (no assertions, not in CI, not parallel-safe), not a long-lived artifact, not something to commit. The output is the
 _answer_, not the script — once the answer lands in the gap inventory, the spec doc, a new test, or a source-cited comment, delete the probe.
 
-### A probe must exercise the _exact_ target the code under test will use
+### Evidence is local — re-derive for every new question
 
-A probe's value is that it removes inference. So it must not _contain_ one. "Exact target" means **all** of: exact locator, exact screen / page state,
-exact wait condition, exact action.
+A probe's value is that it removes inference, so it must not _contain_ one — and the same principle extends past the probe itself. A probe's output is
+evidence only for what _that_ probe literally did; a prior run's diagnosis is evidence only for _that_ run's failure. Neither extends to a new
+question without re-derivation. The trap, in both cases, is reading stale evidence as if it answered the current question.
+
+**For probes — "exact target" means all of: exact locator, exact screen / page state, exact wait condition, exact action.**
 
 - **A locator is half a location — the screen is the other half.** The same selector on two screens is two different targets:
   `By.CSS_SELECTOR, "button[type='submit']"` on the login page ≠ the same on a form page elsewhere.
@@ -372,13 +375,9 @@ exact wait condition, exact action.
 - **One probe, one question, one target.** Reusing a probe for a second target means editing it to the new exact screen/locator/action and re-running
   — not reading the old output.
 
-A probe result is evidence only for what the probe literally did.
-
-### Don't propagate a previous run's diagnosis without re-deriving it
-
-Logs, screenshots, and prior comments describe a _past_ failure. For a _current_ failure, treat them as hypotheses to test, not conclusions to
-inherit. Re-derive the cause from this run's evidence (current screenshot, current network response, current source) before reaching for the
-previously-tried fix. One extra check is cheap; stacking workarounds on a wrong diagnosis is what ends in a reboot.
+**For diagnoses across runs — logs, screenshots, and prior comments describe a _past_ failure.** For a _current_ failure, treat them as hypotheses to
+test, not conclusions to inherit. Re-derive the cause from this run's evidence (current screenshot, current network response, current source) before
+reaching for the previously-tried fix. One extra check is cheap; stacking workarounds on a wrong diagnosis is what ends in a reboot.
 
 ### Probe sequences vs ritual workarounds — multi-action "dances"
 
@@ -710,25 +709,12 @@ clean code:
 - `D401` — docstrings in imperative mood ("Build…" not "Builds…").
 - `ANN` — return type annotations required on public functions.
 
-## Dev setup
+## Dev setup and quality checks
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install . ruff mypy mypy-extensions typing-extensions pre-commit
-pre-commit install --config .pre-commit-config.yaml
-```
-
-## Quality checks
-
-```bash
-ruff format src/          # format
-ruff check src/           # lint (project's chosen ruleset; ALL is the strict default)
-mypy src/                 # type check
-pre-commit run --all-files --config .pre-commit-config.yaml
-```
-
-Run these before committing. The CI gate should run the same checks.
+Both are walked by the `setup-environment` skill (venv, dev tooling, `CLAUDE.local.md` paths, the `ruff` / `mypy` / `pre-commit` quality loop, and a
+smoke-check of the runner). Run that skill on first checkout or after any change that would alter `pip install` resolution. The quality loop —
+`ruff format src/` then `ruff check src/` then `mypy src/` then `pre-commit run --all-files --config .pre-commit-config.yaml` — runs before every
+commit and must match what CI runs.
 
 ## CI workflows
 

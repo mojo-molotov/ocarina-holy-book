@@ -12,178 +12,147 @@ head:
 
 # Utiliser Ocarina avec l'IA
 
-Cette page décrit un setup de travail concret : un cycle de test complet construit et maintenu avec Claude Code et Ocarina. Le système sous test est
-la démo publique Katalon CURA. L'objectif ici est purement descriptif : quels fichiers existent, à quoi ils servent, comment ils se combinent.
+Un setup de travail : un cycle de test complet construit avec Claude Code et Ocarina, contre la démo publique Katalon CURA. Descriptif — ce qui est
+là, ce que ça fait.
 
 [📖 Munissez-vous de l'exemple avec IA comme référence.](https://github.com/mojo-molotov/ocarina-with-ai-example)
 
 ## Les trois pierres ancestrales
 
-1. Un fichier `CLAUDE.md` à la racine du projet.
-2. Un dossier `skills/` contenant un `<nom>/SKILL.md` par procédure.
-3. Une règle de vérification : toute affirmation sur le comportement du SUT doit venir d'une observation (une sonde, un `gh api`, un `curl -v`),
-   jamais d'une inférence.
+1. `CLAUDE.md` à la racine du projet.
+2. `skills/` avec un `<nom>/SKILL.md` par procédure.
+3. Règle de vérification : toute affirmation sur le SUT vient d'une observation (sonde, `gh api`, `curl -v`), jamais d'une inférence.
 
-## `CLAUDE.md`
+## `CLAUDE.md` (et `CLAUDE.slim.md`)
 
-Le fichier encode les règles qui ne changent pas entre les tours.
+Deux variantes. `CLAUDE.md` est complet (règles + organisation du projet, hiérarchie, conventions, forme CI, gabarit de PR). `CLAUDE.slim.md` ne
+contient que les règles. Slim quand le contexte est chargé ; complet pour l'onboarding et les revues. En cas de divergence, le complet l'emporte.
 
-**Les tests de sécurité sont fonctionnels et statiques, jamais actifs.** Toute la famille black-hat (saturation, persistance, accès latéral,
-expositions BFCache) est tenue par cette règle. Pas de payload d'injection. Pas de fabrication de requête. Pas de manipulation du DOM via les
-DevTools. Chaque scénario d'attaque doit être atteignable par une utilisation normale.
+Les étapes d'onboarding (venv, `pip install`, `ruff` / `mypy` / `pre-commit`, smoke-check du runner) vivent dans `setup-environment`.
 
-**Utiliser des constantes.** Si une valeur a un nom (`DEMO_USERNAME`, `LOGIN_URL`), on n'inline pas.
+Les règles :
 
-**La constitution des jeux de données implique des décisions à prendre par un humain.** Quand l'assistant propose d'ajouter ou de modifier un dataset,
-l'exécution ne suit pas automatiquement.
+**Les tests de sécurité sont fonctionnels et statiques, jamais actifs.** Pas de payloads, pas de requêtes fabriquées, pas de manipulation du DOM via
+DevTools. Les scénarios black-hat passent par une UI normale.
 
-**Vérifier empiriquement le comportement du SUT.** Une affirmation sur ce que fait CURA vient d'une sonde qui a capturé le HTML, d'un `gh api` qui a
-lu le PHP déployé, ou d'un `curl -v` qui a lu les en-têtes. Jamais d'une inférence.
+**Utiliser des constantes.** Les valeurs nommées ne sont pas inlinées.
 
-Chaque règle porte un _pourquoi_ d'une ligne (souvent un incident passé), pour que l'assistant puisse exercer son jugement aux limites plutôt que de
-pattern-matcher la règle.
+**Les datasets sont des décisions humaines.** Proposer n'exécute pas.
+
+**Vérifier empiriquement le comportement du SUT.** Sonde, `gh api`, ou `curl -v`. Jamais d'inférence. Re-dériver à chaque fois : une sonde ne répond
+que pour ce qu'elle a exécuté ; un diagnostic antérieur ne répond que pour cette exécution-là.
+
+Chaque règle porte un _pourquoi_ d'une ligne pour que le jugement se déclenche à la frontière.
 
 ## `skills/`
 
-Chaque skill est un fichier Markdown unique, avec un frontmatter YAML (`name`, `description`) et un corps qui déroule une procédure de bout en bout.
-Ils se regroupent en huit familles.
+Un fichier Markdown par skill, frontmatter YAML + corps. Neuf familles.
 
 ### Review (12)
 
-Lectures statiques de la codebase ou des specs. Les skills remontent des constats, l'utilisateur applique.
+Lectures statiques ; remontent des constats.
 
-- `review-spec-gaps` lit les SFD à la manière d'un analyste QA et remonte des questions de clarification.
-- `review-watcher-misuse` vérifie chaque appel à `watcher.report(...)` au regard de la convention « négatif uniquement ».
-- `review-compartmentalisation-leaks` détecte les URLs hors de `src/constants/urls.py`, les sélecteurs hors des POMs, les nombres magiques inline.
-- `review-report` classifie chaque FAIL (corps, setup, teardown) et chaque SKIP (statique, smoke-gate, setup-error, cycle-policy) pour une exécution
-  donnée.
+- `review-spec-gaps` — questions de clarification sur les SFD.
+- `review-watcher-misuse` — `watcher.report(...)` au regard du « négatif uniquement ».
+- `review-compartmentalisation-leaks` — URLs, sélecteurs, nombres magiques mal placés.
+- `review-report` — classifie chaque FAIL / SKIP d'une exécution.
 - Et aussi : `review-type-ignore`, `review-match-candidates`, `review-unverified-transitions`, `review-submit-dispatchers`, `review-comment-drift`,
   `review-suite-stability`, `review-intent-collisions`, `review-watcher-emissions`.
 
 ### Analyse (4)
 
-- `analyse-flakiness` élargit le filet de capture des erreurs transitoires pour que toutes les exceptions soient retentées ; les morts chroniques
-  après N rejeux sont très probablement des tests flaky.
-- `analyse-fixture-flakiness` instrumente la frontière setup/teardown pour rendre visibles les contaminations entre tests.
-- `analyse-watcher-flakiness` exécute la suite avec et sans chaque watcher, sur un balayage d'intervalles de poll.
-- `analyse-screenshot-flakiness` regroupe les captures par `(test, étape, navigateur)` et y analyse la présence de comportements différents ou non.
+- `analyse-flakiness` — élargit le filet des erreurs transitoires ; les morts chroniques sont de vraies flakes.
+- `analyse-fixture-flakiness` — instrumente setup/teardown ; rend visibles les contaminations entre tests.
+- `analyse-watcher-flakiness` — avec/sans chaque watcher, balayage d'intervalles.
+- `analyse-screenshot-flakiness` — regroupe par `(test, étape, navigateur)`, détecte les différences.
 
 ### Black-hat (6)
 
-- `business-attack-ideation` essaie de faire "tomber" le produit.
-- `incoherence-attack-ideation` couvre les combinaisons d'actions individuellement autorisées mais incohérentes en tant qu'ensemble (par exemple : une
-  même personne réserve des hôtels pour elle dans deux villes avec une fenêtre de temps qui rend le trajet physiquement impossible).
-- `persistence-attack-ideation` couvre les tentatives répétées d'effectuer une action bloquée sur le SUT.
-- `permission-appropriateness-audit` lit le modèle d'accès et pose la question _« cette parité est-elle voulue ? »_.
-- `bfcache-exposure-ideation` identifie des attaques BFCache.
-- `lateral-resource-ideation` reprend l'esprit d'IDOR, mais restreint à la manipulation depuis la barre d'adresse (pas d'interception de requête, pas
-  de proxy).
+- `business-attack-ideation` — faire tomber le produit.
+- `incoherence-attack-ideation` — chaque étape légale, l'ensemble impossible.
+- `persistence-attack-ideation` — tentatives répétées sur une action bloquée.
+- `permission-appropriateness-audit` — le modèle d'accès est-il lui-même approprié ?
+- `bfcache-exposure-ideation` — attaques BFCache.
+- `lateral-resource-ideation` — IDOR via la barre d'adresse uniquement.
 
 ### Comprehend (4)
 
-- `assess-test-base` catalogue la base de test.
-- `assess-ecosystem` fait une passe de recherche bornée sur des sources publiques, encadrée par un budget de tokens (un tiers du budget restant par
-  défaut).
-- `understand-sut-constraints` cartographie les bornes côté SUT qui font dérailler _le code de test_ sous parallélisme (par exemple : nombre max de
-  sessions. simultanées pour un utilisateur).
-- `understand-ocarina` parcourt la documentation.
+- `assess-test-base` — catalogue la base de test.
+- `assess-ecosystem` — recherche publique bornée, plafonnée par budget de tokens.
+- `understand-sut-constraints` — bornes SUT qui cassent les tests parallèles.
+- `understand-ocarina` — parcourt la doc.
 
 ### Pick (3)
 
-Récupérer les bons fichiers en sortie d'exécution.
+Par mtime, jamais par nom de fichier.
 
 - `pick-screenshots`, `pick-logs`, `pick-reports`.
 
 ### Author (7)
 
-Skills de workflow qui produisent un livrable.
+Chacun produit un livrable.
 
-- `empiricism` : vérifier avant d'encoder ; ne jamais écraser un test gap en échec intentionnel.
-- `write-a-probe` : script Python jetable dans un dossier gitignored.
-- `extend-coverage` : étend la couverture des tests sur la base d'un patrimoine.
-- `update-frd-and-tests` : propagation d'une mise à jour des spécifications.
-- `manual-reproduction-guide` : produit un scénario de reproduction manuel.
-- `manage-backlog` : gère un backlog (`BACKLOG.md`).
-- `pr-report` : produit un rapport de PR adapté au type (refactoring, stratégie de test, correction de bug, doc).
+- `empiricism` — vérifier avant d'encoder ; ne pas écraser un test gap en échec intentionnel.
+- `write-a-probe` — script jetable, gitignored.
+- `extend-coverage` — étend la couverture à partir des assets existants.
+- `update-frd-and-tests` — propage une mise à jour de spec.
+- `manual-reproduction-guide` — repro exécutable par un humain.
+- `manage-backlog` — `BACKLOG.md`.
+- `pr-report` — rapport de PR adapté au type.
 
 ### Refactor (2)
 
-- `refactor-fragmentation` applique le principe DRY selon les préférences de l'utilisateur.
-- `introduce-pom-retries` produit des retries internes aux POMs pour lutter contre la flakiness, avec dédoublement du test : une variante _first-try_
-  (sans retry, échec intentionnel jusqu'à correction de l'anomalie) et une variante _with-retries_ (qui passe grâce aux retries POM, afin de maintenir
-  la couverture stable).
+- `refactor-fragmentation` — DRY selon préférence utilisateur.
+- `introduce-pom-retries` — retries internes aux POMs, avec dédoublement (first-try + with-retries).
 
 ### State (1)
 
-- `question-state` : analyse les états du SUT (par exemple : dyno chaud ou froid, artefacts résiduels, propreté du profil navigateur, concurrence des
-  workers, mises à jour récentes, contention liée à l'heure...).
+- `question-state` — interroger l'environnement avant de croire un résultat.
+
+### Setup (1)
+
+- `setup-environment` — venv, outillage de dev, chemins de drivers dans `CLAUDE.local.md`, boucle pré-commit, smoke-check du runner.
 
 ## Chaînes récurrentes
 
-Les skills se combinent. Quelques enchaînements qui reviennent souvent :
+**Suite pas au vert :** `review-report` → `analyse-*` → `write-a-probe` → la trouvaille atterrit dans `IDENTIFIED_GAPS.md` / les SFD / un commentaire
+de scénario → sonde supprimée.
 
-**Lorsque tout n'est pas au vert :**
+**Scénario black-hat prometteur :** `empiricism` → `extend-coverage` (souvent en échec intentionnel).
 
-1. `review-report` classifie chaque incident (FAIL : corps, setup ou teardown ; SKIP : statique, smoke-gate, setup-error ou cycle-policy).
-2. Selon la classe d'incident, on enchaîne avec `analyse-flakiness`, `analyse-fixture-flakiness` ou `analyse-screenshot-flakiness`.
-3. `write-a-probe` isole la cause racine.
-4. La trouvaille est consignée dans `IDENTIFIED_GAPS.md`, dans les SFD, ou dans un commentaire de scénario.
-5. La sonde est supprimée.
+**Changement de spec :** `update-frd-and-tests` (SFD d'abord, tests ensuite). Les tests gap sont reformulés, pas basculés.
 
-**Lorsqu'un scénario black-hat semble prometteur :**
-
-1. `empiricism` vérifie le comportement actuel de CURA.
-2. `extend-coverage` écrit le test, souvent comme échec intentionnel, tant que le SUT n'a pas corrigé le comportement.
-
-**Lorsqu'une spec change :**
-
-1. `update-frd-and-tests` met à jour le document de suivi des SFD en premier, avec une raison en une phrase.
-2. Les tests sont ensuite adaptés.
-3. Si un test gap est concerné par la correction, il est reformulé (l'assertion est inversée, le test est renommé, sa catégorie dans le doc de
-   stratégie passe d'intentional-fail à pass-everywhere) plutôt que simplement modifié pour passer au vert.
-
-**Lorsqu'une nouvelle primitive Ocarina est nécessaire :**
-
-1. `understand-ocarina` consulte d'abord le Holy Book.
-2. L'écriture vient ensuite.
+**Nouvelle primitive Ocarina :** `understand-ocarina` d'abord, écriture ensuite.
 
 ## Discipline
 
-Plusieurs patterns se retrouvent dans toutes les procédures.
+**Remonter, ne pas appliquer.** Les skills produisent ; l'utilisateur décide.
 
-**Remonter, ne pas appliquer.** Chaque skill se termine de la même façon : donner des pistes, s'arrêter, laisser l'utilisateur trancher.
+**Empirique plutôt qu'assertif.** Toute affirmation SUT est observée, citée, datée. Phrase rituelle : _« Juste remarque, je suppose. Je vérifie
+empiriquement. »_
 
-**Empirique plutôt qu'assertif.** Toute affirmation sur le comportement du SUT est adossée à une observation, citée sur place, datée. La phrase
-rituelle : _« Juste remarque, je suppose. Je vérifie empiriquement. »_ Elle déclenche un `write-a-probe`, la sonde capture la vérité, la trouvaille
-atterrit, la sonde est supprimée.
+**Les tests gap sont reformulés, pas basculés au vert.** Inverser l'assertion, renommer, déplacer la ligne dans le doc de stratégie, consigner la date
+dans `IDENTIFIED_GAPS.md`. Le tout via `update-frd-and-tests`.
 
-**Les tests gap sont reformulés, pas basculés au vert.** Quand un correctif est livré et validé, le test en échec intentionnel ne peut pas être
-simplement édité pour correspondre au nouveau comportement. La discipline : inverser l'assertion, renommer le test, déplacer sa ligne dans le doc de
-stratégie de la catégorie intentional-fail vers pass-everywhere, mettre à jour `IDENTIFIED_GAPS.md` avec la date de résolution. Le tout via
-`update-frd-and-tests`.
+**Les signaux watchers sont négatifs uniquement.** Un watcher qui émet _« login réussi »_ casse le contrat.
 
-**Les signaux des watchers sont systématiquement des signaux négatifs.** Un watcher qui émet _« login réussi »_ casse le contrat.
-`review-watcher-misuse` audite les callbacks ; `review-watcher-emissions` lit les sorties d'exécution en sachant que toute émission est, par
-convention, indésirable.
+**Priorité au scaling horizontal.** Pas d'état en mémoire au niveau du worker. Primitives distribuées uniquement.
 
-**Priorité au scaling horizontal.** Quand une couche de coordination est proposée, la question est _« est-ce que ça fonctionne avec un process, trois
-process, N process ? »_. L'état en mémoire au niveau du worker Ocarina est rejeté par construction. Primitives distribuées uniquement.
-
-**Identification des artefacts générés d'après leur date.** Captures d'écran, logs, rapports : tous portent un suffixe UUID aléatoire. Les trois
-skills `pick-*` existent pour empêcher tout tri lexicographique.
+**Mtime, pas nom de fichier.** Les suffixes UUID sont aléatoires ; `pick-*` trie par mtime.
 
 ## Ce que ce setup n'est pas
 
-- Générer des tests de façon autonome.
-- Patcher des hallucinations en CI. Un test qui échoue déclenche `review-report` et un skill `analyse-*`.
-- Réécrire la spec. Le document de suivi des SFD n'est édité que via `update-frd-and-tests`, avec une ligne d'historique de révision.
-- Faire des tests de sécurité actifs. Ni maintenant, ni jamais.
+- Ne génère pas de tests de façon autonome.
+- Ne patche pas les hallucinations en CI ; un échec déclenche `review-report` + `analyse-*`.
+- Ne réécrit pas la spec ; seul `update-frd-and-tests` le fait, avec une ligne de révision.
+- Ne fait pas de tests de sécurité actifs. Jamais.
 
 ## Ressources exposées
 
 - https://mojo-molotov.github.io/ocarina-holy-book/llms.txt
 - https://mojo-molotov.github.io/ocarina-holy-book/llms-full.txt
 - https://mojo-molotov.github.io/ocarina-holy-book/CLAUDE.md
+- https://mojo-molotov.github.io/ocarina-holy-book/CLAUDE.slim.md
 - https://mojo-molotov.github.io/ocarina-holy-book/ocarina-en.pdf
 - https://mojo-molotov.github.io/ocarina-holy-book/ocarina-fr.pdf
 

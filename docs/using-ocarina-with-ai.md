@@ -12,169 +12,146 @@ head:
 
 # Using Ocarina with AI
 
-This page describes a concrete working setup: a full test cycle built and maintained alongside Claude Code and Ocarina. The system under test is the
-public Katalon CURA demo. The goal here is purely descriptive: what files exist, what each one does, how they compose.
+A working setup: a full test cycle built alongside Claude Code and Ocarina, against the public Katalon CURA demo. Descriptive — what's there, what it
+does.
 
 [📖 Get the AI example as a reference.](https://github.com/mojo-molotov/ocarina-with-ai-example)
 
 ## The three spiritual stones
 
-1. A `CLAUDE.md` file at the project root.
-2. A `skills/` directory containing one `<name>/SKILL.md` per procedure.
-3. A verification rule: every claim about SUT behaviour must come from observation (a probe, a `gh api`, a `curl -v`), never from inference.
+1. `CLAUDE.md` at the project root.
+2. `skills/` with one `<name>/SKILL.md` per procedure.
+3. Verification rule: every SUT claim comes from observation (probe, `gh api`, `curl -v`), never inference.
 
-## `CLAUDE.md`
+## `CLAUDE.md` (and `CLAUDE.slim.md`)
 
-The file encodes the rules that don't change between turns.
+Two variants. `CLAUDE.md` is full (rules + project layout, hierarchy, conventions, CI shape, PR template). `CLAUDE.slim.md` is rules only. Slim when
+context is heavy; full for onboarding and reviews. Full wins on disagreement.
 
-**Security testing is functional and static, never active.** The whole black-hat family (saturation, persistence, lateral access, BFCache exposures)
-is bound by this rule. No injection payloads. No request crafting. No DevTools DOM manipulation. Every attack scenario must be reachable through a
-normal UI motion.
+Onboarding steps (venv, `pip install`, `ruff` / `mypy` / `pre-commit`, runner smoke-check) live in `setup-environment`.
 
-**Use constants.** If a value has a name (`DEMO_USERNAME`, `LOGIN_URL`), don't inline it.
+Rules:
 
-**Dataset construction is a human decision.** When the assistant proposes adding or modifying a dataset, the run does not automatically follow.
+**Security testing is functional and static, never active.** No payloads, no crafted requests, no DevTools DOM manipulation. Black-hat scenarios go
+through the normal UI.
 
-**Verify SUT behaviour empirically.** A claim about what CURA does comes from a probe that captured the HTML, a `gh api` that read the deployed PHP,
-or a `curl -v` that read the headers. Never from inference.
+**Use constants.** Named values aren't inlined.
 
-Each rule carries a one-line _why_ (usually a past incident) so the assistant applies judgment at the boundary instead of pattern-matching the rule.
+**Datasets are human decisions.** Proposing doesn't run.
+
+**Verify SUT behaviour empirically.** Probe, `gh api`, or `curl -v`. Never inference. Re-derive each time: a probe answers only for what it ran; a
+prior diagnosis only for that run.
+
+Each rule carries a one-line _why_ so judgment kicks in at the boundary.
 
 ## `skills/`
 
-Each skill is a single Markdown file, with YAML frontmatter (`name`, `description`) and a body that walks one procedure end-to-end. They cluster into
-eight families.
+One Markdown file per skill, YAML frontmatter + body. Nine families.
 
 ### Review (12)
 
-Static reads of the codebase or specs. Skills surface findings; the user applies.
+Static reads; surface findings.
 
-- `review-spec-gaps` reads the FRD the way a QA analyst would and surfaces clarification questions.
-- `review-watcher-misuse` checks every `watcher.report(...)` call against the negative-only convention.
-- `review-compartmentalisation-leaks` finds URLs outside `src/constants/urls.py`, selectors outside POMs, magic numbers inline.
-- `review-report` classifies every FAIL (body, setup, teardown) and SKIP (static, smoke-gate, setup-error, cycle-policy) for one run.
+- `review-spec-gaps` — clarification questions on the FRD.
+- `review-watcher-misuse` — `watcher.report(...)` against the negative-only convention.
+- `review-compartmentalisation-leaks` — URLs, selectors, magic numbers out of place.
+- `review-report` — classify each FAIL / SKIP for one run.
 - Plus: `review-type-ignore`, `review-match-candidates`, `review-unverified-transitions`, `review-submit-dispatchers`, `review-comment-drift`,
   `review-suite-stability`, `review-intent-collisions`, `review-watcher-emissions`.
 
 ### Analyse (4)
 
-- `analyse-flakiness` widens the transient-error net so every exception retries; chronic deaths after N replays are very likely real flakes.
-- `analyse-fixture-flakiness` instruments the setup/teardown boundary so cross-test contamination becomes visible.
-- `analyse-watcher-flakiness` runs the suite with and without each watcher, across a poll-interval sweep.
-- `analyse-screenshot-flakiness` groups screenshots by `(test, step, browser)` and looks for differing behaviours.
+- `analyse-flakiness` — widen the transient-error net; chronic deaths are real flakes.
+- `analyse-fixture-flakiness` — instrument setup/teardown; surface cross-test contamination.
+- `analyse-watcher-flakiness` — with/without each watcher, interval sweep.
+- `analyse-screenshot-flakiness` — group by `(test, step, browser)`, spot differences.
 
 ### Black-hat (6)
 
-- `business-attack-ideation` tries to bring the product down.
-- `incoherence-attack-ideation` covers combinations of actions that are individually allowed but incoherent as a set (e.g., the same person booking
-  hotels in two cities with a time window that makes the travel physically impossible).
-- `persistence-attack-ideation` covers repeated attempts to perform an action blocked by the SUT.
-- `permission-appropriateness-audit` reads the access model and asks _"is this parity intentional?"_
-- `bfcache-exposure-ideation` identifies BFCache attacks.
-- `lateral-resource-ideation` borrows the spirit of IDOR but stays restricted to address-bar manipulation (no request interception, no proxy).
+- `business-attack-ideation` — bring the product down.
+- `incoherence-attack-ideation` — each step legal, the set impossible.
+- `persistence-attack-ideation` — repeated retries on blocked actions.
+- `permission-appropriateness-audit` — is the access model itself appropriate?
+- `bfcache-exposure-ideation` — BFCache attacks.
+- `lateral-resource-ideation` — IDOR via the address bar only.
 
 ### Comprehend (4)
 
-- `assess-test-base` catalogues the test base.
-- `assess-ecosystem` does a bounded research pass over public sources, capped by a token budget (one-third of remaining tokens by default).
-- `understand-sut-constraints` maps the SUT-side bounds that cause the _test code_ to misbehave under parallelism (e.g., max simultaneous sessions per
-  user).
-- `understand-ocarina` walks the documentation.
+- `assess-test-base` — catalogue the suite.
+- `assess-ecosystem` — bounded public research, token-budget capped.
+- `understand-sut-constraints` — SUT bounds that break parallel tests.
+- `understand-ocarina` — walk the docs.
 
 ### Pick (3)
 
-Pick the right files from run output.
+By mtime, never filename.
 
 - `pick-screenshots`, `pick-logs`, `pick-reports`.
 
 ### Author (7)
 
-Workflow skills that produce a deliverable.
+Each produces a deliverable.
 
-- `empiricism`: verify before encoding; never overwrite an intentional-fail gap test.
-- `write-a-probe`: throwaway Python script in a gitignored directory.
-- `extend-coverage`: extends test coverage based on existing assets.
-- `update-frd-and-tests`: propagates a specification update.
-- `manual-reproduction-guide`: produces a manual reproduction scenario.
-- `manage-backlog`: manages a backlog (`BACKLOG.md`).
-- `pr-report`: produces a PR-type-aware report (refactor, test strategy, bug fix, docs).
+- `empiricism` — verify before encoding; don't overwrite intentional-fail gap tests.
+- `write-a-probe` — throwaway script, gitignored.
+- `extend-coverage` — extend coverage from existing assets.
+- `update-frd-and-tests` — propagate a spec update.
+- `manual-reproduction-guide` — human-runnable repro.
+- `manage-backlog` — `BACKLOG.md`.
+- `pr-report` — PR-type-aware report.
 
 ### Refactor (2)
 
-- `refactor-fragmentation` applies the DRY principle according to the user's preferences.
-- `introduce-pom-retries` produces POM-internal retries to fight flakiness, with the two-test split: a _first-try_ variant (no retry, intentional fail
-  until the anomaly is corrected) and a _with-retries_ variant (passes via POM retries, keeps coverage stable).
+- `refactor-fragmentation` — DRY per user preference.
+- `introduce-pom-retries` — POM-internal retries with the two-test split (first-try + with-retries).
 
 ### State (1)
 
-- `question-state`: inspects the SUT's environmental state (warm vs cold dyno, leftover artifacts, browser-profile cleanliness, workers concurrency,
-  recent updates, time-bound contention, etc.).
+- `question-state` — interrogate the environment before trusting a result.
+
+### Setup (1)
+
+- `setup-environment` — venv, dev tooling, driver paths in `CLAUDE.local.md`, pre-commit loop, runner smoke-check.
 
 ## Recurring chains
 
-Skills compose. A few chains that come up often:
+**Suite isn't green:** `review-report` → `analyse-*` → `write-a-probe` → finding lands in `IDENTIFIED_GAPS.md` / FRD / scenario comment → probe
+deleted.
 
-**When the suite isn't green:**
+**Black-hat scenario looks promising:** `empiricism` → `extend-coverage` (often intentional-fail).
 
-1. `review-report` classifies each incident (FAIL: body, setup or teardown; SKIP: static, smoke-gate, setup-error or cycle-policy).
-2. Depending on the incident class, one of `analyse-flakiness`, `analyse-fixture-flakiness`, `analyse-screenshot-flakiness` follows.
-3. `write-a-probe` isolates the root cause.
-4. The finding is recorded in `IDENTIFIED_GAPS.md`, in the FRD, or in a scenario comment.
-5. The probe is deleted.
+**Spec changes:** `update-frd-and-tests` (FRD first, tests follow). Gap tests are reframed, not flipped.
 
-**When a black-hat scenario looks promising:**
-
-1. `empiricism` verifies CURA's current behaviour.
-2. `extend-coverage` writes the test, often as an intentional fail, until the SUT corrects the behaviour.
-
-**When a spec changes:**
-
-1. `update-frd-and-tests` updates the FRD first, with a one-sentence reason.
-2. Tests are then adapted.
-3. If a gap test is affected by the fix, it is reframed (assertion inverted, test renamed, strategy-doc category moved from intentional-fail to
-   pass-everywhere) rather than simply edited to turn green.
-
-**When a new Ocarina primitive is needed:**
-
-1. `understand-ocarina` consults the Holy Book first.
-2. Writing comes after.
+**New Ocarina primitive needed:** `understand-ocarina` first, then writing.
 
 ## Discipline
 
-Several patterns repeat across every procedure.
+**Surface, don't apply.** Skills produce; the user decides.
 
-**Surface, do not apply.** Every skill ends the same way: print the catalogue, stop, let the user decide.
+**Empirical, not assertive.** Every SUT claim is observed, cited, dated. Ritual phrase: _"Fair point, I'm assuming. Let me verify empirically."_
 
-**Empirical, not assertive.** Every SUT-behaviour claim is backed by an observation, cited in place, dated. The ritual phrase: _"Fair point, I'm
-assuming. Let me verify empirically."_ It triggers a `write-a-probe`; the probe captures the truth; the finding lands; the probe is deleted.
+**Gap tests are reframed, not turned green.** Invert the assertion, rename, move the strategy-doc row, log the resolution in `IDENTIFIED_GAPS.md`. One
+motion via `update-frd-and-tests`.
 
-**Gap tests are reframed, not turned green.** When CURA fixes a §9 gap, the intentional-fail test cannot just be edited to match the new behaviour.
-The discipline: invert the assertion, rename the test, move its strategy-doc row from intentional-fail to pass-everywhere, update `IDENTIFIED_GAPS.md`
-with the resolution date. All in one motion via `update-frd-and-tests`.
+**Watcher emissions are negative signals only.** A watcher emitting _"login succeeded"_ breaks the contract.
 
-**Watcher emissions are always negative signals.** A watcher emitting _"login succeeded"_ breaks the contract. `review-watcher-misuse` audits the
-callbacks; `review-watcher-emissions` reads run output knowing every emission is, by convention, undesirable.
+**Horizontal scaling first.** No in-memory state at the worker level. Distributed primitives only.
 
-**Horizontal scaling first.** When a coordination layer is proposed, the question is _"does this work at one process, three processes, N processes?"_
-In-memory state at the Ocarina-worker level is rejected by construction. Distributed primitives only.
-
-**Identify generated artifacts by mtime.** Screenshots, logs, reports all carry random UUID suffixes. The three `pick-*` skills exist to prevent
-lexicographic sorting.
+**Mtime, not filename.** UUID suffixes are random; `pick-*` sorts by mtime.
 
 ## What this setup isn't
 
-This setup does NOT:
-
-- Generate tests autonomously.
-- Patch hallucinations in CI. A failing test triggers `review-report` and an `analyse-*` skill.
-- Rewrite the spec. The FRD is edited only via `update-frd-and-tests`, with a revision-history line.
-- Run active security tests. Not now, not ever.
+- Doesn't generate tests autonomously.
+- Doesn't patch hallucinations in CI; a failure triggers `review-report` + `analyse-*`.
+- Doesn't rewrite the spec; only `update-frd-and-tests` does, with a revision line.
+- Doesn't run active security tests. Ever.
 
 ## Exposed resources
 
 - https://mojo-molotov.github.io/ocarina-holy-book/llms.txt
 - https://mojo-molotov.github.io/ocarina-holy-book/llms-full.txt
 - https://mojo-molotov.github.io/ocarina-holy-book/CLAUDE.md
+- https://mojo-molotov.github.io/ocarina-holy-book/CLAUDE.slim.md
 - https://mojo-molotov.github.io/ocarina-holy-book/ocarina-en.pdf
 - https://mojo-molotov.github.io/ocarina-holy-book/ocarina-fr.pdf
 

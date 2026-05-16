@@ -99,6 +99,12 @@ Question the environment before assuming a result is meaningful.
 
 - [question-state](question-state/SKILL.md) — nine surfaces of environmental state to interrogate before trusting a test outcome.
 
+## Setup
+
+Stand up or refresh the local working environment so the suite is runnable, lintable, and type-clean.
+
+- [setup-environment](setup-environment/SKILL.md) — venv + dev tooling + `CLAUDE.local.md` driver paths + the `ruff` / `mypy` / `pre-commit` quality loop + a smoke-check of the runner.
+
 ## Cross-family dispatch (which skill follows which)
 
 A few recurring chains:

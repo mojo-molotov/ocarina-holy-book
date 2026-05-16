@@ -22,7 +22,7 @@ Un setup de travail : un cycle de test complet construit avec Claude Code et Oca
 2. `skills/` avec un `<nom>/SKILL.md` par procédure.
 3. Règle de vérification : toute affirmation sur le SUT vient d'une observation (sonde, `gh api`, `curl -v`), jamais d'une inférence.
 
-## `CLAUDE.md` (et `CLAUDE.slim.md`)
+## `CLAUDE.md`
 
 Deux variantes. `CLAUDE.md` est complet (règles + organisation du projet, hiérarchie, conventions, forme CI, gabarit de PR). `CLAUDE.slim.md` ne
 contient que les règles. Slim quand le contexte est chargé ; complet pour l'onboarding et les revues. En cas de divergence, le complet l'emporte.

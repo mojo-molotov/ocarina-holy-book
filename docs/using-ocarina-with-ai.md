@@ -22,7 +22,7 @@ A working setup: a full test cycle built alongside Claude Code and Ocarina, agai
 2. `skills/` with one `<name>/SKILL.md` per procedure.
 3. Verification rule: every SUT claim comes from observation (probe, `gh api`, `curl -v`), never inference.
 
-## `CLAUDE.md` (and `CLAUDE.slim.md`)
+## `CLAUDE.md`
 
 Two variants. `CLAUDE.md` is full (rules + project layout, hierarchy, conventions, CI shape, PR template). `CLAUDE.slim.md` is rules only. Slim when
 context is heavy; full for onboarding and reviews. Full wins on disagreement.

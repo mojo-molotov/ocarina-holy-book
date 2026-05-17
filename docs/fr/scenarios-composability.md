@@ -27,7 +27,7 @@ Nous allons détailler le fonctionnement d'`act`, de `drive_page` et de `match_p
 Commençons par un exemple que nous allons progressivement casser :
 
 ```python
-def go_from_homepage_to_about_page_with_the_cta(driver: WebDriver, logger: ILogger):
+def go_from_homepage_to_book_call_page_with_the_cta(driver: WebDriver, logger: ILogger):
     """Open and verify my homepage."""
     on_homepage = Homepage(driver=driver)
     on_book_a_call_page = BookCallPage(driver=driver)
@@ -68,7 +68,7 @@ def go_from_homepage_to_about_page_with_the_cta(driver: WebDriver, logger: ILogg
 test_homepage_book_a_call_cta = create_selenium_test(
     name="Go from homepage to book a call page, clicking the CTA",
     test_scenario=lambda driver, logger: Scenario(
-        test_chain=go_from_homepage_to_about_page_with_the_cta(driver, logger)
+        test_chain=go_from_homepage_to_book_call_page_with_the_cta(driver, logger)
     ),
 )
 ```

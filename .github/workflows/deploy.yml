@@ -60,14 +60,10 @@ jobs:
           echo ${{ github.workspace }}
           pnpm build
 
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./docs/.vitepress/dist
-          destination: ./_site
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./docs/.vitepress/dist
 
   deploy:
     if: github.repository_visibility != 'private' && github.event_name != 'pull_request'

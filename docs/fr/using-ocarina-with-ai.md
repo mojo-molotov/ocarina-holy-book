@@ -47,13 +47,15 @@ Chaque règle contient un "_pourquoi_" d'une ligne.
 
 Un fichier Markdown par skill, frontmatter YAML + corps. Neuf familles.
 
-### Review (12)
+### Review (13)
 
 Lectures statiques ; remontent des constats.
 
 - `review-spec-gaps` — questions de clarification sur les SFD.
 - `review-watcher-misuse` — `watcher.report(...)` principe de « négatif uniquement ».
 - `review-compartmentalisation-leaks` — URLs, sélecteurs, nombres magiques aux mauvais endroits.
+- `review-dead-code` — connecteurs / POMs / scénarios / suites / fragments / constantes non utilisés ; au cas par cas : supprimer, mettre en
+  incubateur (`<racine-source>/incubator/`, arbre de dépendances préservé), ou conserver.
 - `review-report` — classifie chaque FAIL / SKIP d'une exécution.
 - Et : `review-type-ignore`, `review-match-candidates`, `review-unverified-transitions`, `review-submit-dispatchers`, `review-comment-drift`,
   `review-suite-stability`, `review-intent-collisions`, `review-watcher-emissions`.
@@ -137,7 +139,9 @@ dans `IDENTIFIED_GAPS.md`. Le tout via `update-frd-and-tests`.
 
 **Les signaux watchers sont négatifs uniquement.** Un watcher qui émet _« login réussi »_ casse le contrat.
 
-**Priorité au scaling horizontal.** Pas d'état en mémoire au niveau du worker. Primitives distribuées uniquement.
+**Distribué quand une ressource est partagée.** Dès que plusieurs workers se partagent une ressource plafonnée par le SUT (sessions, créneaux,
+quotas), la coordination passe par des primitives distribuées. Sinon, un cache local en mémoire suffit — à condition que les clés soient garanties
+uniques et que leur génération soit thread-safe.
 
 **Mtime, pas nom de fichier.** Les suffixes UUID sont aléatoires ; `pick-*` trie par mtime.
 

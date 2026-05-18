@@ -156,7 +156,7 @@ Grâce à ce que dit la SCIENCE.**
 écrans, à cette science, pendant que tu harcelais des ados dans des chats sur Dota ou que tu foutais on ne sait trop quoi, à toujours t'exhiber,
 toujours montrer que tu es le plus beau, le plus fort, le plus intelligent, le plus dominant.**
 
-**Nous, nous sommes des attardés, mais nous resterons en ligne jusqu'au bout !**
+[**Nous, nous sommes des attardés, mais nous resterons en ligne jusqu'au bout !**](https://soundcloud.com/spokepp4l/retarded)
 
 **Nous sommes une vraie FAMILLE&nbsp;!  
 Et nous ne dormons JAMAIS&nbsp;!**

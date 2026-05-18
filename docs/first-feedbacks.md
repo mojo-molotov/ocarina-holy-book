@@ -148,7 +148,7 @@ Thanks to what SCIENCE says.**
 while you were bullying teenagers in Dota chats or doing god knows what, always showing off, always proving you're the most handsome, the strongest,
 the smartest, the most overbearing.**
 
-**We, we are retarded, but we will stay online until the very end!**
+[**We, we are retarded, but we will stay online until the very end!**](https://soundcloud.com/spokepp4l/retarded)
 
 **We are a true FAMILY!  
 And we are SLEEPLESS!**

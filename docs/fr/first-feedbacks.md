@@ -167,10 +167,12 @@ Et nous ne dormons JAMAIS&nbsp;!**
 "C'est complètement con ce que tu fais."  
 "En fait ce que tu écris ça n'a aucun sens."
 
-**MAINTENANT, CHIALE !  
-Tu es VIDE !  
-TU ES VIDE, TU M'ENTENDS ?  
-Ton "travail" c'est de la PUTAIN DE MERDE !**
+[**THE FUCK YOU THINK THIS IS?  
+You HOLLOW!  
+YOU HOLLOW, YOU UNDERSTAND ME?  
+YOU'RE WORTHLESS, YOU'RE FUCKING TRASH!**](https://soundcloud.com/queed-inc/true-colors)
+
+<p align="right"><i>(btw: RIP, DG descendant...)</i></p>
 
 ---
 

@@ -159,10 +159,12 @@ And we are SLEEPLESS!**
 "What you're doing is completely stupid."  
 "Actually, what you write makes no sense whatsoever."
 
-**NOW, HOWL!  
-You are HOLLOW!  
-YOU ARE HOLLOW, DO YOU HEAR ME?  
-Your "work" is absolute FUCKING TRASH!**
+[**THE FUCK YOU THINK THIS IS?  
+You HOLLOW!  
+YOU HOLLOW, YOU UNDERSTAND ME?  
+YOU'RE WORTHLESS, YOU'RE FUCKING TRASH!**](https://soundcloud.com/queed-inc/true-colors)
+
+<p align="right"><i>(btw: RIP, DG descendant...)</i></p>
 
 ---
 

@@ -125,7 +125,7 @@ I'm the bug you can't kill.**
 And I am not here for the _prestige_. Nor even for the _profit_.  
 I am here for our **community**.
 
-**In the Lulzboat, salute, bitch, and show some respect.**
+[**In the Lulzboat, salute, bitch, and show some respect.**](https://www.youtube.com/watch?v=PCW6BkSp1Sc)
 
 YOU, you would have been that _lamer_, that kid who just wanted to show off and launched Exploit-DB PoCs from his bedroom like a _rookie_. To prove
 yourself, to put yourself on display, to make us see just how _in_ you are. ME, I'm that kid who absorbed everything, and grew up with it.

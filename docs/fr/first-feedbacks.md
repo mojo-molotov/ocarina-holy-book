@@ -133,7 +133,7 @@ Je suis le bug dont tu ne pourras jamais te débarrasser.**
 Et moi je ne suis pas là pour le _prestige_. Ni même pour le _profit_.  
 Je suis là pour notre **communauté**.
 
-**In the Lulzboat, salute, bitch, and show some respect.**
+[**In the Lulzboat, salute, bitch, and show some respect.**](https://www.youtube.com/watch?v=PCW6BkSp1Sc)
 
 TOI, tu aurais été ce _lamer_, ce gamin qui aurait juste voulu frimer et lancer des PoC trouvés sur Exploit-DB depuis ta chambre comme un _rookie_.
 Pour te montrer, pour t'exhiber, pour nous faire voir à quel point tu es _in_. MOI, je suis ce gamin qui a tout absorbé, et qui a grandi avec ça.

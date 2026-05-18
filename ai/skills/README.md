@@ -36,6 +36,7 @@ Read the codebase or specs and surface findings; never edit.
 - [review-watcher-emissions](review-watcher-emissions/SKILL.md) — find watcher-emitted artifacts hiding in run output; emissions are always negative signals.
 - [review-watcher-misuse](review-watcher-misuse/SKILL.md) — audit watcher callbacks for the negative-only convention.
 - [review-compartmentalisation-leaks](review-compartmentalisation-leaks/SKILL.md) — literals (URLs, credentials, selectors, magic numbers) outside their canonical module.
+- [review-dead-code](review-dead-code/SKILL.md) — unused connectors / POMs / scenarios / suites / fragments / constants; per-finding choice between delete, incubate (`<source-root>/incubator/`), or keep — applied with dependency-tree preservation and the project's lint/format/type-check loop.
 
 ## Analyse (diagnostic experiments)
 
@@ -63,7 +64,7 @@ Build / refresh a mental model — of the codebase, the ecosystem, the SUT's con
 
 - [assess-test-base](assess-test-base/SKILL.md) — catalogue of the existing test base across seven categories.
 - [assess-ecosystem](assess-ecosystem/SKILL.md) — bounded public-research pass over eight ecosystem surfaces; token-budget-controlled.
-- [understand-sut-constraints](understand-sut-constraints/SKILL.md) — map SUT-side bounds that constrain parallel-test safety; distributed mitigations only.
+- [understand-sut-constraints](understand-sut-constraints/SKILL.md) — map SUT-side bounds that constrain parallel-test safety; distributed mitigations when the fleet shares scarcity, worker-local in-memory only when it doesn't (and the keys + thread-safety gates pass).
 - [understand-ocarina](understand-ocarina/SKILL.md) — four-tier framework comprehension; Holy Book first.
 
 ## Pick (file selection)
@@ -116,3 +117,5 @@ A few recurring chains:
 - Spec change → `update-frd-and-tests` (spec doc first, tests follow, gap tests reframed not flipped).
 - New flake suspect → `empiricism` → `write-a-probe` → finding lands in the gap inventory / scenario comment / spec doc → probe deleted.
 - Any framework question → `understand-ocarina` (Holy Book first, then source / example clones).
+- Hygiene pass / pre-release pruning → `assess-test-base` (catalogue) → `review-dead-code` (audit unused connectors / POMs / scenarios / fragments / constants) → per finding: delete or move to `<source-root>/incubator/`.
+- Local environment bring-up → `setup-environment` (venv + tooling + driver adapter choice + `CLAUDE.local.md` + quality loop).

@@ -10,7 +10,8 @@ slice_ when the cycle/campaign/suite/test tree shifts. That shape is right when 
 reshape, type hygiene, consolidation, dead-code removal, a discipline applied uniformly to existing tests — the report should frame the _refactor_,
 not the test plan. A long Test plan and a hierarchy slice on a refactor PR are noise; they push the actual change out of view.
 
-This skill: detect the PR type and pick the right template.
+This skill: detect the PR type and pick the right template. (Dead-code-removal PRs are the typical output of `review-dead-code`; the report template
+below covers them under the refactor shape.)
 
 ## Detect the PR type
 

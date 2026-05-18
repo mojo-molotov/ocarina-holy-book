@@ -60,8 +60,8 @@ same operation is possible but no test runs it.
 ### 3. Same page, different operation
 
 For each page POM, list every public method (the page's exposed operations) and check whether a test exercises each one. Methods declared and never
-called from a scenario are dead surface (already caught by the "no dead connectors" rule); methods called only as setup, never as the subject of a
-test, are coverage gaps.
+called from a scenario are dead surface (already caught by the "no dead connectors" rule — `review-dead-code` audits this end-to-end); methods called
+only as setup, never as the subject of a test, are coverage gaps.
 
 Concrete examples from <https://github.com/mojo-molotov/ocarina-with-ai-example>:
 

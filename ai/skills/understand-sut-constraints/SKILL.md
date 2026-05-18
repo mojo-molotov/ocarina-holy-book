@@ -6,11 +6,13 @@ description:
   heavily-parallelised suite reuses the demo account; at saturation, the SUT rejects new logins and the test code mistakes that for an app bug); OTP
   login where the matching information is coarse (time-windowed with poor precision) so parallel tests race for the same code; per-tenant rate limits;
   database-row locks on shared records; deployment-wide write quotas. For each constraint, the skill walks: *is it specified anywhere? if not, is it
-  an anomaly or a deliberate-but-undocumented limit?* and then proposes mitigations **aware of Ocarina's absolute prioritisation of horizontal
-  scaling**: never in-process state at the scale of one Ocarina worker (that breaks at the next scale-out), always distributed primitives (a
-  Redis-backed counter, a distributed lock, a delta-timer reservation) at the scale of the whole test fleet. Use whenever the user asks to understand
-  the SUT's parallel-safety envelope, find constraints that could flake the test code itself, audit shared resources for race conditions, or design
-  distributed coordination for a flaky-under-parallelism test."
+  an anomaly or a deliberate-but-undocumented limit?* and then proposes mitigations **aware of Ocarina's horizontal-scaling discipline — applied where
+  shared scarcity exists**: when the fleet contends on a finite SUT-side resource, never in-process state at the scale of one Ocarina worker (that
+  breaks at the next scale-out), always distributed primitives (a Redis-backed counter, a distributed lock, a delta-timer reservation) at the scale of
+  the whole test fleet; when no shared scarcity applies, a worker-local in-memory cache is acceptable *only* if its keys are uniquely generated and
+  the generation mechanism is thread-safe enough for the contention level. Use whenever the user asks to understand the SUT's parallel-safety
+  envelope, find constraints that could flake the test code itself, audit shared resources for race conditions, or design distributed coordination for
+  a flaky-under-parallelism test."
 ---
 
 # Understand the SUT's constraints — what the app limits, the tests must coordinate
@@ -24,13 +26,26 @@ the bound and the test code observes "weird behaviour from the app" that isn't t
 
 The mitigation discipline:
 
-> **Ocarina prioritises horizontal scaling absolutely.**
+> **Ocarina prioritises horizontal scaling — applied where the fleet contends on a finite SUT-side resource.**
 >
-> Coordination state never lives in a single Ocarina process's memory. Today's `--workers 3` becomes tomorrow's distributed CI matrix becomes the
-> next-year's elastic fleet. Anything that works at one scale and breaks at the next is a regression waiting to happen.
+> When such contention exists, coordination state never lives in a single Ocarina process's memory. Today's `--workers 3` becomes tomorrow's
+> distributed CI matrix becomes the next-year's elastic fleet. Anything that works at one scale and breaks at the next is a regression waiting to
+> happen.
+>
+> When no such contention exists for the traversed use case, the discipline relaxes: a worker-local in-memory cache is acceptable. The relaxation has
+> two non-negotiable conditions — **uniquely generated keys** (no two workers collide on the same slot) and a **thread-safe-enough generation
+> mechanism** (the concurrency level the cache will see does not race the key-generation path). Both conditions must be confirmed deliberately, not
+> assumed.
 
-So: distributed primitives only. A Redis-backed counter (or equivalent), a distributed lock, a reservation system with delta-timing. The test fleet
-coordinates _as a fleet_, not as a process.
+So: distributed primitives when the fleet shares scarcity (a Redis-backed counter, a distributed lock, a reservation system with delta-timing) — the
+test fleet coordinates _as a fleet_, not as a process. Worker-local in-memory only when no shared scarcity applies _and_ the key-generation /
+thread-safety pair holds.
+
+The two questions — _"is there shared scarcity?"_ and _"if not, are keys unique and generation thread-safe enough?"_ — are the gates. Skipping them
+and reaching for in-memory because it's convenient is the hidden regression: it works under today's load, fails when the SUT (or the parallelism)
+crosses a threshold that was never explicitly checked. A concrete shape: a session-cache keyed off a process-local counter is fine for a SUT with no
+session cap; the same shape, against a SUT that does cap concurrent sessions per account, contends silently across workers and breaks. Same code, two
+SUTs, two verdicts — because the gates resolve differently.
 
 ## The seven SUT-constraint shapes
 
@@ -103,7 +118,19 @@ The SUT's read-after-write isn't immediate (replication lag, cache, async indexi
 
 ## The horizontal-scaling discipline
 
-For every mitigation, ask:
+First gate, before any mitigation question: **does the fleet share scarcity on this constraint?** If two workers cannot interfere — because the SUT
+imposes no bound the test traversal touches, because each worker owns disjoint data, because the resource is effectively unbounded for the use case
+walked — then the constraint isn't a coordination problem and a worker-local in-memory cache is acceptable. In that case, only the cache-correctness
+sub-gate applies:
+
+- **Are the cache keys uniquely generated?** Two workers landing on the same key by accident is a collision waiting to happen — even without a SUT
+  bound. Process IDs, run IDs, worker IDs, deterministic-per-test seeds — pick one that the project actually carries; don't invent.
+- **Is the key-generation mechanism thread-safe for the concurrency the cache will see?** Within a single process, this is GIL-friendly Python code,
+  `threading.Lock`, `itertools.count()` (atomic), or similar. Across workers on the same machine, file locks. Across machines, you're already in
+  distributed-primitive territory — which means the first gate's verdict was wrong and you need to re-walk it.
+
+When the fleet _does_ share scarcity — a session cap, a slot pool, a per-tenant rate limit, a write quota — the mitigation question opens. For every
+mitigation, ask:
 
 - **Does this state live in one Ocarina process?** If yes — wrong. Today the test fleet is one process with `--workers 3`; tomorrow it's three
   processes on three runners. In-process counters / locks / queues evaporate the moment the second process spins up.
@@ -191,15 +218,18 @@ For each, sketch (don't implement):
 ## Anti-patterns to avoid
 
 - In-process counter / lock / queue for any SUT-shared constraint — breaks the moment Ocarina scales horizontally.
+- Worker-local in-memory cache reached for without first answering both gates (_"is there shared scarcity?"_ and _"if not, are keys unique and
+  generation thread-safe enough?"_) — works today, fails silently when the SUT or the parallelism crosses an unchecked threshold.
 - Hard-coded `sleep()` waits for eventual-consistency lag — doesn't scale, brittle to environment.
 - "Solve at the test level" hacks that paper over an unspecified SUT bound rather than first asking whether the bound is intentional.
 
 ## Cross-references
 
 - Related skills: `analyse-flakiness` (test-body retry classification), `analyse-fixture-flakiness` (boundary instrumentation),
-  `business-attack-ideation` (saturation as deliberate attack), `assess-ecosystem` (third-party constraints from docs).
+  `business-attack-ideation` (saturation as deliberate attack), `assess-ecosystem` (third-party constraints from docs), `introduce-pom-retries`
+  (POM-retry candidates that turn out to be SUT bounds belong here, not in a retry layer).
 - `the gap inventory (environmental section)` — current environment artifacts (some may be SUT-constraint symptoms in disguise).
-- `CLAUDE.md` → "Ocarina prioritises horizontal scaling absolutely" (this skill's defining discipline).
+- `using-ocarina-with-ai` → _"Distributed when scarcity is shared"_ — the one-line summary of this skill's discipline.
 
 ## Recommended next motions
 
@@ -229,7 +259,10 @@ The comprehension is the deliverable. The mitigation is a follow-up motion.
 
 ## Hard rules
 
-- **Horizontal scaling is absolute.** No in-process state for any SUT-shared coordination. The mitigation must be valid at 1 process, 3, and N.
+- **Horizontal scaling applies where the fleet shares scarcity.** When the SUT bounds a resource the fleet contends on, no in-process state for that
+  coordination — the mitigation must be valid at 1 process, 3, and N. When no shared scarcity applies to the traversed use case, worker-local
+  in-memory is acceptable — _provided_ the cache-correctness gates pass (uniquely generated keys + thread-safe-enough key generation). The two gates
+  ("shared scarcity?" then "if not, keys + thread-safety?") are walked explicitly, never skipped because in-memory was convenient.
 - **Ask the spec question first.** _"Is this constraint specified?"_ before _"how do we work around it?"_. An undocumented bound may be a SUT bug that
   should be fixed in the SUT, not papered over in the tests.
 - **Mitigations are infrastructure, not test code.** They live in a coordination layer (Redis, distributed lock service, reservation system), not

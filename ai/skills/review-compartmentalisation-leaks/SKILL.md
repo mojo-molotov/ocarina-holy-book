@@ -237,7 +237,8 @@ For each finding, cite the supporting rule:
 
 - `CLAUDE.md` → "Use the constant" rule (anchors URL / credential / magic-number findings).
 - `CLAUDE.md` → "Datasets are authoring decisions" rule (anchors domain-string / magic-number findings).
-- Sister review skills: `review-type-ignore`, `review-comment-drift`, `review-intent-collisions`.
+- Sister review skills: `review-type-ignore`, `review-comment-drift`, `review-intent-collisions`, `review-dead-code` (pruning unused symbols; a
+  literal that "leaks" from a dead module is dead twice over).
 
 ## Recommended next motions
 

@@ -183,7 +183,8 @@ For each, identify the connectors / POMs involved and the file that should _own_
 
 - Ocarina `TestScenarioFragment` (`<gitignored>/ocarina/.../custom_types/oc_test.py:72`).
 - `CLAUDE.md` — DRY policy section (if it exists).
-- Related skills: `review-compartmentalisation-leaks` (literals migrated to constants), `extend-coverage` (new tests may exercise the fragment).
+- Related skills: `review-compartmentalisation-leaks` (literals migrated to constants), `extend-coverage` (new tests may exercise the fragment),
+  `review-dead-code` (run after fragmentation lands — the original blocks the fragment replaced often turn into orphan helpers).
 
 ## Recommended next motions
 

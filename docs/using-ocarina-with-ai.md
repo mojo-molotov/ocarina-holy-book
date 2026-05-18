@@ -47,13 +47,15 @@ Each rule carries a one-line "_why_."
 
 One Markdown file per skill, YAML frontmatter + body. Nine families.
 
-### Review (12)
+### Review (13)
 
 Static reads; surface findings.
 
 - `review-spec-gaps` — clarification questions on the FRD.
 - `review-watcher-misuse` — `watcher.report(...)` against the negative-only convention.
 - `review-compartmentalisation-leaks` — URLs, selectors, magic numbers out of place.
+- `review-dead-code` — unused connectors / POMs / scenarios / suites / fragments / constants; per finding: delete, incubate
+  (`<source-root>/incubator/`, dependency tree preserved), or keep.
 - `review-report` — classify each FAIL / SKIP for one run.
 - Plus: `review-type-ignore`, `review-match-candidates`, `review-unverified-transitions`, `review-submit-dispatchers`, `review-comment-drift`,
   `review-suite-stability`, `review-intent-collisions`, `review-watcher-emissions`.
@@ -135,7 +137,8 @@ motion via `update-frd-and-tests`.
 
 **Watcher emissions are negative signals only.** A watcher emitting _"login succeeded"_ breaks the contract.
 
-**Horizontal scaling first.** No in-memory state at the worker level. Distributed primitives only.
+**Distributed when scarcity is shared.** If workers contend on a SUT-capped resource (sessions, slots, quotas), coordinate through distributed
+primitives. Otherwise a worker-local in-memory cache is fine — provided keys can't collide and generation is thread-safe.
 
 **Mtime, not filename.** UUID suffixes are random; `pick-*` sorts by mtime.
 

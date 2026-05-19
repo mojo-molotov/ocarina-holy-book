@@ -8,8 +8,10 @@ const name = computed(() => frontmatter.value.blog?.name ?? site.value.title ?? 
 const motto = computed(() => frontmatter.value.blog?.motto ?? '');
 
 const isFrench = computed(() => lang.value?.startsWith('fr'));
-const pdfHref = computed(() => withBase(isFrench.value ? '/ocarina-fr.pdf' : '/ocarina-en.pdf'));
-const pdfLabel = computed(() => (isFrench.value ? 'Télécharger (PDF)' : 'Download (PDF)'));
+const isRussian = computed(() => lang.value?.startsWith('ru'));
+const pdfHref = computed(() => withBase(isFrench.value ? '/ocarina-fr.pdf' : isRussian.value ? '/ocarina-ru.pdf' : '/ocarina-en.pdf'));
+const pdfDownload = computed(() => pdfHref.value.split('/').pop());
+const pdfLabel = computed(() => (isFrench.value ? 'Télécharger (PDF)' : isRussian.value ? 'Скачать (PDF)' : 'Download (PDF)'));
 </script>
 
 <template>
@@ -19,7 +21,7 @@ const pdfLabel = computed(() => (isFrench.value ? 'Télécharger (PDF)' : 'Downl
       <span v-show="motto" class="motto">{{ motto }}</span>
     </h1>
     <div class="download-wrapper">
-      <a :href="pdfHref" :download="isFrench ? 'ocarina-fr.pdf' : 'ocarina-en.pdf'" class="download-button">
+      <a :href="pdfHref" :download="pdfDownload" class="download-button">
         {{ pdfLabel }}
       </a>
     </div>

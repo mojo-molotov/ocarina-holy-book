@@ -147,7 +147,7 @@ empiriquement. »_
 **Les tests gap sont reformulés, pas basculés au vert.** Inverser l'assertion, renommer, déplacer la ligne dans le doc de stratégie, consigner la date
 dans `IDENTIFIED_GAPS.md`. Le tout via `update-frd-and-tests`.
 
-**Les signaux watchers sont négatifs uniquement.** Un watcher qui émet _« login réussi »_ casse le contrat.
+**Les signaux des watchers sont toujours négatifs.** Un watcher qui émet _« login réussi »_ casse le contrat.
 
 **Distribué quand une ressource est partagée.** Dès que plusieurs workers se partagent une ressource plafonnée par le SUT (sessions, créneaux,
 quotas), la coordination passe par des primitives distribuées. Sinon, un cache local en mémoire suffit — à condition que les clés soient garanties
@@ -168,6 +168,7 @@ uniques et que leur génération soit thread-safe.
 - https://mojo-molotov.github.io/ocarina-holy-book/llms-full.txt
 - https://mojo-molotov.github.io/ocarina-holy-book/CLAUDE.md
 - https://mojo-molotov.github.io/ocarina-holy-book/CLAUDE.slim.md
+- https://mojo-molotov.github.io/ocarina-holy-book/ocarina-ru.pdf
 - https://mojo-molotov.github.io/ocarina-holy-book/ocarina-en.pdf
 - https://mojo-molotov.github.io/ocarina-holy-book/ocarina-fr.pdf
 

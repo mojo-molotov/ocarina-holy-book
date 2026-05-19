@@ -419,4 +419,4 @@ For Now and Forever.
 
 ---
 
-<p align="right"><i>Игорь Казанова</i></p>
+<p align="right"><i>Игорь Казанова<br/><a href="https://soundcloud.com/scarlett_danger/red-notice" rel="noreferrer" target="_blank">Hacking from Bastia to Moscow</a></i></p>

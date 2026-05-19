@@ -12,7 +12,7 @@ Usage:
     3. python3 script.py
 
 Inputs:  docs/ folder with .md files + images, Noto font files
-Outputs: ocarina-en.pdf, ocarina-fr.pdf in OUTPUT_DIR
+Outputs: ocarina-en.pdf, ocarina-fr.pdf, ocarina-ru.pdf in OUTPUT_DIR
 
 See prompt.md for the full specification and known pitfalls.
 
@@ -63,9 +63,9 @@ from bidi.algorithm import get_display as bidi_display
 # ║  CONFIG — adapt these to your environment, then run `python3 script.py`    ║
 # ╚════════════════════════════════════════════════════════════════════════════╝
 # Paths
-DOCS_DIR    = Path("/home/claude/docs")
-FONTS_DIR   = Path("/home/claude/fonts")
-OUTPUT_DIR  = Path("/mnt/user-data/outputs")
+DOCS_DIR    = Path("/Users/causticbitch/Documents/Delivery/ocarina-holy-book/docs")
+FONTS_DIR   = Path("/Users/causticbitch/Documents/Delivery/ocarina-holy-book/prompts/generate-books")
+OUTPUT_DIR  = Path("/Users/causticbitch/Documents/Delivery/ocarina-holy-book/pub")
 PUBLIC_DIR  = DOCS_DIR / "public"   # images referenced by /assets/... in markdown
 
 # Page layout (A4)
@@ -1438,7 +1438,8 @@ def md_to_flowables(body: str, footnotes: list) -> list:
             bq: list[str] = []
             while i < n and lines[i].startswith('>'):
                 bq.append(lines[i][1:].lstrip()); i += 1
-            flowables.append(_BlockquoteFlowable(inline_to_rl(' '.join(bq), footnotes)))
+            joined = join_paragraph_lines(bq)
+            flowables.append(_BlockquoteFlowable(inline_to_rl(joined, footnotes)))
             continue
 
         # ── Unordered list ─────────────────────────────────────────────────
@@ -1742,7 +1743,7 @@ def generate(locale: str, locale_dir: Path, cfg: dict) -> Path:
         print(f"  [{ch['date']}] {ch['title']}")
 
     title  = cfg['title']
-    author = 'Igor Casanova'
+    author = cfg.get('author', 'Igor Casanova')
     label  = cfg['chapter_label']
     toc_t  = cfg['toc_title']
 
@@ -1779,6 +1780,9 @@ LOCALES = {
                chapter_label='Chapter', toc_title='Table of content'),
     'FR': dict(dir=DOCS_DIR / 'fr', title="Le livre sacré d'Ocarina",
                chapter_label='Chapitre', toc_title='Sommaire'),
+    'RU': dict(dir=DOCS_DIR / 'ru', title='Священная книга Ocarina',
+               chapter_label='Глава', toc_title='Содержание',
+               author='Игорь Казанова'),
 }
 
 if __name__ == '__main__':

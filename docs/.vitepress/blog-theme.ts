@@ -38,6 +38,40 @@ const blogTheme = getThemeConfig({
       }
     },
 
+    ru: {
+      formatShowDate: (date: string | Date) => {
+        const d = new Date(date);
+        const diff = Date.now() - d.getTime();
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+
+        if (minutes < 1) return 'Только что';
+        if (hours < 1 && minutes > 1) return `${minutes} мин назад`;
+        if (hours < 1) return `${minutes} мин назад`;
+        if (days < 1) return `${hours} ч назад`;
+        if (days < 7) return `${days} дн назад`;
+        return d.toLocaleDateString('ru-RU');
+      },
+      article: {
+        analyzeTitles: {
+          topReadTime: '{{value}} мин чтения',
+          inlineWordCount: '{{value}} слов',
+          inlineReadTime: '{{value}} мин',
+          topWordCount: '{{value}} слов',
+          wordCount: 'Количество слов',
+          publishDate: 'Опубликовано',
+          readTime: 'Время чтения',
+          lastUpdated: 'Обновлено',
+          author: 'Автор',
+          tag: 'Теги'
+        }
+      },
+      recommend: {
+        title: 'Смотрите также'
+      }
+    },
+
     root: {
       formatShowDate: (date: string | Date) => {
         const d = new Date(date);
@@ -83,6 +117,16 @@ const blogTheme = getThemeConfig({
         toNavigate: 'naviguer',
         toSelect: 'confirmer',
         toClose: 'fermer',
+        searchBy: ' '
+      },
+      ru: {
+        emptyText: 'Результатов не найдено',
+        heading: 'Всего: {{searchResult}}',
+        placeholder: 'Поиск...',
+        btnPlaceholder: 'Поиск',
+        toNavigate: 'навигация',
+        toSelect: 'выбрать',
+        toClose: 'закрыть',
         searchBy: ' '
       },
       root: {

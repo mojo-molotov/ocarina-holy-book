@@ -22,6 +22,14 @@ const i18n = computed(
         linkLabel: 'go to home',
         linkText: 'Take me home',
         link: '/'
+      },
+      ru: {
+        code: '404',
+        title: 'СТРАНИЦА НЕ НАЙДЕНА',
+        quote: 'Страница, которую вы ищете, не существует.',
+        linkLabel: 'перейти на главную',
+        linkText: 'На главную',
+        link: '/'
       }
     })[lang.value] ?? {
       code: '404',

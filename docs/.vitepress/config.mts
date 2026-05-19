@@ -41,6 +41,21 @@ export default defineConfig({
       title: "Le livre sacré d'Ocarina",
       label: 'Français',
       lang: 'fr'
+    },
+    ru: {
+      themeConfig: {
+        outline: {
+          label: 'Оглавление',
+          level: [2, 3]
+        },
+        skipToContentLabel: 'Перейти к содержанию',
+        lastUpdatedText: 'Последнее обновление:',
+        returnToTopLabel: 'Вернуться вверх',
+        sidebarMenuLabel: 'Смотрите также'
+      },
+      title: 'Священная Книга Ocarina',
+      label: 'Русский',
+      lang: 'ru'
     }
   },
   vite: {

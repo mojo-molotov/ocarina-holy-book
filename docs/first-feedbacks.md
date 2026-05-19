@@ -409,4 +409,4 @@ nobody can understand it. That's how they write journals in Academics: they try 
 
 ---
 
-<p align="right"><i>Игорь Казанова</i></p>
+<p align="right"><i>Игорь Казанова<br/><a href="https://soundcloud.com/scarlett_danger/red-notice" rel="noreferrer" target="_blank">Hacking from Bastia to Moscow</a></i></p>

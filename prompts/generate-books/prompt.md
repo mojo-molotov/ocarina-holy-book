@@ -2,8 +2,8 @@
 
 ## What this is
 
-A system that turns a VitePress `docs/` folder (Markdown + images) into two polished A4 PDFs — one English, one French. The system is two files: this
-prompt (the spec) and `script.py` (the implementation). They are designed to be used together in an agentic environment.
+A system that turns a VitePress `docs/` folder (Markdown + images) into three polished A4 PDFs — one English, one French, one Russian. The system is
+two files: this prompt (the spec) and `script.py` (the implementation). They are designed to be used together in an agentic environment.
 
 ## How to run it
 
@@ -55,10 +55,11 @@ prompt (the spec) and `script.py` (the implementation). They are designed to be 
 
 ### Outputs
 
-Two compressed PDFs in `OUTPUT_DIR`:
+Three compressed PDFs in `OUTPUT_DIR`:
 
 - `ocarina-en.pdf` — _The Ocarina Holy Book_
 - `ocarina-fr.pdf` — _Le livre sacré d'Ocarina_
+- `ocarina-ru.pdf` — _Священная книга Ocarina_
 
 ---
 
@@ -159,7 +160,8 @@ Character-by-character loop that converts Markdown inline syntax to ReportLab Pa
 
 ### 7. Book structure
 
-- **Cover**: dark background, white title/author
+- **Cover**: dark background, white title/author. The author name defaults to `Igor Casanova`; a locale may override it via the `author` key in
+  `LOCALES` (the Russian book uses the Cyrillic `Игорь Казанова`, matching the in-page signatures).
 - **Table of Contents**: custom `ToCEntry` flowables with right-aligned page numbers
 - **Chapters**: ordered by frontmatter `date` field, each starting with a `ChapterMarker` sentinel
 

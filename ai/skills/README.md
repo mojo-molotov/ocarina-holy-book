@@ -103,9 +103,9 @@ Question the environment before assuming a result is meaningful.
 
 ## Setup
 
-Stand up or refresh the local working environment so the suite is runnable, lintable, and type-clean.
+Stand up or refresh the local working environment so the suite is runnable, lintable, type-clean, and the skills invokable from Claude Code.
 
-- [setup-environment](setup-environment/SKILL.md) — venv + dev tooling + `CLAUDE.local.md` driver paths + the `ruff` / `mypy` / `pre-commit` quality loop + a smoke-check of the runner.
+- [setup-environment](setup-environment/SKILL.md) — venv + dev tooling + the Ocarina skill battery copied into Claude Code's skills directory + `CLAUDE.local.md` driver paths + the `ruff` / `mypy` / `pre-commit` quality loop + a smoke-check of the runner.
 
 ## Run
 
@@ -124,5 +124,5 @@ A few recurring chains:
 - New flake suspect → `empiricism` → `write-a-probe` → finding lands in the gap inventory / scenario comment / spec doc → probe deleted.
 - Any framework question → `understand-ocarina` (Holy Book first, then source / example clones).
 - Hygiene pass / pre-release pruning → `assess-test-base` (catalogue) → `review-dead-code` (audit unused connectors / POMs / scenarios / fragments / constants) → per finding: delete or move to `<source-root>/incubator/`.
-- Local environment bring-up → `setup-environment` (venv + tooling + driver adapter choice + `CLAUDE.local.md` + quality loop).
+- Local environment bring-up → `setup-environment` (venv + tooling + skill-battery install into Claude Code + driver adapter choice + `CLAUDE.local.md` + quality loop).
 - About to dispatch a run → `propose-visual-review` (headed vs headless choice, command composed, user runs).

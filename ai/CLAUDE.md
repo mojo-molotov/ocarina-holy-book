@@ -72,6 +72,7 @@ Path: `/path/to/chromedriver`
 - **ocarina**: `/path/to/ocarina`
 - **ocarina-example**: `/path/to/ocarina-example`
 - **ocarina-with-ai-example**: `/path/to/ocarina-with-ai-example`
+- **ocarina-holy-book**: `/path/to/ocarina-holy-book`
 ```
 
 Use the clones to look up framework internals, public types, opinionated interfaces, and conventions. The Holy Book is authoritative for the
@@ -712,10 +713,10 @@ clean code:
 
 ## Dev setup and quality checks
 
-Both are walked by the `setup-environment` skill (venv, dev tooling, `CLAUDE.local.md` paths, the `ruff` / `mypy` / `pre-commit` quality loop, and a
-smoke-check of the runner). Run that skill on first checkout or after any change that would alter `pip install` resolution. The quality loop —
-`ruff format src/` then `ruff check src/` then `mypy src/` then `pre-commit run --all-files --config .pre-commit-config.yaml` — runs before every
-commit and must match what CI runs.
+Both are walked by the `setup-environment` skill (venv, dev tooling, the Ocarina skill battery copied into Claude Code's skills directory,
+`CLAUDE.local.md` paths, the `ruff` / `mypy` / `pre-commit` quality loop, and a smoke-check of the runner). Run that skill on first checkout or after
+any change that would alter `pip install` resolution. The quality loop — `ruff format src/` then `ruff check src/` then `mypy src/` then
+`pre-commit run --all-files --config .pre-commit-config.yaml` — runs before every commit and must match what CI runs.
 
 ## CI workflows
 

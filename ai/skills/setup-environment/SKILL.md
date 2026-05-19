@@ -1,6 +1,6 @@
 ---
 name: setup-environment
-description: Stand up the local dev environment for an Ocarina suite — Python venv, runtime + dev tooling (ruff, mypy, pre-commit), the project's driver adapter choice (Selenium by default; any other Ocarina-supported adapter, or a locally-built one if the user wants something Ocarina doesn't ship), per-machine driver paths, and the quality-check loop run before every commit. Use this skill on first checkout, after a `pip install`-breaking change (new dependency, Python upgrade, lockfile rewrite), when switching driver adapter (Selenium ↔ Playwright ↔ a custom one), or whenever `pre-commit` / `ruff` / `mypy` invocations need to be re-grounded. The skill is intentionally narrow: it does not modify the CI workflow, the `.pre-commit-config.yaml` hook list, or the project's lint configuration — it only walks the steps to make the existing configuration runnable locally and aligned with CI. Pairs with `CLAUDE.local.md` (per-machine driver paths + adapter choice) and the `--driver-path` flag documented in `CLAUDE.md` → "Running tests".
+description: Stand up the local dev environment for an Ocarina suite — Python venv, runtime + dev tooling (ruff, mypy, pre-commit), the project's driver adapter choice (Selenium by default; any other Ocarina-supported adapter, or a locally-built one if the user wants something Ocarina doesn't ship), per-machine driver paths, the quality-check loop run before every commit, and the Ocarina skill battery (the Holy Book's `ai/skills/`) copied into Claude Code's skills directory so the workflows are invokable. Use this skill on first checkout, after a `pip install`-breaking change (new dependency, Python upgrade, lockfile rewrite), when switching driver adapter (Selenium ↔ Playwright ↔ a custom one), whenever `pre-commit` / `ruff` / `mypy` invocations need to be re-grounded, or after the Holy Book's `ai/skills/` gains or loses a skill (the Claude Code copy must be refreshed). The skill is intentionally narrow: it does not modify the CI workflow, the `.pre-commit-config.yaml` hook list, or the project's lint configuration — it only walks the steps to make the existing configuration runnable locally and aligned with CI. Pairs with `CLAUDE.local.md` (per-machine driver paths + adapter choice) and the `--driver-path` flag documented in `CLAUDE.md` → "Running tests".
 ---
 
 # Setup environment — local venv, tooling, driver paths, quality checks
@@ -38,7 +38,49 @@ pre-commit install --config .pre-commit-config.yaml
 The hook config is repo-tracked; `pre-commit install` only wires the local `.git/hooks/pre-commit` shim. Re-run it whenever the hook config changes
 substantively (new hook IDs, new mirror revs).
 
-## Step 4 — Pick the driver adapter
+## Step 4 — Install the Ocarina skill battery into Claude Code
+
+The ~40 workflow skills ship with **the Holy Book** (`mojo-molotov/ocarina-holy-book`), under its `ai/skills/` directory (catalogued in
+`ai/skills/README.md` there). They are **not** vendored into the test suite — a suite checkout has no `ai/skills/` of its own. So the source is a
+local clone of the Holy Book: use the path recorded in `CLAUDE.local.md` (Step 6 lists it among the repo clones), or clone it now if it is missing:
+
+```bash
+git clone https://github.com/mojo-molotov/ocarina-holy-book.git <path>
+```
+
+Claude Code only discovers skills from its own skills directories — it does not read the Holy Book's `ai/skills/` directly. Copy the battery from the
+clone into one of those directories so the workflows are invokable.
+
+**Ask the user which scope they want** — don't assume:
+
+- **Personal** (`~/.claude/skills/`) — the skills are available in every project on this machine. Right for a contributor who wants the Ocarina
+  workflows everywhere.
+- **Project** (`.claude/skills/`) — scoped to this repo only. Right when the skills should not leak into the contributor's other projects.
+
+Copy every skill directory (`ai/skills/*/` matches only directories, so `README.md` is excluded; the `SKILL.md` check is the belt-and-suspenders):
+
+```bash
+HOLY_BOOK="<path to the ocarina-holy-book clone>"   # the path recorded in CLAUDE.local.md
+
+# Pick ONE destination:
+DEST="$HOME/.claude/skills"        # personal — all projects on this machine
+# DEST=".claude/skills"            # project — this repo only
+
+mkdir -p "$DEST"
+for skill in "$HOLY_BOOK"/ai/skills/*/; do
+  [ -f "${skill}SKILL.md" ] || continue   # only directories that hold a SKILL.md
+  cp -R "$skill" "$DEST/"
+done
+```
+
+If you chose the **project** scope, add `.claude/skills/` to `.gitignore` — the copy is a per-machine artifact and `ai/skills/` stays the single
+tracked source of truth. Committing the copy would duplicate the battery inside its own repo.
+
+This is a **copy**, not a symlink: it snapshots the Holy Book's `ai/skills/` as it is now. When that directory changes (a `git pull` in the Holy Book
+clone adds, removes, or edits skills), re-run this step to refresh the copy — see "When to re-run this skill". A copy survives the clone being moved
+or deleted; the cost is that a renamed or removed skill leaves a stale directory at `$DEST` to delete by hand.
+
+## Step 5 — Pick the driver adapter
 
 Ocarina is adapter-shaped: the framework's hard couplings are the test hierarchy (`Test → TestSuite → TestCampaign → TestCycle`), the scenario DSL
 (`drive_page` / `act`), and the typed plumbing around them — _how_ it drives the browser is delegated to an adapter. **Selenium is the default and the
@@ -73,17 +115,17 @@ serve, a project-internal experimental adapter), resolve in this order:
    contribution, not a setup step.
 
 4. **Record the choice in `CLAUDE.local.md`.** The adapter selection is per-machine information (different contributors may experiment with different
-   adapters before one is canonised). See Step 5 for the template addition.
+   adapters before one is canonised). See Step 6 for the template addition.
 
 A non-Selenium adapter changes what driver paths matter (Playwright manages its own browsers — no chromedriver path; an HTTP adapter has no driver
 binary at all). Step 5 only asks for paths the chosen adapter actually consumes.
 
-## Step 5 — Per-machine config (`CLAUDE.local.md`)
+## Step 6 — Per-machine config (`CLAUDE.local.md`)
 
 `CLAUDE.local.md` is gitignored and stores per-machine paths and adapter choice. If it's missing, create it from the template in `CLAUDE.md` →
 "CLAUDE.local.md template" — and **ask for the paths, don't guess**. Things to fill in:
 
-- **Adapter** — the choice from Step 4. Record as a section, e.g.:
+- **Adapter** — the choice from Step 5. Record as a section, e.g.:
 
   ```markdown
   ## Driver adapter
@@ -101,10 +143,11 @@ binary at all). Step 5 only asks for paths the chosen adapter actually consumes.
     `~/Library/Caches/ms-playwright/...` cache directory if non-default.
   - HTTP / API adapter → no driver path; record the SUT base URL override if the local environment uses one.
   - Custom local adapter → whatever paths the adapter's `<Name>CliStoreSingleton` reads.
-- **Ocarina source repo clones** — Ocarina + the example repos. Used for framework-internals lookup (the Holy Book is authoritative for the documented
-  surface; clones are authoritative for everything else). The clone is also the canonical reference when building a local adapter (Step 4).
+- **Ocarina source repo clones** — Ocarina, the example repos, and the Holy Book (`ocarina-holy-book` — the docs _and_ the `ai/skills/` battery Step 4
+  copies from). Used for framework-internals lookup (the Holy Book is authoritative for the documented surface; the source / example clones are
+  authoritative for everything else). A source clone is also the canonical reference when building a local adapter (Step 5).
 
-## Step 6 — Quality checks (run before every commit)
+## Step 7 — Quality checks (run before every commit)
 
 ```bash
 ruff format src/          # format
@@ -119,10 +162,10 @@ versa, the local environment has drifted (different tool version, missing depend
 `pre-commit run --all-files` is the catch-all — it runs every hook against the full tree, not just staged files. Useful after a bulk rename or
 refactor where the staged-file view is misleading.
 
-## Step 7 — Smoke-check the runner
+## Step 8 — Smoke-check the runner
 
 A 30-second confidence check that the venv is wired correctly and the adapter resolves. Run a single test (or the smoke campaign) before declaring
-setup done. Flags depend on the adapter chosen in Step 4 — Selenium needs `--driver-path` / `--browser`, Playwright takes a `--browser-channel`
+setup done. Flags depend on the adapter chosen in Step 5 — Selenium needs `--driver-path` / `--browser`, Playwright takes a `--browser-channel`
 instead, an HTTP adapter takes neither. Read the chosen adapter's `<Name>CliStoreSingleton` for the exact keys.
 
 Selenium example (the worked-example adapter):
@@ -140,8 +183,8 @@ python -u src/main.py \
 `python src/main.py`, not `python -m src.main` — `src/` is the source root directory, not a package; script form correctly puts `src/` on
 `sys.path[0]` so intra-suite imports read `from constants.urls import …`, never `from src.constants.urls import …`. CI uses the script form; match it.
 
-If this exits clean, setup is done. If it doesn't, the failure mode tells you which step regressed (unknown CLI key → Step 4 adapter mismatch; driver
-path → Step 5; import error → Step 2; lint pre-commit complaint → Step 6).
+If this exits clean, setup is done. If it doesn't, the failure mode tells you which step regressed (unknown CLI key → Step 5 adapter mismatch; driver
+path → Step 6; import error → Step 2; lint pre-commit complaint → Step 7).
 
 ## When to re-run this skill
 
@@ -150,6 +193,8 @@ path → Step 5; import error → Step 2; lint pre-commit complaint → Step 6).
 - A dependency change in `pyproject.toml` that `pip install .` would resolve differently.
 - A `.pre-commit-config.yaml` change introducing new hook IDs or mirror revs.
 - After a driver upgrade (new Chrome major → new chromedriver → new path in `CLAUDE.local.md`).
+- After the Holy Book's `ai/skills/` gains, loses, or edits a skill (a `git pull` in the Holy Book clone, an upstream skill update) — the Claude Code
+  copy from Step 4 is a snapshot and must be refreshed (re-run Step 4 alone; the rest of the setup is unaffected).
 - **When switching driver adapter** (Selenium ↔ another Ocarina-shipped one ↔ a local build). The adapter line in `CLAUDE.local.md`, the CLI flags in
   the smoke check, and any optional-dependency install all need to follow.
 
@@ -161,7 +206,12 @@ path → Step 5; import error → Step 2; lint pre-commit complaint → Step 6).
 - It does not install browsers or download drivers. Driver acquisition is out of scope (use the browser vendor's distribution channel); this skill
   only wires the path once the binary exists.
 - It does not guess driver paths or credentials. `CLAUDE.local.md` is gitignored precisely because per-machine values must be supplied, not inferred.
-- It does not pick the adapter for the user. The choice is surfaced (Step 4) and recorded (Step 5); the decision stays with the user, the same as a
+- It does not pick the adapter for the user. The choice is surfaced (Step 5) and recorded (Step 6); the decision stays with the user, the same as a
   dataset choice (see `CLAUDE.md` → "Datasets are authoring decisions").
+- It does not pick the skill-install scope for the user. Step 4 surfaces personal vs project; the decision stays with the user.
+- It does not symlink the skill battery or version it. Step 4 copies — the Claude Code copy drifts from `ai/skills/` until re-run. This is deliberate
+  (a copy survives the repo being moved or deleted); the cost is the manual refresh noted above.
+- It does not edit the Holy Book's `ai/skills/`. The battery is the Holy Book's tracked source of truth; this skill only copies it outward into Claude
+  Code's reach.
 - It does not fork Ocarina. A locally-built adapter lives in `src/lib/ext/ocarina/adapters/<name>/` inside the suite — upstreaming it (if ever) is a
   separate motion, not a setup step.

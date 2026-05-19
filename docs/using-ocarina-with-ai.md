@@ -27,7 +27,8 @@ A working setup: a full test cycle built alongside Claude Code and Ocarina, agai
 Two variants. `CLAUDE.md` is full (rules + project layout, hierarchy, conventions, CI shape, PR template). `CLAUDE.slim.md` is rules only. Slim when
 context is heavy; full for onboarding and reviews. Full wins on disagreement.
 
-Onboarding steps (venv, `pip install`, `ruff` / `mypy` / `pre-commit`, runner smoke-check) live in `setup-environment`.
+Onboarding steps (venv, `pip install`, the skill battery copied into Claude Code, `ruff` / `mypy` / `pre-commit`, runner smoke-check) live in
+`setup-environment`.
 
 Rules:
 
@@ -113,7 +114,8 @@ Each produces a deliverable.
 
 ### Setup (1)
 
-- `setup-environment` — venv, dev tooling, driver paths in `CLAUDE.local.md`, pre-commit loop, runner smoke-check.
+- `setup-environment` — venv, dev tooling, the Ocarina skill battery copied into Claude Code's skills directory, driver paths in `CLAUDE.local.md`,
+  pre-commit loop, runner smoke-check.
 
 ### Run (1)
 

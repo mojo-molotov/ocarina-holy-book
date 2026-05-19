@@ -27,7 +27,8 @@ Un setup de travail : un cycle de test complet construit avec Claude Code et Oca
 Deux variantes. `CLAUDE.md` est complet (règles + organisation du projet, hiérarchie, conventions, forme CI, gabarit de PR). `CLAUDE.slim.md` ne
 contient que les règles. Slim quand le contexte est chargé ; complet pour l'onboarding et les revues. En cas de divergence, le complet l'emporte.
 
-Les étapes d'onboarding (venv, `pip install`, `ruff` / `mypy` / `pre-commit`, smoke-check du runner) vivent dans `setup-environment`.
+Les étapes d'onboarding (venv, `pip install`, la batterie de skills copiée dans Claude Code, `ruff` / `mypy` / `pre-commit`, smoke-check du runner)
+vivent dans `setup-environment`.
 
 Les règles :
 
@@ -114,7 +115,8 @@ Chacun produit un livrable.
 
 ### Setup (1)
 
-- `setup-environment` — venv, outillage de dev, chemins de drivers dans `CLAUDE.local.md`, boucle pré-commit, smoke-check du runner.
+- `setup-environment` — venv, outillage de dev, la batterie de skills Ocarina copiée dans le répertoire de skills de Claude Code, chemins de drivers
+  dans `CLAUDE.local.md`, boucle pré-commit, smoke-check du runner.
 
 ### Run (1)
 

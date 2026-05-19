@@ -45,7 +45,7 @@ Chaque règle contient un "_pourquoi_" d'une ligne.
 
 ## `skills/`
 
-Un fichier Markdown par skill, frontmatter YAML + corps. Neuf familles.
+Un fichier Markdown par skill, frontmatter YAML + corps. Dix familles.
 
 ### Review (13)
 
@@ -116,6 +116,11 @@ Chacun produit un livrable.
 
 - `setup-environment` — venv, outillage de dev, chemins de drivers dans `CLAUDE.local.md`, boucle pré-commit, smoke-check du runner.
 
+### Run (1)
+
+- `propose-visual-review` — avant un lancement local, propose `--not-headless` (regarder le navigateur exécuter) vs headless (comme en CI). Compose la
+  commande ; l'utilisateur la lance.
+
 ## Chaînes récurrentes
 
 **Cycle en échec :** `review-report` → `analyse-*` → `write-a-probe` → trouvailles propagées dans `IDENTIFIED_GAPS.md` / les SFD / un commentaire de
@@ -126,6 +131,9 @@ scénario → sonde supprimée.
 **Changement de spec :** `update-frd-and-tests` (SFD d'abord, tests ensuite). Les tests gap sont reformulés, pas basculés.
 
 **Nouvelle primitive Ocarina :** `understand-ocarina` d'abord, écriture ensuite.
+
+**Lorsque l'on est sur le point de lancer une exécution :** `propose-visual-review` — headed (`--not-headless`) ou headless (comme en CI) ? Compose la
+commande ; l'utilisateur la lance.
 
 ## Discipline
 

@@ -92,7 +92,7 @@ Chrome should run with the consumer password manager off (e.g. via the project's
 the adapter and launches plain Chrome, the post-login breach modal is back and _every_ downstream action looks like the test framework hanging. The
 known environmental finding documented in the gap inventory should call out the resolution; the artifact returns the moment the adapter isn't used.
 
-Verification: which path produced this run's chrome? If the user ran `python -m src.main` then it went through the adapter — good. If a one-off probe
+Verification: which path produced this run's chrome? If the user ran `python src/main.py` then it went through the adapter — good. If a one-off probe
 was launched, did it mirror the adapter's options? (The `write-a-probe` skill says it must.)
 
 ### 5. `--workers 3` concurrent access to the demo account
@@ -182,7 +182,7 @@ Two catalogued environmental artifacts in `ocarina-with-ai-example`:
   confirmation, `TimeoutException` surfaces after auto-retry. Affects `Saturation`, `Journey - History ordered`, can false-negative the
   duplicate/overlapping gap tests.
 - **§A-ENV-2 — Chrome password-breach modal (resolved).** Symptom: any post-login interaction silently does nothing. The driver adapter
-  (`create_drivers_pool.py`) disables the consumer password manager so this is no longer hit through `python -m src.main` — but a probe that bypasses
+  (`create_drivers_pool.py`) disables the consumer password manager so this is no longer hit through `python src/main.py` — but a probe that bypasses
   the adapter can resurrect it.
 
 If the symptom matches a catalogued artifact, that's the explanation.

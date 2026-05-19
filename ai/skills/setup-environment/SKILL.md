@@ -128,7 +128,7 @@ instead, an HTTP adapter takes neither. Read the chosen adapter's `<Name>CliStor
 Selenium example (the worked-example adapter):
 
 ```bash
-python -u -m src.main \
+python -u src/main.py \
   --driver-path <path/to/chromedriver> \
   --browser chrome \
   --workers 2 \
@@ -137,8 +137,8 @@ python -u -m src.main \
   --only <one-smoke-test-id>
 ```
 
-`python -m src.main`, not `python src/main.py` — script form puts `src/` on `sys.path[0]` instead of the project root, so `from src.X import Y` fails.
-CI uses the module form; match it.
+`python src/main.py`, not `python -m src.main` — `src/` is the source root directory, not a package; script form correctly puts `src/` on
+`sys.path[0]` so intra-suite imports read `from constants.urls import …`, never `from src.constants.urls import …`. CI uses the script form; match it.
 
 If this exits clean, setup is done. If it doesn't, the failure mode tells you which step regressed (unknown CLI key → Step 4 adapter mismatch; driver
 path → Step 5; import error → Step 2; lint pre-commit complaint → Step 6).

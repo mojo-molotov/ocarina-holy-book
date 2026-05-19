@@ -45,7 +45,7 @@ Each rule carries a one-line "_why_."
 
 ## `skills/`
 
-One Markdown file per skill, YAML frontmatter + body. Nine families.
+One Markdown file per skill, YAML frontmatter + body. Ten families.
 
 ### Review (13)
 
@@ -115,6 +115,11 @@ Each produces a deliverable.
 
 - `setup-environment` — venv, dev tooling, driver paths in `CLAUDE.local.md`, pre-commit loop, runner smoke-check.
 
+### Run (1)
+
+- `propose-visual-review` — before a local dispatch, offer `--not-headless` (watch the browser play out) vs headless (CI-shaped). Composes the
+  command; user runs.
+
 ## Recurring chains
 
 **Suite isn't green:** `review-report` → `analyse-*` → `write-a-probe` → finding lands in `IDENTIFIED_GAPS.md` / FRD / scenario comment → probe
@@ -125,6 +130,8 @@ deleted.
 **Spec changes:** `update-frd-and-tests` (FRD first, tests follow). Gap tests are reframed, not flipped.
 
 **New Ocarina primitive needed:** `understand-ocarina` first, then writing.
+
+**About to dispatch a run:** `propose-visual-review` — headed (`--not-headless`) or headless (CI-shaped)? Composes the command; user runs.
 
 ## Discipline
 

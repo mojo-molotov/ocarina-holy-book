@@ -107,6 +107,12 @@ Stand up or refresh the local working environment so the suite is runnable, lint
 
 - [setup-environment](setup-environment/SKILL.md) — venv + dev tooling + `CLAUDE.local.md` driver paths + the `ruff` / `mypy` / `pre-commit` quality loop + a smoke-check of the runner.
 
+## Run
+
+Surface the pre-run choices before a local dispatch; compose the command, hand it back.
+
+- [propose-visual-review](propose-visual-review/SKILL.md) — offer `--not-headless` vs headless (CI-shaped) before a run, with the trade-off and what to watch for during a headed run.
+
 ## Cross-family dispatch (which skill follows which)
 
 A few recurring chains:
@@ -119,3 +125,4 @@ A few recurring chains:
 - Any framework question → `understand-ocarina` (Holy Book first, then source / example clones).
 - Hygiene pass / pre-release pruning → `assess-test-base` (catalogue) → `review-dead-code` (audit unused connectors / POMs / scenarios / fragments / constants) → per finding: delete or move to `<source-root>/incubator/`.
 - Local environment bring-up → `setup-environment` (venv + tooling + driver adapter choice + `CLAUDE.local.md` + quality loop).
+- About to dispatch a run → `propose-visual-review` (headed vs headless choice, command composed, user runs).

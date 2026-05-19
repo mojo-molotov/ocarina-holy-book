@@ -105,7 +105,7 @@ The `[COPY N]` annotations are not noise — they confirm the saturation framewo
 ## Running tests
 
 ```bash
-python -u -m src.main \
+python -u src/main.py \
   --driver-path <path/to/chromedriver> \
   --browser chrome \
   --workers 3 \
@@ -115,8 +115,9 @@ python -u -m src.main \
 
 - **Never `--workers 1`.** Single-worker runs mask concurrency failures and diverge from CI. Match the workers count to your CI matrix; CI is the
   canonical reference.
-- **Use `python -m src.main`, not `python src/main.py`.** Script form puts `src/` on `sys.path[0]` instead of the project root, so
-  `from src.X import Y` fails. Module form puts the cwd on `sys.path` and finds `src/__init__.py`. CI uses the module form.
+- **Use `python src/main.py`, not `python -m src.main`.** `src/` is the source root directory, not a package — script form correctly puts `src/` on
+  `sys.path[0]` so intra-suite imports read `from constants.urls import …`, never `from src.constants.urls import …`. Don't package `src`. CI uses the
+  script form.
 
 CLI flags (all optional with defaults):
 

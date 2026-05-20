@@ -162,15 +162,28 @@ Character-by-character loop that converts Markdown inline syntax to ReportLab Pa
 
 - **Cover**: dark background, white title/author. The author name defaults to `Igor Casanova`; a locale may override it via the `author` key in
   `LOCALES` (the Russian book uses the Cyrillic `Игорь Казанова`, matching the in-page signatures).
-- **Table of Contents**: custom `ToCEntry` flowables with right-aligned page numbers
-- **Chapters**: ordered by frontmatter `date` field, each starting with a `ChapterMarker` sentinel
+- **Table of Contents**: a real hierarchical ToC. Custom `ToCEntry` flowables render three levels — chapters (bold, with a `Chapter N` prefix), H2 and
+  H3 sub-headings (indented, progressively smaller and lighter) — each with a dotted leader and a right-aligned page number. It may span several
+  pages.
+- **Chapters**: ordered by frontmatter `date` field, each starting with a `ChapterMarker` sentinel. Every H2/H3 heading is preceded by a
+  `HeadingMarker` sentinel (a zero-size flowable) used to feed both the ToC and the PDF outline.
 
 Page numbering starts at 1 on the first chapter page. Cover and ToC are not numbered.
 
+**PDF outline (bookmarks).** The script emits a navigable PDF outline so readers (Preview, Acrobat, etc.) show a real document tree in their sidebar.
+`TrackingDoc.afterFlowable()` calls `canvas.bookmarkPage()` + `canvas.addOutlineEntry()` for every chapter and sub-heading marker. Outline levels are
+clamped so a level never jumps by more than 1 from the previous entry (ReportLab raises `ValueError` otherwise — e.g. an H3 with no H2 above it). The
+outline targets **real PDF pages** via `bookmarkPage`, whereas the visible ToC shows the **printed** page number — the two differ by the cover+ToC
+offset, and conflating them makes readers jump to the wrong page.
+
 ### 8. Two-pass build
 
-The ToC needs page numbers that are only known after layout. Pass 1 builds with placeholder page numbers; `TrackingDoc.afterFlowable()` records the
-actual page for each `ChapterMarker`. Pass 2 rebuilds with correct numbers.
+The ToC needs page numbers that are only known after layout. Both the ToC and the outline are derived from the chapter story's markers
+(`scan_toc_struct` walks the flowables, recursing into `KeepTogether`), so their order, hierarchy and keys always match what is rendered — no separate
+markdown re-parse. Pass 1 builds the document and `TrackingDoc.afterFlowable()` records the real PDF page of every marker in `page_index`. Because the
+ToC entries come from the markers, the ToC already has its final size in pass 1, so those pages stay valid. The `pre_chapter_pages` offset (cover +
+ToC page count) is then `page_index['ch1'] - 1`, and each visible page number is `real_page - pre_chapter_pages`. Pass 2 rebuilds with the correct
+visible numbers and the final outline.
 
 ### 9. Compression
 

@@ -466,6 +466,22 @@ def is_arabic_cp(cp: int) -> bool:
     return (0x0600 <= cp <= 0x06FF or 0x0750 <= cp <= 0x077F or
             0xFB50 <= cp <= 0xFDFF or 0xFE70 <= cp <= 0xFEFF)
 
+def strip_md_inline(text: str) -> str:
+    """Strip inline markdown markers so headings can be used as plain-text
+    ToC entries and PDF outline (bookmark) titles.
+
+    Removes code spans, bold/italic markers and link syntax (keeping the link
+    text). HTML entities are decoded so e.g. `&amp;` shows as `&`.
+    """
+    text = html.unescape(text)
+    text = re.sub(r'`([^`]*)`', r'\1', text)
+    text = re.sub(r'\[([^\]]*)\]\((?:<[^>]*>|[^)]*)\)', r'\1', text)
+    text = re.sub(r'\*\*\*(.+?)\*\*\*', r'\1', text)
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
+    text = re.sub(r'\*(.+?)\*', r'\1', text)
+    text = re.sub(r'(?<![A-Za-z0-9])_(.+?)_(?![A-Za-z0-9])', r'\1', text)
+    return text.strip()
+
 # ── Inline markdown → ReportLab XML ──────────────────────────────────────────
 def inline_to_rl(text: str, footnotes: list | None = None) -> str:
     """
@@ -1233,37 +1249,100 @@ class ChapterMarker(Flowable):
         return f"ChapterMarker(#{self.chapter_num}, {self.chapter_title!r})"
 
 
-# ── ToC entry (custom canvas-drawn flowable) ──────────────────────────────────
-class ToCEntry(Flowable):
-    _LINE_H = 18
+def tag_heading(para: 'Paragraph', level: int, text: str, key: str) -> 'Paragraph':
+    """Attach ToC / PDF-outline metadata to an H2/H3 heading Paragraph.
 
-    def __init__(self, chapter_num, chapter_label, title, page_num,
-                 bold_font, reg_font, size=11):
+    The metadata rides on the heading Paragraph itself rather than on a
+    separate zero-size sentinel: TrackingDoc.afterFlowable() fires for the
+    Paragraph on the exact page it is laid out, so the recorded page is always
+    right. A separate marker placed *before* the heading could be left one page
+    behind when an orphan-avoiding break moves the heading to the next page.
+    """
+    para.toc_level = level   # markdown heading level: 2 or 3
+    para.toc_text  = text    # plain-text heading (no markdown markers)
+    para.toc_key   = key     # unique bookmark / page-map key
+    return para
+
+
+# ── ToC entry (custom canvas-drawn flowable) ──────────────────────────────────
+# A single hierarchical ToC line. `level` 0 = chapter, 1 = H2, 2 = H3.
+# Chapter lines carry a bold "Chapter N" prefix; sub-headings are indented and
+# rendered smaller. Dotted leaders connect the title to the right-aligned page
+# number.
+class ToCEntry(Flowable):
+    _SIZE    = {0: 11,   1: 10,   2: 9}
+    _LINE_H  = {0: 21,   1: 15.5, 2: 14}
+    _INDENT  = {0: 0,    1: 20,   2: 38}
+    _COLOR   = {0: colors.black,
+                1: colors.HexColor('#333333'),
+                2: colors.HexColor('#666666')}
+
+    def __init__(self, level, prefix, title, page_num, bold_font, reg_font):
         super().__init__()
-        self.chapter_num   = chapter_num
-        self.chapter_label = chapter_label
-        self.title         = title
-        self.page_num      = page_num
-        self.bold_font     = bold_font
-        self.reg_font      = reg_font
-        self.size          = size
-        self._avail_w      = CONTENT_W
+        self.level     = level
+        self.prefix    = prefix          # "Chapitre 1" for chapters, '' otherwise
+        self.title     = title
+        self.page_num  = page_num
+        self.bold_font = bold_font
+        self.reg_font  = reg_font
+        self._avail_w  = CONTENT_W
+
+    def __repr__(self):
+        return f"ToCEntry(L{self.level}, {self.title!r}, p{self.page_num})"
 
     def wrap(self, availWidth, availHeight):
         self._avail_w = availWidth
-        return (availWidth, self._LINE_H)
+        return (availWidth, self._LINE_H[self.level])
+
+    def _truncate(self, text, font, size, max_w):
+        c = self.canv
+        if c.stringWidth(text, font, size) <= max_w:
+            return text
+        while text and c.stringWidth(text + '…', font, size) > max_w:
+            text = text[:-1]
+        return text + '…'
 
     def draw(self):
         c = self.canv
-        baseline = 4
-        label = f"{self.chapter_label} {self.chapter_num}"
-        c.setFont(self.bold_font, self.size)
-        c.setFillColor(colors.black)
-        c.drawString(0, baseline, label)
-        lw = c.stringWidth(label, self.bold_font, self.size)
-        c.setFont(self.reg_font, self.size)
-        c.drawString(lw + 10, baseline, self.title)
-        c.drawRightString(self._avail_w, baseline, str(self.page_num))
+        size     = self._SIZE[self.level]
+        baseline = 5 if self.level == 0 else 4
+        indent   = self._INDENT[self.level]
+        title_font = self.bold_font if self.level == 0 else self.reg_font
+        pn = str(self.page_num)
+        pn_w = c.stringWidth(pn, self.reg_font, size)
+
+        # Bold "Chapter N" prefix (chapters only)
+        title_x = indent
+        if self.prefix:
+            c.setFont(self.bold_font, size)
+            c.setFillColor(colors.black)
+            c.drawString(indent, baseline, self.prefix)
+            title_x = indent + c.stringWidth(self.prefix, self.bold_font, size) + 8
+
+        # Title (truncated if it would collide with the page number)
+        max_title_w = self._avail_w - title_x - pn_w - 16
+        title = self._truncate(self.title, title_font, size, max_title_w)
+        c.setFont(title_font, size)
+        c.setFillColor(self._COLOR[self.level])
+        c.drawString(title_x, baseline, title)
+        title_w = c.stringWidth(title, title_font, size)
+
+        # Dotted leader between title and page number
+        leader_start = title_x + title_w + 4
+        leader_end   = self._avail_w - pn_w - 4
+        if leader_end > leader_start + 6:
+            c.setFont(self.reg_font, size)
+            c.setFillColor(colors.HexColor('#bbbbbb'))
+            step = c.stringWidth('. ', self.reg_font, size)
+            ndots = int((leader_end - leader_start) / step)
+            if ndots > 0:
+                c.drawString(leader_start, baseline, '. ' * ndots)
+
+        # Right-aligned page number — drawn last so text extraction yields the
+        # natural "title … number" reading order.
+        c.setFont(self.reg_font, size)
+        c.setFillColor(self._COLOR[self.level])
+        c.drawRightString(self._avail_w, baseline, pn)
 
 
 # ── Frontmatter parsing ───────────────────────────────────────────────────────
@@ -1343,13 +1422,14 @@ def parse_html_block(tag_name: str, raw: str, footnotes: list) -> list:
 
 
 # ── Markdown → flowables ──────────────────────────────────────────────────────
-def md_to_flowables(body: str, footnotes: list) -> list:
+def md_to_flowables(body: str, footnotes: list, chapter_key: str = '') -> list:
     body = strip_author_sig(body)
     body = re.sub(r'<llm-exclude>.*?</llm-exclude>', '', body, flags=re.DOTALL)
 
     lines = body.split('\n')
     flowables: list = []
     para_buf: list[str] = []
+    heading_seq = 0   # running index of H2/H3 headings, for stable marker keys
     i = 0
     n = len(lines)
 
@@ -1428,8 +1508,16 @@ def md_to_flowables(body: str, footnotes: list) -> list:
         if h_m:
             flush()
             level = len(h_m.group(1))
-            xml = inline_to_rl(h_m.group(2).strip(), footnotes)
-            flowables.append(Paragraph(xml, STYLES.get(f'H{level}', STYLES['Normal'])))
+            raw = h_m.group(2).strip()
+            xml = inline_to_rl(raw, footnotes)
+            para = Paragraph(xml, STYLES.get(f'H{level}', STYLES['Normal']))
+            # H2/H3 headings carry ToC / PDF-outline metadata on the Paragraph
+            # itself so the recorded page is always the heading's real page.
+            if level in (2, 3) and chapter_key:
+                tag_heading(para, level, strip_md_inline(raw),
+                            f'{chapter_key}_h{heading_seq}')
+                heading_seq += 1
+            flowables.append(para)
             i += 1; continue
 
         # ── Blockquote ─────────────────────────────────────────────────────
@@ -1577,19 +1665,44 @@ def load_chapters(locale_dir: Path) -> list[dict]:
 
 
 # ── PDF document ──────────────────────────────────────────────────────────────
-PRE_CHAPTER_PAGES = 2   # cover + ToC (not numbered)
+PRE_CHAPTER_PAGES = 2   # default cover + ToC page count (refined after pass 1)
 
 class TrackingDoc(BaseDocTemplate):
-    def __init__(self, path, **kw):
+    """Document template that records the real PDF page of every chapter and
+    sub-heading marker, and emits the PDF outline (bookmarks).
+
+    `page_index` maps a marker key ('ch3', 'ch3_h1', …) to its real (1-based)
+    PDF page. The two-pass build reads it after pass 1 to compute both the
+    visible page numbers shown in the ToC and the `pre_chapter_pages` offset.
+
+    The outline is emitted on every pass (the pass-1 PDF is discarded); outline
+    levels are clamped so a level never jumps by more than 1 from the previous
+    entry — ReportLab raises ValueError otherwise (e.g. an H3 with no H2 above
+    it inside the chapter).
+    """
+    def __init__(self, path, pre_chapter_pages=PRE_CHAPTER_PAGES, **kw):
         super().__init__(path, **kw)
-        self.chapter_page_map: dict[int, int] = {}
+        self.page_index: dict[str, int] = {}
         self._numbering_started = False
-        self._pre_chapter_pages = PRE_CHAPTER_PAGES
+        self._pre_chapter_pages = pre_chapter_pages
+        self._outline_level = 0
 
     def afterFlowable(self, flowable):
         if isinstance(flowable, ChapterMarker):
             self._numbering_started = True
-            self.chapter_page_map[flowable.chapter_num] = self.page - self._pre_chapter_pages
+            key = f'ch{flowable.chapter_num}'
+            self.page_index[key] = self.page
+            self.canv.bookmarkPage(key)
+            self.canv.addOutlineEntry(flowable.chapter_title, key,
+                                      level=0, closed=False)
+            self._outline_level = 0
+        elif isinstance(flowable, Paragraph) and getattr(flowable, 'toc_key', None):
+            self.page_index[flowable.toc_key] = self.page
+            self.canv.bookmarkPage(flowable.toc_key)
+            lvl = min(flowable.toc_level - 1, self._outline_level + 1)
+            self.canv.addOutlineEntry(flowable.toc_text, flowable.toc_key,
+                                      level=lvl, closed=False)
+            self._outline_level = lvl
 
 
 def _make_templates(doc) -> list:
@@ -1636,25 +1749,59 @@ def _cover(title: str, author: str) -> list:
         PageBreak(),
     ]
 
-def _toc(chapters: list, chapter_label: str, toc_title: str, toc_pages: dict) -> list:
+# ── ToC structure scanning ────────────────────────────────────────────────────
+def _iter_markers(flowables):
+    """Yield ChapterMarker flowables and tagged H2/H3 heading Paragraphs in
+    document order.
+
+    Recurses into KeepTogether (post_no_orphan_headings / post_keep_images wrap
+    headings into KeepTogether groups)."""
+    for f in flowables:
+        if isinstance(f, KeepTogether):
+            yield from _iter_markers(f._content)
+        elif isinstance(f, ChapterMarker):
+            yield f
+        elif isinstance(f, Paragraph) and getattr(f, 'toc_key', None):
+            yield f
+
+def scan_toc_struct(chapter_flowables: list, chapter_label: str) -> list[dict]:
+    """Build the ordered ToC structure from the chapter story's markers.
+
+    Using the actual flowables (not a separate markdown re-parse) guarantees
+    the ToC order, hierarchy and keys match exactly what gets rendered and
+    bookmarked."""
+    struct: list[dict] = []
+    for m in _iter_markers(chapter_flowables):
+        if isinstance(m, ChapterMarker):
+            struct.append(dict(
+                level=0, key=f'ch{m.chapter_num}',
+                prefix=f'{chapter_label} {m.chapter_num}',
+                title=m.chapter_title))
+        else:  # tagged heading Paragraph — markdown H2->level 1, H3->level 2
+            struct.append(dict(
+                level=m.toc_level - 1, key=m.toc_key, prefix='', title=m.toc_text))
+    return struct
+
+
+def _toc(toc_struct: list[dict], toc_title: str, page_map: dict) -> list:
     story = [Paragraph(toc_title, STYLES['ToCTitle']), Spacer(1, 10)]
-    for idx, ch in enumerate(chapters, 1):
+    for e in toc_struct:
         story.append(ToCEntry(
-            chapter_num=idx,
-            chapter_label=chapter_label,
-            title=ch['title'],
-            page_num=toc_pages.get(idx, '—'),
+            level=e['level'],
+            prefix=e['prefix'],
+            title=e['title'],
+            page_num=page_map.get(e['key'], '—'),
             bold_font='NotoSans-Bold',
             reg_font='NotoSans',
         ))
-        story.append(Spacer(1, 4))
+        story.append(Spacer(1, 2))
     story += [NextPageTemplate('Chapter'), PageBreak()]
     return story
 
 def _chapters(chapters: list, chapter_label: str) -> list:
     story = []
     for idx, ch in enumerate(chapters, 1):
-        story.append(ChapterMarker(idx, ch['title']))
+        story.append(ChapterMarker(idx, strip_md_inline(ch['title'])))
         # "Chapter N" super-label (small, grey)
         story.append(Paragraph(
             f'{chapter_label} {idx}',
@@ -1671,7 +1818,7 @@ def _chapters(chapters: list, chapter_label: str) -> list:
         story.append(Spacer(1, 6))
 
         footnotes: list = []
-        fls = md_to_flowables(ch['body'], footnotes)
+        fls = md_to_flowables(ch['body'], footnotes, chapter_key=f'ch{idx}')
         fls = post_no_orphan_headings(fls)
         fls = post_keep_images(fls)
         story.extend(fls)
@@ -1687,17 +1834,22 @@ def _chapters(chapters: list, chapter_label: str) -> list:
     return story
 
 
-def _build(path, book_title, author, chapters, chapter_label, toc_title, toc_pages):
+def _build(path, book_title, author, chapters, chapter_label, toc_title,
+           page_map, pre_chapter_pages):
     doc = TrackingDoc(
-        str(path), pagesize=A4,
+        str(path), pagesize=A4, pre_chapter_pages=pre_chapter_pages,
         leftMargin=MARGIN_L, rightMargin=MARGIN_R,
         topMargin=MARGIN_T,  bottomMargin=MARGIN_B,
     )
     doc.addPageTemplates(_make_templates(doc))
+    # Build the chapter story first; the ToC is derived from its markers so the
+    # two are always consistent in order, hierarchy and keys.
+    chapter_flowables = _chapters(chapters, chapter_label)
+    toc_struct = scan_toc_struct(chapter_flowables, chapter_label)
     story = (
         _cover(book_title, author)
-        + _toc(chapters, chapter_label, toc_title, toc_pages)
-        + _chapters(chapters, chapter_label)
+        + _toc(toc_struct, toc_title, page_map)
+        + chapter_flowables
     )
     doc.title  = book_title
     doc.author = author
@@ -1747,17 +1899,29 @@ def generate(locale: str, locale_dir: Path, cfg: dict) -> Path:
     label  = cfg['chapter_label']
     toc_t  = cfg['toc_title']
 
-    # Pass 1: dummy build to collect page numbers
+    # Pass 1: collect the real PDF page of every chapter/heading marker.
+    # The ToC already has its final size here (its entries are derived from the
+    # markers), so the pages recorded now stay valid for pass 2.
     with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as f:
         p1 = f.name
-    doc1 = _build(p1, title, author, chapters, label, toc_t, {})
-    toc_pages = doc1.chapter_page_map
-    print(f"  ToC pages: {toc_pages}")
+    doc1 = _build(p1, title, author, chapters, label, toc_t,
+                  page_map={}, pre_chapter_pages=PRE_CHAPTER_PAGES)
+    page_index = doc1.page_index
 
-    # Pass 2: final build with correct page numbers
+    # Chapter 1 is visible page 1; everything before it (cover + ToC pages) is
+    # unnumbered. pre = real PDF page of chapter 1 minus 1.
+    real_ch1 = page_index.get('ch1', PRE_CHAPTER_PAGES + 1)
+    pre = real_ch1 - 1
+    # The visible ToC shows the number printed on the page; the PDF outline
+    # (bookmarks) targets real PDF pages directly via bookmarkPage().
+    page_map = {k: rp - pre for k, rp in page_index.items()}
+    print(f"  cover+ToC pages: {pre}  ·  {len(page_map)} ToC/outline entries")
+
+    # Pass 2: final build with correct visible page numbers + PDF outline.
     with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as f:
         p2 = f.name
-    _build(p2, title, author, chapters, label, toc_t, toc_pages)
+    _build(p2, title, author, chapters, label, toc_t,
+           page_map=page_map, pre_chapter_pages=pre)
 
     out = OUTPUT_DIR / f"ocarina-{locale.lower()}.pdf"
     if compress(p2, str(out)):

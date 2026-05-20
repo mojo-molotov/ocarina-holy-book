@@ -75,7 +75,7 @@ test_homepage_book_a_call_cta = create_selenium_test(
 
 `drive_page` exprime que l'on prend le contrôle d'_une_ page.  
 Toute _transition_ devient explicite par l'ouverture d'un nouveau `drive_page`.  
-À l'intérieur, `act` exprime une action émise sur cette page : c'est un _pas de test_. `drive_page` est variadique, elle accepte autant de `act` que
+À l'intérieur, `act` exprime une action émise sur cette page : c'est un _pas de test_. `drive_page` est variadique, elle accepte autant d'`act` que
 nécessaire, et la virgule entre chacun devient un ET :
 
 > Ouvre, puis vérifie la page d'accueil. _ET_ clique sur le CTA. On change de page : vérifie que l'on est sur la page pour réserver un appel.

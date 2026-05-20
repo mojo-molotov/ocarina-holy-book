@@ -23,12 +23,12 @@ Ocarina was designed to make **automated browser-based tests as simple as possib
 Most testing frameworks were built in a world where the barrier between "those who code" and "those who define tests" was real and structural.
 
 _Robot Framework_ tried to **work around it** with a _DSL_ (_Domain Specific Language_), complete with **its own format** and **its own plugin
-ecosystem**. In doing so, RF imposes its own standards by default: that's the immediate cost of its promise.
+ecosystem**. In doing so, RF de facto imposes its own standards: that's the immediate cost of its promise.
 
 _Cucumber_ tried the same with _Gherkin_: a "natural" language that, in practice, **constrains everyone without truly freeing anyone**. Cost: **a
 permanent translation layer, Gherkin/code desynchronization**.
 
-All of them bet on the same thing: **hiding complexity** to bridge the gap between profiles.  
+All of them bet on the same thing: **hiding complexity** to bridge the gap between roles.  
 Result: non-technical people remain spectators, and technical people end up **trapped in a tool they would never have chosen**.
 
 The biggest cost is a **race to the bottom: fewer options, and a "flexibility" that can only be achieved by _fighting_ your _tools_ rather than using
@@ -110,7 +110,7 @@ Here, everything rests on **static foundations**:
 - generics,
 - functional programming.
 
-Ocarina makes its misusing difficult by design: the compiler shall prevail.
+By design, Ocarina makes itself hard to misuse: the compiler has the final say.
 
 ![Illustration of a character in a state of fulfillment through an algebraic trance](/assets/content/what-is-it/creatives/algebraic-fullness.png)
 
@@ -133,7 +133,7 @@ That's what makes Ocarina **stable and extensible at the same time**.
 
 _What if delegating your grammar to "standards" was never a good idea in the first place?_
 
-The real gap with E2E testing **is not imposing the "best" Newspeak**.  
+The real gap in E2E testing **is not about imposing the "best" Newspeak**.  
 Short answer: Ocarina is **extensible**. Any verb and conjunction can be created, all governed by **strict rules that keep the whole thing deeply
 consistent**.
 

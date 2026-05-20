@@ -152,8 +152,8 @@ def create_e2e_test_cycle(drivers_pool: SeleniumWebDriversPool):
 
 `mode` accepts two values (default: `"fail-fast-on-first-smoke-campaigns-sequence-fail"`):
 
-- `"fail-fast-on-first-smoke-campaigns-sequence-fail"`: as soon as one smoke tests campaign fails, the remaining ones are skipped.
-- `"wait-for-all-smoke-tests"`: all smoke tests campaigns run to completion, even if one fails along the way.
+- `"fail-fast-on-first-smoke-campaigns-sequence-fail"`: as soon as one smoke-test campaign fails, the remaining ones are skipped.
+- `"wait-for-all-smoke-tests"`: all smoke-test campaigns run to completion, even if one fails along the way.
 
 In both cases, main tests are skipped if any smoke test has failed.
 

@@ -21,11 +21,11 @@ head:
 The first "criticisms" were often the same: _"You're bragging about something that's very simple."_
 
 Some stopped there.  
-Others went further: trying to explain what "real complexity" is from their opinion.
+Others went further: trying to explain what "real complexity" is, in their view.
 
 But **none of them would have been able to achieve the same thing.**
 
-The funniest point is that **I didn't even have to bring up complexity myself.** I just **presented some test scenarios written with Ocarina**, and
+The funniest part is that **I didn't even have to bring up complexity myself.** I just **presented some test scenarios written with Ocarina**, and
 **that reaction came up immediately**.
 
 **It's just the result of the operant conditioning of 99% of the folks in our industry.**
@@ -34,7 +34,7 @@ The funniest point is that **I didn't even have to bring up complexity myself.**
 
 <p align="center"><i>Adding yet another cog to an incomprehensible machine seems to be the fetish of many Mojo engineers.</i></p>
 
-For those, opening the hood was enough.
+For them, opening the hood was enough.
 
 First things first: this is not about bragging.  
 Ocarina **is not the product of showmanship**, unlike what many "engineers" tend to produce. It is simply the product of what _emerges naturally_.
@@ -49,7 +49,7 @@ They can also be recognized by their _intolerance of failure_. They systematical
 
 Never any red with a narcissist, only green, only "ready to ship to production."
 
-The consequences are dramatic, on top of being radically opposed to the mindset of software testing: narcissism brings nothing good in this domain.
+The consequences are dire, on top of being radically opposed to the mindset of software testing: narcissism brings nothing good in this domain.
 
 In any case, it brings absolutely nothing good anywhere: it brings nothing but _hell on earth_.
 
@@ -94,8 +94,8 @@ Some folks had other ideas, quite "creative" ones at that:
 
 - Twisting Ocarina's ROP (_Railway Oriented Programming_) implementation until it lost all meaning, since they didn't even know what ROP is,
 - Dropping "_hooks_" and other so-called "_ninja techniques_" right in the middle of test steps,
-- Abandon typing,
-- Rewrite in Rust for "performance" concerns,
+- Abandoning typing,
+- Rewriting in Rust over "performance" concerns,
 - Forcing their clueless take on lazy evaluation and _IoC_ down my throat like it's gospel,
 - "Explaining" imperative vs. declarative programming to me while spewing complete nonsense,
 - "Talking" to me about _event-driven programming_, while still spouting nonsense,
@@ -115,11 +115,11 @@ Him, immediately, he "knew everything" better than everyone else.
 
 > Yeah and I know the Queen of England.
 
-> Have I ever told you about the yakuzas?
+> Have I ever told you about the yakuza?
 
 > I went to a top engineering school and since then I've learned nothing new.
 
-**Sure: let me quote the motto of the first Indonesian hackers crew I was exposed to as a child: "We Can Do All What You Can't Do."  
+**Sure: let me quote the motto of the first Indonesian hacker crew I was exposed to as a child: "We Can Do All What You Can't Do."  
 I'm the bug you can't kill.**
 
 And I am not here for the _prestige_. Nor even for the _profit_.  
@@ -134,7 +134,7 @@ Fucking _skids_.
 **Fucking normies!**
 
 Here's who we are: from Zone-H to respectable life.  
-From the underground sewers' toilets of the internet to a life where one manages to be quietly useful.  
+From the underground sewers of the internet to a life where one manages to be quietly useful.  
 **You would never have survived things like that.**
 
 From Hell to where we are today.  
@@ -256,9 +256,9 @@ unfiltered.
 ---
 
 It's time to kick all your _Juicero Presses_ in the ass.  
-With that **knowing smile**, the one of those **who have finally managed to have what it takes to say STOP.**
+With that **knowing smile**, the one of those **who finally have what it takes to say STOP.**
 
-IT is **what brought the smile back to our lives**, not what persecuted us through pseudo-"patterns" all more idiotic and inaccessible than the last.
+IT is **what brought the smile back to our lives**, not what persecuted us through pseudo-"patterns" each more idiotic and inaccessible than the last.
 
 **You thought computer science was going to die?  
 Far from it.**
@@ -370,7 +370,7 @@ For too long, **software has been held hostage** by a minority, a "1%" who saw f
 What has been on our minds since the 1930s, **since the invention of λ-calculus**, is finally scalable to the degree we always wanted it to be.  
 Has our industry ever witnessed such an elegant formalization, one so deeply rooted in its own heritage?
 
-Python's recent _type system_ evolutions are central to what makes Ocarina possible.  
+The recent evolution of Python's _type system_ is central to what makes Ocarina possible.  
 Without being "the future" either: **this is established science, but one that arrived cruelly late in our ecosystem.**
 
 **As does AI, which is quietly rendering the "1%"'s capacity for harm obsolete.**
@@ -383,7 +383,7 @@ _slipologists_.
 For all these reasons, I have made the decision to **NEVER waste my time arguing when it's not worth it.** I enjoy arguing with people **focused on
 problem-solving and who have good judgment.**
 
-For the rest: **make pointless PR red and pointless issues gray, no regret.**  
+For the rest: **make pointless PRs red and pointless issues gray, no regret.**  
 **Some people are simply not meant to please me, but so be it.**
 
 Ocarina is _the first of my projects that I'm opening to the public_, **but others are also on the way, including some far more interesting ones.**

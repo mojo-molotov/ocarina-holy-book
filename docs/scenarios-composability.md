@@ -73,7 +73,7 @@ test_homepage_book_a_call_cta = create_selenium_test(
 
 `drive_page` expresses that we are taking control of _one_ page.  
 Every _transition_ becomes explicit through the opening of a new `drive_page`.  
-Inside, `act` expresses an action emitted on that page: it is a _test step_. `drive_page` is variadic: it accepts as many `act` calls as needed, and
+Inside, `act` expresses an action performed on that page: it is a _test step_. `drive_page` is variadic: it accepts as many `act` calls as needed, and
 the comma between each becomes an AND:
 
 > Open, then verify the homepage. _AND_ click the CTA. We switch pages: verify that we are on the book-a-call page.
@@ -415,7 +415,7 @@ click_confirm_cookies = drive_page(
 ```
 
 Any value can be aliased and reused.  
-This writing is pure: it produces no immediate _effect_.  
+This style of writing is pure: it produces no immediate _effect_.  
 Everything can be redeclared elsewhere, reorganized elsewhere, as long as the final chain matches what is expected.
 
 <llm-exclude>

@@ -14,7 +14,7 @@ head:
 
 ## ValidationChain
 
-Usable in POMs, `validate` allows expressing invariants as chains. Execution is **deferred**: `.execute()` must be called explicitly.
+Usable inside POMs, `validate` lets you express invariants as chains. Execution is **deferred**: `.execute()` must be called explicitly.
 
 The result exposes `is_valid`, `errors`, and `validated_values`. It is inert by default. `.raise_if_invalid()` throws the exception if needed.
 
@@ -201,9 +201,9 @@ fit, for example.
 
 ## Extensible grammar
 
-Test scenarios grammar is built on a single type: `ChainRunner[T]`. A scenario is a `list[ChainRunner]` executed sequentially, short-circuiting on the
-first failure. `drive_page` is just a thin wrapper around `chain_actions`, which builds a `ChainRunner`. Any function returning a `ChainRunner` plugs
-in without touching the framework.
+The test-scenario grammar is built on a single type: `ChainRunner[T]`. A scenario is a `list[ChainRunner]` executed sequentially, short-circuiting on
+the first failure. `drive_page` is just a thin wrapper around `chain_actions`, which builds a `ChainRunner`. Any function returning a `ChainRunner`
+plugs in without touching the framework.
 
 `match_page` was added after the fact to handle variable-state pages (optional banners, A/B tests, maintenance pages...): it evaluates conditions in
 order and runs the first matching branch.

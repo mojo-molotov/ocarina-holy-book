@@ -19,10 +19,10 @@ Welcome, dear friend.
 ## Random server errors
 
 Random server errors are a tough nut to crack.  
-During a particularly unpleasant work experience, I had to deal with an environment that regularly displayed totally random 500 error pages,
-regardless of which part of the application was being explored.
+On one particularly unpleasant job, I had to deal with an environment that regularly displayed totally random 500 error pages, regardless of which
+part of the application was being explored.
 
-In cases like this, Ocarina's answer lives directly in the creation of the `act` verb:
+In cases like this, Ocarina's answer lies directly in how the `act` verb is built:
 
 ```python
 ERROR_PAGE_REGEX = re.compile(r"^\d{3}(?!\d)")

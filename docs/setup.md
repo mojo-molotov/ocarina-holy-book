@@ -32,7 +32,7 @@ pip install selenium
 pip install ocarina
 ```
 
-Then create your folders structure.
+Then create your folder structure.
 
 ## 2. Adapters
 
@@ -257,7 +257,7 @@ match_page = create_match_page(raised_exceptions=transient_errors)
 
 ## 3. Writing a first POM
 
-The POM (_Page Object Model_) pattern being a well-established standard, we will not redefine it here.
+The POM (_Page Object Model_) pattern is a well-established standard, so we won't redefine it here.
 
 Here is how to create a first POM with Ocarina:
 

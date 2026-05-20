@@ -189,7 +189,7 @@ Ocarina применяет один и тот же шаблон для всех,
 ```python
 @final
 class PageWithCookiesBannerMatchers:
-    """Drive nut anybody with this page or use matchers."""
+    """Drive nuts anybody with this page or use matchers."""
 
     def __init__(self, *, driver: WebDriver) -> None:
         """Initialize helper."""

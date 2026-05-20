@@ -3,12 +3,15 @@ name: pick-screenshots
 description:
   List and surface the N most recent screenshots after a cycle run — sorted strictly by **file modification time**, never by filename. Filenames carry
   random UUID suffixes (`PASS_<uuid>.png`, `FAIL_<uuid>_<n>.png`) that don't sort meaningfully by recency, so any naive alphabetical/`ls` listing
-  returns the wrong files. The screenshot directory isn't a fixed convention — it's determined by the **test code's** screenshot handler factories
-  (typically configured in `src/lib/ext/ocarina/adapters/selenium/logs.py` or similar, with calls like `create_log_success_and_take_screenshot(...)`).
-  The skill **reads the screenshot factory wiring** to find the configured path, then falls back to a filesystem walk. Use whenever the user asks to
-  see the latest screenshots, look at the fail burst from a recent run, inspect a passing test visually, or audit the report-quality after a
-  screenshot-rule change. Cross-reference each screenshot to the log line that names it so the user sees which test, which step, which page each shot
-  belongs to.
+  returns the wrong files. The screenshot directory is a flat **heap** — every run dumps its shots into the same folder with no run boundary, so mtime
+  alone tells you recency but not which run a shot belongs to or what it means. The only thing that truly contextualises a screenshot is a **log line
+  that names it**. So this skill always inspects for **fresh logs** first: it locates the latest `.ocarina_logs_*` root by mtime, then cross-references
+  every picked screenshot against it — a shot named in the fresh logs belongs to the latest run and carries its test/step context; a shot with no
+  fresh-log hit is from an older run or orphaned, and is surfaced as such. The screenshot directory isn't a fixed convention — it's determined by the
+  **test code's** screenshot handler factories (typically configured in `src/lib/ext/ocarina/adapters/selenium/logs.py` or similar, with calls like
+  `create_log_success_and_take_screenshot(...)`). The skill **reads the screenshot factory wiring** to find the configured path, then falls back to a
+  filesystem walk. Use whenever the user asks to see the latest screenshots, look at the fail burst from a recent run, inspect a passing test visually,
+  or audit the report-quality after a screenshot-rule change.
 ---
 
 # Pick recent screenshots — by mtime, never by filename
@@ -49,6 +52,27 @@ find . -maxdepth 3 -type d 2>/dev/null \
 
 The hit (typically one) is the screenshots root. If empty, no run has produced shots yet — say so and stop.
 
+## Inspect for fresh logs — the heap has no run boundaries
+
+The screenshot directory is a **flat heap**. Every cycle run dumps `PASS_*` / `FAIL_*` shots straight into it; nothing in the directory marks where
+one run ends and the next begins. mtime sorts the heap by recency, but recency is not run membership — the newest N files can straddle two runs, and a
+shot's filename tells you nothing about which test or step produced it.
+
+**The logs are what segment the heap.** Each run writes a fresh `.ocarina_logs_<id>/` tree, and every screenshot is named in exactly one log line
+(`… — Screenshot: /…/PASS_<uuid>.png`). So before picking, locate the latest log root — the same motion as `pick-logs`:
+
+```bash
+# Read main.py's bootstrap call for the configured log dir (see pick-logs), then:
+latest_logs=$(ls -dt <logs-parent>/.ocarina_logs_* 2>/dev/null | head -1)
+echo "$latest_logs"   # → the fresh run's log root
+```
+
+If log-root resolution is non-trivial, defer to `pick-logs` — it owns that location step. The fresh log root's mtime is the **boundary**: shots
+modified at or after it are candidates for "this run"; anything older is heap residue from earlier runs.
+
+If there is **no** log root at all (a `--logger mute` run, or logs were cleaned), say so — the heap then has no context source, and every picked shot
+is surfaced **(no log)**. Picking still works; it just can't be contextualised.
+
 ## Pick the N most recent — strictly by mtime
 
 Default `N = 12` (enough to see one fail burst + 8 PASS frames of context, or about three drive_pages' worth of a passing scenario). Override on
@@ -64,23 +88,28 @@ find <screenshots-dir> -name "*.png" -printf '%T@ %p\n' 2>/dev/null | sort -rn |
 
 ## Cross-reference each screenshot to its log line
 
-The Ocarina log writes a line per shot:
+Use the fresh log root resolved above (`$latest_logs`). The Ocarina log writes a line per shot:
 
 ```
 [UTC_DATE::…] ℹ️  <SUT-NAME> E2E/Authentication/Session management/Logout - Session Cleared (via sidebar link) — Screenshot: /…/PASS_<uuid>.png
 ```
 
-The line carries: the test path (campaign / suite / test name), and the absolute path of the file. Grep across the most recent log tree:
+The line carries the test path (campaign / suite / test name) and the absolute path of the file. Grep the fresh log root for each picked shot:
 
 ```bash
-# locate the latest log root
-latest_logs=$(ls -dt <logs-parent>/.ocarina_logs* 2>/dev/null | head -1)
-# for one screenshot path:
 grep -rh "PASS_<uuid>.png" "$latest_logs"
 ```
 
-If the log root doesn't contain a hit (the screenshot is from an earlier run), widen across all `.ocarina_logs_*` roots — accept that you may now be
-reading two runs' worth.
+Two outcomes, and both are findings:
+
+- **Hit in the fresh logs** → the shot belongs to the latest run. Its test/step context comes from the matched line; carry it into the table.
+- **No hit in the fresh logs** → the shot is _not_ from the latest run, however recent its mtime looks. Widen across all `.ocarina_logs_*` roots to
+  find which earlier run names it (`grep -rln "<basename>" <logs-parent>/.ocarina_logs_*`); mark the row **(earlier run)**. If no root names it at
+  all, mark it **(no log)** — orphaned, possibly a probe or a manual click.
+
+**This cross-reference is the point of the skill, not a footnote.** Because the directory is a heap, "the N newest files by mtime" is not "the last
+run's N screenshots" — a slow earlier run, a probe, or an interleaved manual shot can land a stale file inside the mtime window. The fresh-log check
+is what tells the user which rows are actually the run they asked about.
 
 ## Identify fail bursts
 
@@ -111,8 +140,8 @@ Always include:
 - **Test** — from the log line.
 - **Step** — the success or failure message, which describes what the act was doing.
 
-If a screenshot has no corresponding log line in any `.ocarina_logs_*` (the run was deleted, the screenshot orphaned), mark **(no log)** and surface
-it — it may be from a probe or a manual click.
+Mark each row by its cross-reference outcome: **(earlier run)** when an older `.ocarina_logs_*` root names the shot, **(no log)** when no root does
+(orphaned — a probe or a manual click). A row with neither marker is confirmed fresh — it belongs to the run named by `$latest_logs`.
 
 ## Opening a shot
 

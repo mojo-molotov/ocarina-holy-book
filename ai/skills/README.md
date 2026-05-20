@@ -71,7 +71,7 @@ Build / refresh a mental model — of the codebase, the ecosystem, the SUT's con
 
 Pick the right files from run output. Always mtime-sorted.
 
-- [pick-screenshots](pick-screenshots/SKILL.md) — screenshots from `<gitignored>/screenshots/`.
+- [pick-screenshots](pick-screenshots/SKILL.md) — screenshots from the flat screenshot heap; inspects the latest `.ocarina_logs_*` root to segment the heap by run and contextualise each shot (fresh / earlier run / no log).
 - [pick-logs](pick-logs/SKILL.md) — log roots from `.ocarina_logs_<id>/`.
 - [pick-reports](pick-reports/SKILL.md) — DOCX / JSON from `.reports/`.
 
@@ -93,7 +93,7 @@ End-to-end workflows. Each produces a deliverable (test, PR description, gap ent
 Surface refactor candidates; user applies.
 
 - [refactor-fragmentation](refactor-fragmentation/SKILL.md) — extract `TestScenarioFragment`s after two gates (codebase size + DRY policy).
-- [introduce-pom-retries](introduce-pom-retries/SKILL.md) — POM-level retries with the two-test split (first-try intentional fail + with-retries variant).
+- [introduce-pom-retries](introduce-pom-retries/SKILL.md) — POM-level retries as a separate `_with_retries` wrapper method (the `ocarina-example` pattern) over an idempotent base operation, with the two-test split (first-try intentional fail + with-retries variant).
 
 ## State
 
@@ -126,3 +126,4 @@ A few recurring chains:
 - Hygiene pass / pre-release pruning → `assess-test-base` (catalogue) → `review-dead-code` (audit unused connectors / POMs / scenarios / fragments / constants) → per finding: delete or move to `<source-root>/incubator/`.
 - Local environment bring-up → `setup-environment` (venv + tooling + skill-battery install into Claude Code + driver adapter choice + `CLAUDE.local.md` + quality loop).
 - About to dispatch a run → `propose-visual-review` (headed vs headless choice, command composed, user runs).
+- Inspecting run output → `pick-screenshots` always reaches into `pick-logs`' territory: the screenshot folder is a flat heap, so the latest `.ocarina_logs_*` root is what segments it by run and contextualises each shot. Picking screenshots without checking fresh logs gives recency but not meaning.

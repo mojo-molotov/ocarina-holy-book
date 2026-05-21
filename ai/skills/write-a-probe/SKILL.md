@@ -1,6 +1,6 @@
 ---
 name: write-a-probe
-description: Author a one-off **probe** — a throwaway Python script that drives the browser (or raw HTTP) through a suspect flow and prints concrete runtime state (URL, page title, form HTML, hidden inputs, cookies, network observations) so you can see what the SUT actually does before encoding it as a test or accepting a claim about it. Probes bypass Ocarina entirely (no `create_selenium_test`, no suites, no assertions), live in a gitignored directory (`<gitignored>/`), are never committed, and are deleted once the finding lands in a durable artifact (a test, a source-cited comment, the gap inventory, the FRD). Use whenever the user asks to probe a flow, verify a behaviour empirically, capture rendered HTML, observe a redirect chain, measure inter-request timing, confirm a deployment-vs-source discrepancy, or settle a "does the SUT actually do X?" question. The hard rule: a probe must exercise the **exact** locator, screen, wait condition, and action the production code uses — never an "equivalent".
+description: Author a one-off **probe** — a throwaway Python script that drives the browser through a suspect flow with whichever instrument fits the question (Selenium, raw HTTP, Chrome DevTools Protocol, or Playwright for reactive SPAs) and prints concrete runtime state (URL, page title, rendered DOM, hidden inputs, cookies, XHR/fetch traffic, timing) so you can see what the SUT actually does before encoding it as a test or accepting a claim about it. Probes bypass Ocarina entirely (no `create_selenium_test`, no suites, no assertions), live in a gitignored directory (`<gitignored>/`), are never committed, and are deleted once the finding lands in a durable artifact (a test, a source-cited comment, the gap inventory, the FRD). Use whenever the user asks to probe a flow, verify a behaviour empirically, capture rendered HTML, observe a redirect chain, inspect SPA network calls, measure inter-request timing, confirm a deployment-vs-source discrepancy, or settle a "does the SUT actually do X?" question. The hard rule for any probe that **reproduces** a production interaction path: exercise the **exact** locator, screen, wait condition, and action the production code uses — never an "equivalent". Observation probes pick the best instrument for the concern.
 ---
 
 # Write a probe — experiment on the app before formalising
@@ -18,6 +18,26 @@ exact target" (how to write one) — this skill is the _workflow_ that ties them
 
 If `<gitignored>/` doesn't exist, create it. If `.gitignore` doesn't already cover it, add the line and stop to flag it — that's a repo-shape change,
 not a probe action.
+
+## Pick the tool for the question
+
+Selenium is the default — the production suite is Selenium, and any probe that **reproduces a production interaction path** must use it (the
+exact-target rule binds to the production engine). A probe that **observes** rather than reproduces is free to use whatever sees the answer most
+directly. Match the instrument to the concern:
+
+| The question is about…                                                         | Instrument                                                                   |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| A production interaction path — does this `.click()` / `Keys.ENTER` step work? | **Selenium**, exact production locator + wait + action (Templates A / C / D) |
+| Server response — status, headers, `Set-Cookie`, the redirect chain            | **Raw HTTP** — `httpx` / `requests` / `curl -v` (Template E)                 |
+| Does element X render on a reactive SPA, and with what content                 | **Selenium + `WebDriverWait`** (mirror prod) or **Playwright** (Template F)  |
+| XHR/fetch traffic — order, payloads, timing, a client-side route change        | **CDP Network domain** or **Playwright** `page.on("response")` (Template F)  |
+| When an SPA page is actually settled                                           | **Playwright** `wait_for_load_state("networkidle")` or a content marker      |
+| JS console errors / uncaught exceptions during a flow                          | **CDP** Runtime/Log or **Playwright** `page.on("console" / "pageerror")`     |
+
+Selenium 4 itself speaks CDP (`driver.execute_cdp_cmd(...)`), so a Selenium interaction probe that also needs a header override or a quick network
+peek doesn't always need a second engine — but when network or timing observation is the _whole point_, Playwright is cleaner. Puppeteer covers the
+same ground; Playwright is preferred here for its first-class Python binding that drops into the repo's venv. Whatever the engine, name it in the
+probe docstring so the next reader re-verifies with the same instrument.
 
 ## The workflow
 
@@ -65,6 +85,9 @@ opts.add_argument("--disable-features=PasswordLeakDetection")
 
 For Firefox, geckodriver with no special options (Firefox doesn't have the modal problem).
 
+If the probe is an **observation probe** running on Playwright, launch `chromium` headless with a fresh context — Playwright contexts are isolated and
+profile-free, so the password-manager breach modal (a Selenium-Chrome-profile artefact) doesn't arise, and no prefs are needed.
+
 ### Step 4 — Build the scaffolding
 
 Standard preamble for probes that need a login first:
@@ -104,6 +127,9 @@ once.
 The body. Open the screen the production code opens, in the state the production code reaches, wait the way the production code waits, do the action
 the production code does. Then print state — `driver.current_url`, `driver.title`, `driver.page_source[:1000]`, `driver.get_cookies()`,
 `driver.capabilities`, an element's `text` / `get_attribute("outerHTML")`, whatever the question asks for.
+
+On an SPA, capture `page_source` or element text **only after the content has actually rendered** — wait on a real content marker, never read it off a
+bare `get()` (see "SPA / reactive DOM — the traps").
 
 No assertions in the test-framework sense. The probe **prints**; the human reads.
 
@@ -155,11 +181,32 @@ Once the finding has landed:
 Leaving it around invites the next reader to revive the script rather than read the artifact that already answers the question. The probe has done its
 job; the _answer_ is what matters.
 
+## SPA / reactive DOM — the traps
+
+On a server-rendered site (a PHP template) the DOM is complete the instant `driver.get()` returns — a bare print of `page_source` is the real page. On
+a single-page app it is not, and three shortcuts silently break:
+
+- **`page_source` straight after `get()` is the shell.** You print a loading skeleton or an empty `<div id="root">` and conclude "element absent".
+  Wait for a real content marker first (the production wait condition, or Playwright's auto-wait). Never answer "does X render?" off an un-waited
+  `get()`.
+- **`page_source` is one snapshot.** A reactive DOM re-renders continuously; a single capture can catch a torn intermediate state no user ever saw.
+  Wait for a stable condition, then capture — and for a transition, capture at named checkpoints, not once.
+- **Raw HTTP never sees SPA-rendered content.** `httpx.get(url)` returns the shell; the content arrives afterwards over fetch. Raw HTTP answers
+  headers / status / redirects — nothing about what the user actually sees.
+- **Client-side routing is not an HTTP redirect.** An SPA route change is a history `pushState`: `current_url` changes with no server round-trip.
+  Observing "the redirect chain" via `current_url` catches only _server_ redirects — for client-side navigation, watch the fetch traffic instead (CDP
+  / Playwright network events).
+
+The exact-target rule already shields **interaction** probes: mirror the production wait condition and you inherit whatever SPA-timing handling the
+suite already has. These traps bite the **observation** probes — the ones reaching for `page_source` and raw HTTP as shortcuts.
+
 ## Templates (reach for them; don't write from scratch)
 
-### Template A — single-shot SUT-claim probe
+### Template A — single-shot browser probe
 
-For questions like "does this URL redirect?", "does this header come back?", "does this element render?":
+For quick browser-level questions — "where does this URL land?", "what's the page title?", "does this server redirect fire?". **Not** for response
+headers (Selenium can't read them — Template E) and **not** for "does element X render?" on an SPA (a bare print catches the shell — Template C waits,
+Template F auto-waits):
 
 ```python
 """Probe: <question>.
@@ -223,6 +270,69 @@ For questions like "does Chrome and Firefox differ on this?":
 Two probes, one per browser, both run, results compared in prose afterwards. Don't fold them into one script — separate scripts keep the per-browser
 path clean.
 
+### Template E — server-response probe (raw HTTP)
+
+For what the **server itself** sends — status, headers, `Set-Cookie`, the redirect chain. No JS, no browser. On an SPA this sees the **shell only** —
+use it for headers / status / redirects, never for rendered content:
+
+```python
+"""Probe: <question about a server response>.
+
+Throwaway — delete once the finding lands in <…>.
+"""
+
+from __future__ import annotations
+
+import httpx
+
+URL = "<sut-url>/<path>"
+
+r = httpx.get(URL, follow_redirects=True)
+print("final status:", r.status_code)
+print("redirect chain:", [f"{h.status_code} {h.url}" for h in r.history])
+print("cache-control:", r.headers.get("cache-control"))
+print("set-cookie :", r.headers.get_list("set-cookie"))
+```
+
+### Template F — SPA content + network probe (Playwright)
+
+For a reactive SPA where the rendered DOM is not in the initial HTML, or when the question is the fetch traffic behind a flow. Playwright auto-waits
+for elements and exposes network and console events directly. Install once: `pip install playwright && playwright install chromium`.
+
+```python
+"""Probe: <question about SPA-rendered content or network behaviour>.
+
+Throwaway — delete once the finding lands in <…>.
+"""
+
+from __future__ import annotations
+
+from playwright.sync_api import sync_playwright
+
+URL = "<sut-url>/<path>"
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
+
+    calls: list[str] = []
+    page.on("response", lambda r: calls.append(f"{r.status} {r.request.method} {r.url}"))
+    page.on("pageerror", lambda e: print("JS error:", e))
+
+    page.goto(URL, wait_until="networkidle")  # settles after hydration + fetch
+    # auto-waits for the real content marker — no explicit WebDriverWait needed:
+    print("rendered:", page.locator("<exact production selector>").inner_text())
+    print("network:")
+    for c in calls:
+        print(" ", c)
+
+    browser.close()
+```
+
+> ⚠️ Playwright is the right **observation** tool, but it is **not** the production engine. A probe that reproduces a production _interaction path_
+> (the synthetic-click question, the dispatcher question) must still use Selenium with the exact production target — see the rules. Reach for
+> Playwright when the question is "what does the SUT render / fetch?", not "does our Selenium code's click land?".
+
 ## Rules — what a probe is, and isn't
 
 - **A probe IS** — a one-off script, gitignored, no assertions, prints state, runs solo (not under `--workers`, not in CI), exercises the exact
@@ -230,6 +340,9 @@ path clean.
 - **A probe IS NOT** — a test (no assertions, not in CI, not parallel-safe), a long-lived artifact (delete after), something to commit (gitignored), a
   vehicle for attack-shape inputs (per `CLAUDE.md` → "Security testing is functional and static — never active"), or a way to "see if a hack works"
   (the source-reading and exact-target rules apply).
+- **Match the instrument to the question.** Selenium for production-interaction probes (exact target — mandatory). Raw HTTP for server responses only.
+  Playwright or CDP for SPA-rendered content and network/timing observation. The wrong instrument yields a confident wrong answer — an un-waited
+  `page_source` on an SPA "proves" an element missing when it simply hadn't rendered yet. See "Pick the tool for the question".
 
 ## Worked example
 

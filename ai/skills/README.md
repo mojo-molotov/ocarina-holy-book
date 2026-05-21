@@ -80,7 +80,7 @@ Pick the right files from run output. Always mtime-sorted.
 End-to-end workflows. Each produces a deliverable (test, PR description, gap entry, repro guide, probe).
 
 - [empiricism](empiricism/SKILL.md) — verify before encoding; never overwrite intentional-fail gap tests.
-- [write-a-probe](write-a-probe/SKILL.md) — throwaway script in `<gitignored>/`, exact-target rule, deleted after finding lands.
+- [write-a-probe](write-a-probe/SKILL.md) — throwaway script in `<gitignored>/`, exact-target rule, instrument matched to the question (Selenium / raw HTTP / CDP / Playwright — server-rendered or reactive SPA), deleted after finding lands.
 - [write-test-strategy](write-test-strategy/SKILL.md) — produce the test-strategy doc end-to-end: scope, ISTQB-flavoured types, per-feature coverage tables, the cycle/campaign/suite tree, pass/fail criteria, known gaps, CI matrix. Generated from the suite, not invented.
 - [extend-coverage](extend-coverage/SKILL.md) — six adjacency dimensions for finding uncovered cases.
 - [update-frd-and-tests](update-frd-and-tests/SKILL.md) — spec change propagation; gap tests reframed, never silently flipped.

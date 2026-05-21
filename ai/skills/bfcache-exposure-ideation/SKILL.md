@@ -121,6 +121,26 @@ DOM from cache.
 - **Detection question**: does the SUT depend on always-fresh requests on tab restore, or will the rendered DOM display sensitive state from before
   the close?
 
+## Attack tree
+
+Render the surfaced catalogue as a Mermaid **attack tree**: the root is the exposure, the middle layer is the eight access-changing events above (one
+branch each), the leaves are the concrete back-navigation scenarios. It belongs in the skill's surfaced report (its Markdown deliverable, not the
+repo) — never commit it; the durable artifacts are the scenarios.
+
+```mermaid
+flowchart TD
+    GOAL["A sensitive page restored from BFcache after access changed"]
+    E1["Logout"]
+    E2["Role downgrade"]
+    E3["Consent withdrawal"]
+    GOAL --> E1 & E2 & E3
+    E1 --> S1["back() onto the history page after logout"]
+    E2 --> S2["back() onto an admin view after a role change"]
+    E3 --> S3["back() onto gated content after withdrawing consent"]
+```
+
+Each leaf is a back-button press — confirm with the `back()` → `refresh()` check (per `CLAUDE.md`).
+
 ## Procedure
 
 ### Step 1 — Enumerate the authenticated / role-gated / consent-gated pages

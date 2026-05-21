@@ -102,6 +102,26 @@ A resource that should be split into sub-resources (with distinct access) is tre
 
 The lens forces "resource" to be examined at the granularity the **business** cares about, not the granularity the spec chose.
 
+## Audit tree
+
+Render the audit as a Mermaid **tree**: the root is the appropriateness question, the middle layer is the seven lenses above (one branch each), the
+leaves are the open clarification questions you surfaced. It shows which lenses raised something and which came back clean. It belongs in the skill's
+surfaced report (its Markdown deliverable, not the repo) — never commit it; the durable artifacts are the questions.
+
+```mermaid
+flowchart TD
+    GOAL["Is the SUT's access model itself appropriate?"]
+    L1["Resource granularity"]
+    L2["Role fit"]
+    L3["Least privilege"]
+    GOAL --> L1 & L2 & L3
+    L1 --> Q1["Open question: should this be per-user, not global?"]
+    L2 --> Q2["Open question: does the role grant more than the job needs?"]
+    L3 --> Q3["Open question: a default-allow where default-deny belongs?"]
+```
+
+Leaves are clarification questions, not defects — the audit asks; the team answers.
+
 ## Procedure
 
 ### Step 1 — Locate the access surface

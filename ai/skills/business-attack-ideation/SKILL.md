@@ -128,6 +128,27 @@ The user picks an identity choice that collides with another user's identifying 
 Note: **this is not impersonation, not auth-bypass, not credential theft**. It's exploiting the _display_ / _identification_ model. If the SUT lets
 you do it through the UI, it's a business flaw worth surfacing.
 
+## Attack tree
+
+Render the surfaced catalogue as a Mermaid **attack tree**: the root is the aggregate harm, the middle layer is the eight archetypes enumerated above
+(one branch each — keep empty branches visible, they show where ideation ran dry), the leaves are the concrete in-scope scenarios. It belongs in the
+skill's surfaced report — the Markdown this skill hands you, not the repo and not Ocarina's `.reports/` — never commit it (it would drift); the
+durable artifacts are the scenarios.
+
+```mermaid
+flowchart TD
+    GOAL["Aggregate harm to the business"]
+    A1["Volume"]
+    A2["Saturation"]
+    A3["Slot-hoarding"]
+    GOAL --> A1 & A2 & A3
+    A1 --> S1["Re-submit the same booking N times through the real form"]
+    A2 --> S2["5 bookings in one session — probe any per-session limit"]
+    A3 --> S3["Reserve every slot, never confirm"]
+```
+
+Leaves stay in scope: every node is something a real user does through the normal UI — never a crafted payload.
+
 ## Procedure
 
 ### Step 1 — Anchor on the SUT's business model

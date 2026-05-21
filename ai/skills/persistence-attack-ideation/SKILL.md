@@ -120,6 +120,26 @@ The user replays a previously-valid action after the conditions for it have chan
   the copied URL in a new session.
 - **Detection question**: does the SUT carry any state in URLs / query params that survives session change?
 
+## Attack tree
+
+Render the surfaced catalogue as a Mermaid **attack tree**: the root is the gate under pressure, the middle layer is the seven insistence dimensions
+above (one branch each), the leaves are the concrete retry scenarios. It belongs in the skill's surfaced report (its Markdown deliverable, not the
+repo) — never commit it; the durable artifacts are the scenarios.
+
+```mermaid
+flowchart TD
+    GOAL["Harden a gate through insistent, legitimate retry"]
+    D1["Repetition"]
+    D2["Timing"]
+    D3["Alternate channel"]
+    GOAL --> D1 & D2 & D3
+    D1 --> S1["Re-submit the blocked action N times, unchanged"]
+    D2 --> S2["Retry after a delay, or on a session boundary"]
+    D3 --> S3["Reach the blocked action by URL after the UI refused it"]
+```
+
+Every retry is a legitimate user action — the test is whether the gate holds under insistence, not whether a payload slips through.
+
 ## Procedure
 
 ### Step 1 — Inventory existing access / permission / auth tests

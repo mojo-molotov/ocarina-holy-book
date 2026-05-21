@@ -71,6 +71,26 @@ inventory, or it should be filed as a new entry.
 
 Recommend cross-reference when: the anomaly isn't a real DOM element but a transport / cache / timing artifact.
 
+### The triage at a glance
+
+Two questions decide the path. Render it in the skill's surfaced report so the recommendation is auditable (that Markdown deliverable only; never
+commit it into the repo):
+
+```mermaid
+flowchart TD
+    A["Anomalous frame — overlay present in some runs, not others"]
+    Q1{"A real DOM element?"}
+    Q2{"Does it block the user's flow?"}
+    PA["Path A — Watcher: observe + report, non-blocking"]
+    PB["Path B — match_page branch: dismiss deterministically"]
+    PC["Path C — transient artifact: no adaptation, cross-reference"]
+    A --> Q1
+    Q1 -- no --> PC
+    Q1 -- yes --> Q2
+    Q2 -- no --> PA
+    Q2 -- yes --> PB
+```
+
 ## Procedure
 
 ### Step 1 — Restate the question

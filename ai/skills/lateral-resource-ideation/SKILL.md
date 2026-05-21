@@ -125,6 +125,26 @@ URLs with state encoded in the fragment (`#…`). The user changes the fragment.
 - **Detection question**: is the fragment a UI hint (purely client-side) or does the SUT condition on it for content visibility? Often the former,
   occasionally the latter — and the latter is the risky case.
 
+## Attack tree
+
+Render the surfaced catalogue as a Mermaid **attack tree**: the root is the lateral reach, the middle layer is the seven lateral-access dimensions
+above (one branch each), the leaves are the concrete address-bar scenarios. It belongs in the skill's surfaced report (its Markdown deliverable, not
+the repo) — never commit it; the durable artifacts are the scenarios.
+
+```mermaid
+flowchart TD
+    GOAL["Reach another identity's resource through the address bar"]
+    D1["Sequential ID"]
+    D2["Sibling ID guess"]
+    D3["URL fragment / query param"]
+    GOAL --> D1 & D2 & D3
+    D1 --> S1["Decrement the numeric record ID in the URL"]
+    D2 --> S2["Swap in a sibling resource ID a real user could plausibly know"]
+    D3 --> S3["Flip a visibility hint carried in the query string"]
+```
+
+Address-bar edits only — no crafted requests, no fuzzing; the line stays exactly where `CLAUDE.md` draws it.
+
 ## Procedure
 
 ### Step 1 — Inventory URL-addressable resources

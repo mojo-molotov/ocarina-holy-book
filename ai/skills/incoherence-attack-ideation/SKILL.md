@@ -105,6 +105,26 @@ The actor creates two relationships that can't both be true.
 - **Test shape**: create relationships A and B; verify whether the SUT detects the contradiction.
 - **Business impact**: fraud, benefits abuse, regulatory exposure.
 
+## Attack tree
+
+Render the surfaced catalogue as a Mermaid **attack tree**: the root is the impossible whole, the middle layer is the six incoherence dimensions above
+(one branch each), the leaves are the concrete encodable scenarios. It shows at a glance which dimensions the SUT's data model can actually expose. It
+belongs in the skill's surfaced report (its Markdown deliverable, not the repo) — never commit it; the durable artifacts are the scenarios.
+
+```mermaid
+flowchart TD
+    GOAL["A set of individually-legal steps, impossible as a whole"]
+    D1["Temporal"]
+    D2["Spatial"]
+    D3["Quantitative"]
+    GOAL --> D1 & D2 & D3
+    D1 --> S1["Two appointments, same hour, two facilities"]
+    D2 --> S2["Two visits, one date, two cities"]
+    D3 --> S3["More bookings than the stay window allows"]
+```
+
+Every step in every leaf is legal on its own — the incoherence is the _set_, surfaced through the normal UI.
+
 ## Procedure
 
 ### Step 1 — Anchor on the SUT's data model

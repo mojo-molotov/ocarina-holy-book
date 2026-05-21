@@ -205,6 +205,30 @@ worker 1, replay 1:
   ...
 ```
 
+For the skill's surfaced report, render that same timeline as a Mermaid `gantt` — long gaps and wedged workers read at a glance, and `crit` marks each
+anomaly (it belongs in that Markdown deliverable only; never commit it into the repo):
+
+```mermaid
+gantt
+    title Per-worker fixture timeline — replay 1
+    dateFormat X
+    axisFormat %Ss
+    section Worker 1
+    acquire driver           :w1a, 0, 1
+    login                    :w1l, 2, 2
+    test_A                   :w1t, 4, 10
+    teardown                 :w1d, 14, 1
+    release                  :w1r, 15, 1
+    section Worker 2
+    acquire driver           :w2a, 0, 1
+    login — cookies=1 leaked :crit, w2l, 1, 3
+    test_B fails 1st action  :crit, w2t, 4, 2
+    section Worker 3
+    acquire driver           :w3a, 0, 1
+    release                  :w3r, 13, 1
+    wedged — 8s gap          :crit, w3g, 14, 8
+```
+
 Then look for:
 
 - **Long gaps** between teardown-exit and next acquire-enter — worker stalled.
@@ -231,6 +255,10 @@ For each anomaly:
 
 - Surfaces instrumented: <list>.
 - Run shape: <browsers>, <N> replays, workers <count>.
+
+## Per-worker timeline
+
+<the Mermaid `gantt` from Step 6 — one diagram, anomalies marked `crit`>
 
 ## Chronic boundary anomalies
 

@@ -42,6 +42,21 @@ Symptoms:
 Audit by running the same scenario with and without the watcher attached. If the flake disappears when the watcher is detached, the watcher is the
 cause.
 
+The race is two threads reaching for one non-thread-safe driver session — a sequence diagram makes the collision window concrete (it belongs in the
+skill's surfaced report only; never commit it into the repo):
+
+```mermaid
+sequenceDiagram
+    participant M as Main thread (test chain)
+    participant D as chromedriver session
+    participant W as Watcher daemon (poll_interval)
+    M->>D: click() — request in flight
+    W->>D: find_elements() — poll fires mid-click
+    D--xW: WebDriverException "not handled in time"
+    D--xM: stale element / RemoteDisconnected
+    Note over M,W: one session, two callers — the overlap window is the flake
+```
+
 ### 2. Swallowed callback exceptions
 
 The contract: any exception raised inside the callback is `suppress`-ed. Failure shape: a callback **silently broken** (NameError after a refactor, a

@@ -19,6 +19,11 @@ Conventions every skill in this directory shares:
 - **Functional and static security only.** Per `CLAUDE.md` → *"Security testing is functional and static — never active"*. Every black-hat /
   attack-ideation skill respects this hard line.
 - **Mtime, not filename.** All file-picking skills (`pick-*`) sort by modification time — UUID suffixes in screenshots / logs / reports are random.
+- **Diagrams are Mermaid, in the surfaced report, never committed.** Skills that emit a diagram (the `diagnose-*` pair, the `analyse-*` family, the
+  attack-ideation skills) render it as Mermaid inside **the report the skill surfaces to you** — the skill's own Markdown deliverable (the
+  `# … analysis` / catalogue it hands back), _not_ Ocarina's run artifacts in `.reports/` (DOCX proofs, JSON results). It is text, so diffable and
+  regenerable. A diagram is never committed into the repo, where it would drift (per `review-comment-drift`); the durable artifacts are the findings
+  the diagram summarises.
 
 ## Review (static review)
 
@@ -38,14 +43,18 @@ Read the codebase or specs and surface findings; never edit.
 - [review-compartmentalisation-leaks](review-compartmentalisation-leaks/SKILL.md) — literals (URLs, credentials, selectors, magic numbers) outside their canonical module.
 - [review-dead-code](review-dead-code/SKILL.md) — unused connectors / POMs / scenarios / suites / fragments / constants; per-finding choice between delete, incubate (`<source-root>/incubator/`), or keep — applied with dependency-tree preservation and the project's lint/format/type-check loop.
 
-## Analyse (diagnostic experiments)
+## Analyse (diagnosis)
 
-Run a controlled experiment, observe, restore. Mandatory restore step in each.
+Diagnose a failure. **Two root-cause skills, deliberately separate** — `diagnose-root-cause` for a deterministic red, `diagnose-flake-root-cause` for
+an intermittent one (a distribution-based discipline, not a single-run one) — sit in front of four controlled flakiness experiments (`analyse-*`:
+observe, restore — mandatory restore step in each).
 
-- [analyse-flakiness](analyse-flakiness/SKILL.md) — widen the transient-error classifier; watch what still dies under retries.
-- [analyse-fixture-flakiness](analyse-fixture-flakiness/SKILL.md) — instrument the setup/teardown boundary; reconstruct per-worker timelines.
-- [analyse-watcher-flakiness](analyse-watcher-flakiness/SKILL.md) — eight failure shapes of Ocarina watchers; with/without × interval sweep.
-- [analyse-screenshot-flakiness](analyse-screenshot-flakiness/SKILL.md) — visual comparison across runs; triage anomalies into `Watcher` / `match_page` / cross-reference paths.
+- [diagnose-root-cause](diagnose-root-cause/SKILL.md) — structured RCA for a **deterministic** red; re-derive don't inherit, the synthetic→real ladder, source read, probe confirmation, a causal-chain Mermaid diagram, root cause sorted into five buckets. Hands off to `diagnose-flake-root-cause` the moment a failure proves intermittent.
+- [diagnose-flake-root-cause](diagnose-flake-root-cause/SKILL.md) — structured RCA for an **intermittent** failure (a flake); the distribution is the evidence — establish a failure rate, pin the signature, correlate, route to the right `analyse-*` experiment, raise the rate to confirm, classify into five flake buckets; causal diagram rooted at a trigger condition. The orchestrator of the `analyse-*` family.
+- [analyse-flakiness](analyse-flakiness/SKILL.md) — widen the transient-error classifier; watch what still dies under retries; Mermaid classifier-outcome flowchart.
+- [analyse-fixture-flakiness](analyse-fixture-flakiness/SKILL.md) — instrument the setup/teardown boundary; reconstruct per-worker timelines as a Mermaid `gantt`.
+- [analyse-watcher-flakiness](analyse-watcher-flakiness/SKILL.md) — eight failure shapes of Ocarina watchers; with/without × interval sweep; Mermaid thread-interleaving sequence.
+- [analyse-screenshot-flakiness](analyse-screenshot-flakiness/SKILL.md) — visual comparison across runs; triage anomalies into `Watcher` / `match_page` / cross-reference paths via a Mermaid decision tree.
 
 ## Black-hat (adversarial ideation)
 
@@ -117,11 +126,12 @@ Surface the pre-run choices before a local dispatch; compose the command, hand i
 
 A few recurring chains:
 
-- `review-report` → `analyse-flakiness` / `analyse-fixture-flakiness` / `analyse-screenshot-flakiness` / `write-a-probe` depending on incident class.
-- `review-suite-stability` → `review-report` for the per-run unit, then `analyse-*` for chronic shapes.
+- `review-report` → `diagnose-root-cause` for a deterministic body-failure red, `diagnose-flake-root-cause` for an intermittent one; the flake skill then orchestrates the `analyse-*` experiments and `write-a-probe` confirms any hypothesis.
+- `review-suite-stability` → `review-report` for the per-run unit → `diagnose-root-cause` for a surprise red that survives re-runs, `diagnose-flake-root-cause` for one that doesn't.
+- Diagnosing a red — pick by determinism: deterministic → `diagnose-root-cause` (re-derive, synthetic→real ladder, five-bucket verdict); intermittent → `diagnose-flake-root-cause` (failure rate, signature, correlation, five flake buckets — it drives the `analyse-*` experiments). Each hands off to the other if Step 0's verdict flips; user-facing findings go to `update-frd-and-tests`.
 - Black-hat ideation → `empiricism` to verify the SUT's current behaviour → `extend-coverage` to author the test.
 - Spec change → `update-frd-and-tests` (spec doc first, tests follow, gap tests reframed not flipped).
-- New flake suspect → `empiricism` → `write-a-probe` → finding lands in the gap inventory / scenario comment / spec doc → probe deleted.
+- New flake suspect → `diagnose-flake-root-cause` (failure rate → signature → correlate → routed `analyse-*` experiment) → `write-a-probe` to confirm by moving the rate → finding lands in the gap inventory / scenario comment / spec doc → probe deleted.
 - Any framework question → `understand-ocarina` (Holy Book first, then source / example clones).
 - Hygiene pass / pre-release pruning → `assess-test-base` (catalogue) → `review-dead-code` (audit unused connectors / POMs / scenarios / fragments / constants) → per finding: delete or move to `<source-root>/incubator/`.
 - Local environment bring-up → `setup-environment` (venv + tooling + skill-battery install into Claude Code + driver adapter choice + `CLAUDE.local.md` + quality loop).

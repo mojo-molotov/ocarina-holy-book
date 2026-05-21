@@ -144,6 +144,24 @@ Then collapse by `(test, browser, exception class, step)`:
 - **Recovered-late** — passed in life > 1 in ≥ 1 replay (the widening helped).
 - **Stable** — passed in life 1 every replay (widening was irrelevant for this test).
 
+The sort is two questions per test — render it in the skill's surfaced report so each verdict is auditable (that Markdown deliverable only; never
+commit it into the repo):
+
+```mermaid
+flowchart TD
+    T["Test under the widened net, across N replays"]
+    Q1{"Exhausted all lives in >= 2 replays?"}
+    Q2{"Passed only in life > 1 — the widening helped?"}
+    CHRONIC["Chronic — real flake or real defect"]
+    LATE["Recovered-late — re-classification candidate"]
+    STABLE["Stable — widening was irrelevant"]
+    T --> Q1
+    Q1 -- yes --> CHRONIC
+    Q1 -- no --> Q2
+    Q2 -- yes --> LATE
+    Q2 -- no --> STABLE
+```
+
 Cross-reference the chronic deaths to the gap inventory:
 
 - Matches `§A-ENV-1` (rapid-POST shared-dyno contention)? — explained, no new finding.

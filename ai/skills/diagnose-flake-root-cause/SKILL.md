@@ -180,6 +180,8 @@ Rate with the trigger condition: <k/N>. Rate without it: <k/N>.
 - A shared SUT-side scarcity is implicated → `understand-sut-constraints`.
 - The fix is a retry that must stay honest → `introduce-pom-retries` (the two-test split keeps the flake demonstrated, not buried).
 - Finding is user-facing (an intermittent SUT defect) → `update-frd-and-tests`.
+- Root cause sits in a shared component (a fragment, a POM method, the drivers pool) → `assess-impact` to scope which other tests share the flake's
+  surface — the forward walk from this backward one.
 
 ## When to run this skill
 

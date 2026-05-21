@@ -19,8 +19,8 @@ Conventions every skill in this directory shares:
 - **Functional and static security only.** Per `CLAUDE.md` → *"Security testing is functional and static — never active"*. Every black-hat /
   attack-ideation skill respects this hard line.
 - **Mtime, not filename.** All file-picking skills (`pick-*`) sort by modification time — UUID suffixes in screenshots / logs / reports are random.
-- **Diagrams are Mermaid, in the surfaced report, never committed.** Skills that emit a diagram (the `diagnose-*` pair, the `analyse-*` family, the
-  attack-ideation skills) render it as Mermaid inside **the report the skill surfaces to you** — the skill's own Markdown deliverable (the
+- **Diagrams are Mermaid, in the surfaced report, never committed.** Skills that emit a diagram (the `diagnose-*` pair, `assess-impact`, the
+  `analyse-*` family, the attack-ideation skills) render it as Mermaid inside **the report the skill surfaces to you** — the skill's own Markdown deliverable (the
   `# … analysis` / catalogue it hands back), _not_ Ocarina's run artifacts in `.reports/` (DOCX proofs, JSON results). It is text, so diffable and
   regenerable. A diagram is never committed into the repo, where it would drift (per `review-comment-drift`); the durable artifacts are the findings
   the diagram summarises.
@@ -69,9 +69,10 @@ Generate attack catalogues — every action through the normal UI, never injecti
 
 ## Comprehend (assessment & understanding)
 
-Build / refresh a mental model — of the codebase, the ecosystem, the SUT's constraints, the framework.
+Build / refresh a mental model — of the codebase, the ecosystem, the SUT's constraints, the framework — or map the blast radius of a change.
 
 - [assess-test-base](assess-test-base/SKILL.md) — catalogue of the existing test base across seven categories.
+- [assess-impact](assess-impact/SKILL.md) — forward impact analysis: given a change (SUT change / planned refactor / a `diagnose-*` shared-component cause), trace its blast radius through the dependency graph, classify each affected node (broken / stale claim / gap-test-may-flip / coverage-gap / smoke-gate crossing), render a Mermaid dependency-slice. The forward dual of the `diagnose-*` pair.
 - [assess-ecosystem](assess-ecosystem/SKILL.md) — bounded public-research pass over eight ecosystem surfaces; token-budget-controlled.
 - [understand-sut-constraints](understand-sut-constraints/SKILL.md) — map SUT-side bounds that constrain parallel-test safety; distributed mitigations when the fleet shares scarcity, worker-local in-memory only when it doesn't (and the keys + thread-safety gates pass).
 - [understand-ocarina](understand-ocarina/SKILL.md) — four-tier framework comprehension; Holy Book first.
@@ -129,6 +130,8 @@ A few recurring chains:
 - `review-report` → `diagnose-root-cause` for a deterministic body-failure red, `diagnose-flake-root-cause` for an intermittent one; the flake skill then orchestrates the `analyse-*` experiments and `write-a-probe` confirms any hypothesis.
 - `review-suite-stability` → `review-report` for the per-run unit → `diagnose-root-cause` for a surprise red that survives re-runs, `diagnose-flake-root-cause` for one that doesn't.
 - Diagnosing a red — pick by determinism: deterministic → `diagnose-root-cause` (re-derive, synthetic→real ladder, five-bucket verdict); intermittent → `diagnose-flake-root-cause` (failure rate, signature, correlation, five flake buckets — it drives the `analyse-*` experiments). Each hands off to the other if Step 0's verdict flips; user-facing findings go to `update-frd-and-tests`.
+- Direction of travel — `diagnose-*` walks the dependency graph **backward** (symptom → cause); `assess-impact` walks it **forward** (change → blast radius). A `diagnose-*` cause localized to a shared component hands off to `assess-impact` to scope how far it contaminates.
+- Before a refactor, or after a SUT change → `assess-impact` (trace the blast radius) → per affected node: `empiricism` / `write-a-probe` (stale claim), `update-frd-and-tests` (gap-test may flip), `extend-coverage` (new coverage gap), `review-dead-code` (orphaned node).
 - Black-hat ideation → `empiricism` to verify the SUT's current behaviour → `extend-coverage` to author the test.
 - Spec change → `update-frd-and-tests` (spec doc first, tests follow, gap tests reframed not flipped).
 - New flake suspect → `diagnose-flake-root-cause` (failure rate → signature → correlate → routed `analyse-*` experiment) → `write-a-probe` to confirm by moving the rate → finding lands in the gap inventory / scenario comment / spec doc → probe deleted.

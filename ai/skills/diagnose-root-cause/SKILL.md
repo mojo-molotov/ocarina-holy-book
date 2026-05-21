@@ -185,6 +185,8 @@ Test / step / exception / browser / since-when — per Step 1.
 - Server-side claim → read the source (per `CLAUDE.md` → "Verify SUT behaviour").
 - Environment suspected → `question-state`.
 - Finding is user-facing → `update-frd-and-tests`.
+- Root cause sits in a shared component (a POM method, a fragment, a selector) → `assess-impact` to scope which other tests it contaminates — the
+  forward walk from this backward one.
 - Arrived here from `review-report` — a body-failure that wasn't an obvious static / smoke-gate / setup error.
 
 ## When to run this skill

@@ -39,7 +39,7 @@ through the normal UI.
 
 **Datasets are human decisions.** Proposing doesn't run.
 
-**Verify SUT behaviour empirically.** Probe, `gh api`, or `curl -v`. Never inference. Re-derive each time: a probe answers only for what it ran; a
+**Verify SUT behavior empirically.** Probe, `gh api`, or `curl -v`. Never inference. Re-derive each time: a probe answers only for what it ran; a
 prior diagnosis only for that run.
 
 Each rule carries a one-line "_why_."
@@ -79,7 +79,7 @@ Static reads; surface findings.
 
 ### Comprehend (4)
 
-- `assess-test-base` — catalogue the suite.
+- `assess-test-base` — catalog the suite.
 - `assess-ecosystem` — bounded public research, token-budget capped.
 - `understand-sut-constraints` — SUT bounds that break parallel tests.
 - `understand-ocarina` — walk the docs.

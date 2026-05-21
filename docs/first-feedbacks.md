@@ -318,7 +318,7 @@ _programming astrology_.
 
 ### Anti startup nations
 
-And once again, the grey-haired debate about "democratic governance of code."  
+And once again, the gray-haired debate about "democratic governance of code."  
 But who is stepping in?
 
 HR people?  

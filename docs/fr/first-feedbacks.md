@@ -228,7 +228,7 @@ Pas besoin d'être un hacker, pas besoin d'avoir autant souffert.
 C'est un outil que l'on donne, pour les passionnés, les vrais passionnés.
 
 Pour ceux qui ont envie de construire et non pas de détruire.  
-Pour les personnes saines, cultivées, qui savent qui ils sont.
+Pour les personnes saines, cultivées, pour ceux qui savent qui ils sont.
 
 Pour des gens comme nous, dans le fond.  
 Pour une fois, serrons-nous les coudes.

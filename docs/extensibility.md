@@ -225,6 +225,6 @@ Another example would be **`skip_if`**: intentionally bypassing a portion of the
 
 <p align="center" class="inspiring-quote">"For the writer as well as for the painter, style is not a question of technique, but of vision."</p>
 
-<p align="right" class="inspiring-quote-author">― Marcel Proust</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Marcel Proust</p>
 
 </llm-exclude>

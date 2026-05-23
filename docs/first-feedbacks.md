@@ -399,13 +399,13 @@ For Now and Forever.
 more he will admire it, if you make something so clusterfucked he can't understand it he's gonna think you're a god cause you made it so complicated
 nobody can understand it. That's how they write journals in Academics: they try to make it so complicated people think you're a genius."</i></p>
 
-<p align="right" class="inspiring-quote-author">― Terry Davis, "<i>the smartest programmer that's ever lived</i>"</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Terry Davis, "<i>the smartest programmer that's ever lived</i>"</p>
 
 ---
 
 <p align="center" class="inspiring-quote"><i>"To attain knowledge, add things every day. To attain wisdom, remove things every day."</i></p>
 
-<p align="right" class="inspiring-quote-author">― Laozi</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Laozi</p>
 
 ---
 

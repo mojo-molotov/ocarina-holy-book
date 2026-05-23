@@ -375,6 +375,6 @@ degree of horizontal scaling and the number of workers involved.
 
 <p align="center" class="inspiring-quote">"Retry flaky blocks."</p>
 
-<p align="right" class="inspiring-quote-author">― Yegor Bugayenko, <i><a href="https://github.com/yegor256/prompt" target="_blank" rel="noreferrer">Prompt</a></i></p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Yegor Bugayenko, <i><a href="https://github.com/yegor256/prompt" target="_blank" rel="noreferrer">Prompt</a></i></p>
 
 </llm-exclude>

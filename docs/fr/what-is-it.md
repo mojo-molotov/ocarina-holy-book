@@ -25,10 +25,10 @@ La plupart des frameworks de test ont été conçus dans un monde où la barriè
 et structurelle.
 
 _Robot Framework_, a essayé de la **contourner** avec un _DSL_ (_Domain Specific Language_), incluant **leur propre format** et **leur propre
-écosystème de plugins**. Ainsi, RF impose de-facto ses propres standards : c'est le coût immédiat de sa promesse.
+écosystème de plugins**. Ainsi, RF impose de-facto ses propres standards&nbsp;:&nbsp;c'est le coût immédiat de sa promesse.
 
-De la même sorte, _Cucumber_ a essayé avec le _Gherkin_ : un langage "naturel" qui, en pratique, **contraint tout le monde sans vraiment libérer
-personne**. Coût&nbsp;:&nbsp;**couche de traduction permanente, désynchronisation Gherkin/code**.
+De la même sorte, _Cucumber_ a essayé avec le _Gherkin_&nbsp;:&nbsp;un langage "naturel" qui, en pratique, **contraint tout le monde sans vraiment
+libérer personne**. Coût&nbsp;:&nbsp;**couche de traduction permanente, désynchronisation Gherkin/code**.
 
 Tous ont parié sur la même chose : **masquer la complexité** pour réconcilier les profils.  
 Résultat : les non-techniques restent spectateurs, et les techniques se retrouvent **prisonniers d'un outil qu'ils n'auraient jamais choisi**.
@@ -50,8 +50,8 @@ _outils_ plutôt que d'utiliser des _solutions_**.
 du cou. Outils honteusement compliqués, vendus comme "solutions". Impact&nbsp;:&nbsp;**désastre opérationnel** dès lors que l'on a un besoin qui ne
 peut pas s'exprimer dans un "cadre" qui n'est PAS réellement générique.
 
-Et le pire : **toutes ces technologies continueront d'évoluer dans ce sens**. AUCUNE d'entre elle ne prendra ce _shift_, puisqu'il s'agit d'un
-changement de paradigme et d'**un retour aux fondamentaux qui contredit totalement leur proposition de valeur**.
+Et le pire&nbsp;:&nbsp;**toutes ces technologies continueront d'évoluer dans ce sens**. AUCUNE d'entre elle ne prendra ce _shift_, puisqu'il s'agit
+d'un changement de paradigme et d'**un retour aux fondamentaux qui contredit totalement leur proposition de valeur**.
 
 Pourtant, ce qu'il nous reste à présent, c'est le besoin d'un code de test **lisible, traçable et flexible**, sous sa forme la plus **brute**.
 
@@ -62,12 +62,13 @@ Le pont entre techniques et non-techniques n'est plus une couche d'abstraction.
 
 ## Le problème culturel
 
-Il y a un autre angle mort, rarement nommé : **la méthodologie**.
+Il y a un autre angle mort, rarement nommé&nbsp;:&nbsp;**la méthodologie**.
 
 ### ISTQB, où es-tu ?
 
-L'ISTQB et les testeurs professionnels ont construit, depuis des décennies, un vocabulaire précis et éprouvé : _cycles de test_, _campagnes_, _suites
-de test_, _cas de test_, _pas de test_. Une hiérarchie claire, pensée pour **organiser, tracer et piloter** la qualité logicielle.
+L'ISTQB et les testeurs professionnels ont construit, depuis des décennies, un vocabulaire précis et éprouvé&nbsp;:&nbsp;_cycles de test_,
+_campagnes_, _suites de test_, _cas de test_, _pas de test_. Une hiérarchie claire, pensée pour **organiser, tracer et piloter** la qualité
+logicielle.
 
 Les outils automatisés, eux, ont **largement ignoré cet héritage**.
 
@@ -85,14 +86,14 @@ vraiment la même langue.
 Sa structure est modélisée **directement et exclusivement** sur la méthodologie des testeurs. Chaque concept du code correspond à un concept métier du
 test. Pas d'emprunt, pas de détournement, pas de _"ça ressemble à peu près à"_.
 
-Et parce qu'Ocarina prend ce pari jusqu'au bout : **il est entièrement autonome**. Pas de plugin pytest. Pas d'intégration forcée à un écosystème
-tiers. Ocarina est _batteries-included_, il n'a besoin de rien d'autre pour fonctionner et c'est un choix délibéré.
+Et parce qu'Ocarina prend ce pari jusqu'au bout&nbsp;:&nbsp;**il est entièrement autonome**. Pas de plugin pytest. Pas d'intégration forcée à un
+écosystème tiers. Ocarina est _batteries-included_, il n'a besoin de rien d'autre pour fonctionner et c'est un choix délibéré.
 
 ## Le vrai point de douleur
 
 ### De la "créativité"
 
-Tout le monde s'acharne sur le _comment_ : des interfaces, des abstractions, de "jolis" DSLs.  
+Tout le monde s'acharne sur le _comment_&nbsp;:&nbsp;des interfaces, des abstractions, de "jolis" DSLs.  
 Pendant ce temps, le _pourquoi_ disparaît.
 
 **Ocarina fait le choix inverse.**
@@ -101,18 +102,18 @@ Toute sa conception ainsi que tout son livre sacré, sont focalisés sur le **po
 Pas sur une abstraction à utiliser _"comme on aime"_.
 
 Pour le _comment_ ?  
-La réponse est simple : Ocarina est **dense, immédiatement opérationnel et strict**. Pensé pour que les humains ainsi que les LLMs en comprennent le
-cœur et l'usage sans friction.
+La réponse est simple&nbsp;:&nbsp;Ocarina est **dense, immédiatement opérationnel et strict**. Pensé pour que les humains ainsi que les LLMs en
+comprennent le cœur et l'usage sans friction.
 
 ### Que dit la science ?
 
-Ici, tout repose sur des **fondations statiques** :
+Ici, tout repose sur des **fondations statiques**&nbsp;:
 
 - typage,
 - generics,
 - programmation fonctionnelle.
 
-Ocarina rend son mésusage difficile par conception : le compilateur fait foi.
+Ocarina rend son mésusage difficile par conception&nbsp;:&nbsp;le compilateur fait foi.
 
 ![Illustration d'un personnage en état de plénitude grâce à une transe algébrique](/assets/content/what-is-it/creatives/algebraic-fullness.png)
 
@@ -136,7 +137,7 @@ C'est ce qui rend Ocarina **stable et extensible à la fois**.
 _Et si déléguer sa grammaire à des "standards" n'avait jamais été une bonne idée&nbsp;?_
 
 Le vrai hiatus du test E2E **n'est pas d'imposer la "meilleure" novlangue**.  
-Réponse simple : Ocarina est **extensible**.
+Réponse simple&nbsp;:&nbsp;Ocarina est **extensible**.
 
 On y crée les verbes et conjonctions que l'on veut, le tout régi par des **règles strictes qui poussent l'ensemble à rester profondément cohérent**.
 
@@ -150,16 +151,16 @@ Le chemin d'erreur est explicite. Le rapport de test **émerge naturellement du 
 Pas de surarchitecture. Pas de dépendances inutiles.  
 Juste quelque chose de **petit, lisible, et qui tient dans le temps**.
 
-Le plus fort, c'est qu'**Ocarina n'invente rien : Ocarina en revient aux fondamentaux**.
+Le plus fort, c'est qu'**Ocarina n'invente rien&nbsp;:&nbsp;Ocarina en revient aux fondamentaux**.
 
 ### Adoption
 
-Pour les scénarios les plus extrêmes : Ocarina n'a pas besoin d'être installé.  
+Pour les scénarios les plus extrêmes&nbsp;:&nbsp;Ocarina n'a pas besoin d'être installé.  
 Il se copie, s'adapte, et tourne.  
 Pas de dépendance à auditer.
 
-Pour les équipes bloquées par des _politiques de sécurité_ : le code est petit, auditable en une après-midi. Rien de caché. Les seules dépendances
-externes sont dans les plugins post-exécution et si l'une d'elles ne passe pas, elle se retire sans que le reste ne casse.
+Pour les équipes bloquées par des _politiques de sécurité_&nbsp;:&nbsp;le code est petit, auditable en une après-midi. Rien de caché. Les seules
+dépendances externes sont dans les plugins post-exécution et si l'une d'elles ne passe pas, elle se retire sans que le reste ne casse.
 
 En pratique, un consultant peut arriver chez un client avec Ocarina dans sa poche, _presque_ sans demander la permission à personne.
 

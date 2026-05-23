@@ -16,7 +16,7 @@ head:
 
 ## La fin des états invalides
 
-_... Rendre les états invalides impossibles à représenter._
+_...&nbsp;Rendre les états invalides impossibles à représenter._
 
 Nous allons détailler le fonctionnement d'`act`, de `drive_page` et de `match_page` dans l'écriture des scénarios de test avec Ocarina.
 
@@ -24,7 +24,7 @@ Nous allons détailler le fonctionnement d'`act`, de `drive_page` et de `match_p
 
 #### Exemple canonique
 
-Commençons par un exemple que nous allons progressivement casser :
+Commençons par un exemple que nous allons progressivement casser&nbsp;:
 
 ```python
 def go_from_homepage_to_book_call_page_with_the_cta(driver: WebDriver, logger: ILogger):
@@ -75,14 +75,14 @@ test_homepage_book_a_call_cta = create_selenium_test(
 
 `drive_page` exprime que l'on prend le contrôle d'_une_ page.  
 Toute _transition_ devient explicite par l'ouverture d'un nouveau `drive_page`.  
-À l'intérieur, `act` exprime une action émise sur cette page : c'est un _pas de test_. `drive_page` est variadique, elle accepte autant d'`act` que
-nécessaire, et la virgule entre chacun devient un ET :
+À l'intérieur, `act` exprime une action émise sur cette page&nbsp;:&nbsp;c'est un _pas de test_. `drive_page` est variadique, elle accepte autant
+d'`act` que nécessaire, et la virgule entre chacun devient un ET&nbsp;:
 
 > Ouvre, puis vérifie la page d'accueil. _ET_ clique sur le CTA. On change de page : vérifie que l'on est sur la page pour réserver un appel.
 
 #### Système immunitaire
 
-Essayons d'appeler `verify_book_call_page` sur `homepage` :
+Essayons d'appeler `verify_book_call_page` sur `homepage`&nbsp;:
 
 ```python
 act(on_homepage, verify_book_call_page)
@@ -92,7 +92,7 @@ act(on_homepage, verify_book_call_page)
 
 L'action est incompatible avec sa cible. Ce programme ne _compile_ pas.
 
-Oublions un `.success` :
+Oublions un `.success`&nbsp;:
 
 ```python
 drive_page(
@@ -103,7 +103,7 @@ drive_page(
 # error: Expected type 'ActionSuccess[TPOM ≤: POMBase]', got 'ActionFailure[BookCallPage]' instead
 ```
 
-Plaçons un `.success` immédiatement après `act` :
+Plaçons un `.success` immédiatement après `act`&nbsp;:
 
 ```python
 drive_page(
@@ -120,7 +120,7 @@ drive_page(
 # Unresolved attribute reference 'success' for class 'ActionStart'
 ```
 
-Inversons `.success` et `.failure` :
+Inversons `.success` et `.failure`&nbsp;:
 
 ```python
 drive_page(
@@ -138,7 +138,7 @@ drive_page(
 # Unresolved attribute reference 'success' for class 'ActionStart'
 ```
 
-Chaînons des `act` hétérogènes dans un même `drive_page` :
+Chaînons des `act` hétérogènes dans un même `drive_page`&nbsp;:
 
 ```python
 drive_page(
@@ -167,9 +167,10 @@ drive_page(
 AUCUNE de ces fantaisies ne compile. Ocarina est anti _petit malin_.
 
 Beaucoup se battent avec des _coding styles_.  
-Ocarina est plus tranché : si le style n'est pas respecté, ce n'est pas une erreur de _lint_, ce n'est pas un avertissement. Ça ne **compile** pas.
+Ocarina est plus tranché&nbsp;:&nbsp;si le style n'est pas respecté, ce n'est pas une erreur de _lint_, ce n'est pas un avertissement. Ça ne
+**compile** pas.
 
-Ocarina force le même gabarit pour tout le monde, et ces erreurs apparaissent directement dans l'éditeur via _mypy_ : feedback instantané.
+Ocarina force le même gabarit pour tout le monde, et ces erreurs apparaissent directement dans l'éditeur via _mypy_&nbsp;:&nbsp;feedback instantané.
 
 <llm-exclude>
 
@@ -184,7 +185,7 @@ L'objectif est de clore les débats de _geeks_ au plus tôt. C'est ainsi qu'Ocar
 
 `match_page` gère les situations où une page peut être rendue de manière différente.
 
-Commençons par le principe des _matchers_ :
+Commençons par le principe des _matchers_&nbsp;:
 
 ```python
 @final
@@ -228,14 +229,14 @@ class PageWithCookiesBannerMatchers:
 
 ---
 
-> ⚠️ Il vaut mieux éviter un `.find_element(s)` brut : c'est la voie rapide vers la _flakiness_.
+> ⚠️&nbsp;Il vaut mieux éviter un `.find_element(s)` brut&nbsp;:&nbsp;c'est la voie rapide vers la _flakiness_.
 
 Le délai maximal de 5 secondes n'aura aucun impact dans une batterie scalée horizontalement, ce n'est donc pas une pratique à craindre ici. Il n'est
-pas non plus recommandé de déguiser un `verify` en _matcher_ : **ce sont deux outils différents.**
+pas non plus recommandé de déguiser un `verify` en _matcher_&nbsp;:&nbsp;**ce sont deux outils différents.**
 
 ---
 
-Usage dans un scénario :
+Usage dans un scénario&nbsp;:
 
 ```python
 on_homepage = Homepage(driver=driver)
@@ -284,11 +285,11 @@ check_that_page = PageWithCookiesBannerMatchers(driver=driver)
 Les branches sont définies par `when`.
 
 `match_page` et `when` ont été ajoutés après coup, l'Igoristan était tellement aléatoire que le cas d'usage s'est imposé de lui-même.  
-Leur implémentation a été simple, preuve de la flexibilité de la grammaire : d'autres structures analogues pourraient très bien suivre.
+Leur implémentation a été simple, preuve de la flexibilité de la grammaire&nbsp;:&nbsp;d'autres structures analogues pourraient très bien suivre.
 
 ## Répétitions
 
-Pour répéter une chaîne de test (par exemple, pour tester plusieurs tentatives d'accès non autorisé), il suffit de multiplier la liste :
+Pour répéter une chaîne de test (par exemple, pour tester plusieurs tentatives d'accès non autorisé), il suffit de multiplier la liste&nbsp;:
 
 ```python
 [
@@ -318,7 +319,7 @@ Pour répéter une chaîne de test (par exemple, pour tester plusieurs tentative
 Un _fragment_ est une fonction `(driver, logger) -> TestChain` injectable avant ou après la chaîne principale, via `pre_test_scenarios_fragments` et
 `post_test_scenarios_fragments`.
 
-Par exemple, `login_without_otp_happy_path` est un fragment :
+Par exemple, `login_without_otp_happy_path` est un fragment&nbsp;:
 
 ```python
 def login_without_otp_happy_path(driver: WebDriver, logger: ILogger):
@@ -338,7 +339,7 @@ def login_without_otp_happy_path(driver: WebDriver, logger: ILogger):
     ]
 ```
 
-Injection au début :
+Injection au début&nbsp;:
 
 ```python
 test_cant_access_the_protected_page_without_otp_using_the_ui = create_selenium_test(
@@ -352,7 +353,7 @@ test_cant_access_the_protected_page_without_otp_using_the_ui = create_selenium_t
 )
 ```
 
-Injection à la fin :
+Injection à la fin&nbsp;:
 
 ```python
 test_dashboard_login_page_back_to_igoristan_button = create_selenium_test(
@@ -369,7 +370,7 @@ Les deux paramètres peuvent être combinés et acceptent chacun une liste de _f
 ## Aliasing
 
 Les scénarios peuvent devenir lourds.  
-Comme tout y est déclaratif, l'utilisateur est libre de créer des alias :
+Comme tout y est déclaratif, l'utilisateur est libre de créer des alias&nbsp;:
 
 ```python
 on_homepage = Homepage(driver=driver)
@@ -424,12 +425,12 @@ Tout peut être redéclaré ailleurs, réorganisé ailleurs, tant que la chaîne
 
 ![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
 
-<p align="center" class="good-work-mojo-msg"><i>Bon travail !<br/>À une prochaine fois, lecteur Mojo.</i></p>
+<p align="center" class="good-work-mojo-msg"><i>Bon travail&nbsp;!<br/>À une prochaine fois, lecteur Mojo.</i></p>
 
 ---
 
 <p align="center" class="inspiring-quote">"La perfection est atteinte non pas lorsqu'il n'y a plus rien à ajouter, mais lorsqu'il n'y a plus rien à retirer."</p>
 
-<p align="right" class="inspiring-quote-author">― Antoine de Saint-Exupéry</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Antoine de Saint-Exupéry</p>
 
 </llm-exclude>

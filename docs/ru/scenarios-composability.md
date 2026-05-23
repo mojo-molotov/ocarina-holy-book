@@ -430,6 +430,6 @@ click_confirm_cookies = drive_page(
 
 <p align="center" class="inspiring-quote">"Совершенство достигается не тогда, когда уже нечего добавить, а когда уже нечего отнять."</p>
 
-<p align="right" class="inspiring-quote-author">― Антуан де Сент-Экзюпери</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Антуан де Сент-Экзюпери</p>
 
 </llm-exclude>

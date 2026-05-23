@@ -27,8 +27,8 @@ A working setup: a full test cycle built alongside Claude Code and Ocarina, agai
 Two variants. `CLAUDE.md` is full (rules + project layout, hierarchy, conventions, CI shape, PR template). `CLAUDE.slim.md` is rules only. Slim when
 context is heavy; full for onboarding and reviews. Full wins on disagreement.
 
-Onboarding steps (venv, `pip install`, the skill battery copied into Claude Code, `ruff` / `mypy` / `pre-commit`, runner smoke-check) live in
-`setup-environment`.
+Onboarding steps (venv, `pip install`, the skill battery copied into Claude Code, `ruff` /&nbsp;`mypy` /&nbsp;`pre-commit`, runner smoke-check) live
+in `setup-environment`.
 
 Rules:
 
@@ -52,37 +52,37 @@ One Markdown file per skill, YAML frontmatter + body. Ten families.
 
 Static reads; surface findings.
 
-- `review-spec-gaps` — clarification questions on the FRD.
-- `review-watcher-misuse` — `watcher.report(...)` against the negative-only convention.
-- `review-compartmentalisation-leaks` — URLs, selectors, magic numbers out of place.
-- `review-dead-code` — unused connectors / POMs / scenarios / suites / fragments / constants; per finding: delete, incubate
-  (`<source-root>/incubator/`, dependency tree preserved), or keep.
-- `review-report` — classify each FAIL / SKIP for one run.
+- `review-spec-gaps&nbsp;—&nbsp;clarification questions on the FRD.
+- `review-watcher-misuse`&nbsp;—&nbsp;`watcher.report(...)` against the negative-only convention.
+- `review-compartmentalisation-leaks`&nbsp;—&nbsp;URLs, selectors, magic numbers out of place.
+- `review-dead-code`&nbsp;—&nbsp;unused connectors /&nbsp;POMs /&nbsp;scenarios /&nbsp;suites /&nbsp;fragments /&nbsp;constants; per finding: delete,
+  incubate (`<source-root>/incubator/`, dependency tree preserved), or keep.
+- `review-report`&nbsp;—&nbsp;classify each FAIL&nbsp;/&nbsp;SKIP for one run.
 - Plus: `review-type-ignore`, `review-match-candidates`, `review-unverified-transitions`, `review-submit-dispatchers`, `review-comment-drift`,
   `review-suite-stability`, `review-intent-collisions`, `review-watcher-emissions`.
 
 ### Analyse (4)
 
-- `analyse-flakiness` — widen the transient-error net; chronic deaths are real flakes.
-- `analyse-fixture-flakiness` — instrument setup/teardown; surface cross-test contamination.
-- `analyse-watcher-flakiness` — with/without each watcher, interval sweep.
-- `analyse-screenshot-flakiness` — group by `(test, step, browser)`, spot differences.
+- `analyse-flakiness`&nbsp;—&nbsp;widen the transient-error net; chronic deaths are real flakes.
+- `analyse-fixture-flakiness`&nbsp;—&nbsp;instrument setup/teardown; surface cross-test contamination.
+- `analyse-watcher-flakiness`&nbsp;—&nbsp;with/without each watcher, interval sweep.
+- `analyse-screenshot-flakiness`&nbsp;—&nbsp;group by `(test, step, browser)`, spot differences.
 
 ### Black-hat (6)
 
-- `business-attack-ideation` — bring the product down.
-- `incoherence-attack-ideation` — each step legal, the set impossible.
-- `persistence-attack-ideation` — repeated retries on blocked actions.
-- `permission-appropriateness-audit` — is the access model itself appropriate?
-- `bfcache-exposure-ideation` — BFCache attacks.
-- `lateral-resource-ideation` — IDOR via the address bar only.
+- `business-attack-ideation`&nbsp;—&nbsp;bring the product down.
+- `incoherence-attack-ideation`&nbsp;—&nbsp;each step legal, the set impossible.
+- `persistence-attack-ideation`&nbsp;—&nbsp;repeated retries on blocked actions.
+- `permission-appropriateness-audit`&nbsp;—&nbsp;is the access model itself appropriate?
+- `bfcache-exposure-ideation`&nbsp;—&nbsp;BFCache attacks.
+- `lateral-resource-ideation`&nbsp;—&nbsp;IDOR via the address bar only.
 
 ### Comprehend (4)
 
-- `assess-test-base` — catalog the suite.
-- `assess-ecosystem` — bounded public research, token-budget capped.
-- `understand-sut-constraints` — SUT bounds that break parallel tests.
-- `understand-ocarina` — walk the docs.
+- `assess-test-base`&nbsp;—&nbsp;catalog the suite.
+- `assess-ecosystem`&nbsp;—&nbsp;bounded public research, token-budget capped.
+- `understand-sut-constraints`&nbsp;—&nbsp;SUT bounds that break parallel tests.
+- `understand-ocarina`&nbsp;—&nbsp;walk the docs.
 
 ### Pick (3)
 
@@ -94,46 +94,47 @@ By mtime, never filename.
 
 Each produces a deliverable.
 
-- `empiricism` — verify before encoding; don't overwrite intentional-fail gap tests.
-- `write-a-probe` — throwaway script, gitignored.
-- `write-test-strategy` — generate the test-strategy doc from the suite (scope, types, coverage tables, cycle tree, pass/fail, gaps, CI matrix).
-- `extend-coverage` — extend coverage from existing assets.
-- `update-frd-and-tests` — propagate a spec update.
-- `manual-reproduction-guide` — human-runnable repro.
-- `manage-backlog` — `BACKLOG.md`.
-- `pr-report` — PR-type-aware report.
+- `empiricism`&nbsp;—&nbsp;verify before encoding; don't overwrite intentional-fail gap tests.
+- `write-a-probe`&nbsp;—&nbsp;throwaway script, gitignored.
+- `write-test-strategy`&nbsp;—&nbsp;generate the test-strategy doc from the suite (scope, types, coverage tables, cycle tree, pass/fail, gaps, CI
+  matrix).
+- `extend-coverage`&nbsp;—&nbsp;extend coverage from existing assets.
+- `update-frd-and-tests`&nbsp;—&nbsp;propagate a spec update.
+- `manual-reproduction-guide`&nbsp;—&nbsp;human-runnable repro.
+- `manage-backlog`&nbsp;—&nbsp;`BACKLOG.md`.
+- `pr-report`&nbsp;—&nbsp;PR-type-aware report.
 
 ### Refactor (2)
 
-- `refactor-fragmentation` — DRY per user preference.
-- `introduce-pom-retries` — POM-internal retries with the two-test split (first-try + with-retries).
+- `refactor-fragmentation`&nbsp;—&nbsp;DRY per user preference.
+- `introduce-pom-retries`&nbsp;—&nbsp;POM-internal retries with the two-test split (first-try + with-retries).
 
 ### State (1)
 
-- `question-state` — interrogate the environment before trusting a result.
+- `question-state`&nbsp;—&nbsp;interrogate the environment before trusting a result.
 
 ### Setup (1)
 
-- `setup-environment` — venv, dev tooling, the Ocarina skill battery copied into Claude Code's skills directory, driver paths in `CLAUDE.local.md`,
-  pre-commit loop, runner smoke-check.
+- `setup-environment`&nbsp;—&nbsp;venv, dev tooling, the Ocarina skill battery copied into Claude Code's skills directory, driver paths in
+  `CLAUDE.local.md`, pre-commit loop, runner smoke-check.
 
 ### Run (1)
 
-- `propose-visual-review` — before a local dispatch, offer `--not-headless` (watch the browser play out) vs headless (CI-shaped). Composes the
-  command; user runs.
+- `propose-visual-review`&nbsp;—&nbsp;before a local dispatch, offer `--not-headless` (watch the browser play out) vs headless (CI-shaped). Composes
+  the command; user runs.
 
 ## Recurring chains
 
-**Suite isn't green:** `review-report` → `analyse-*` → `write-a-probe` → finding lands in `IDENTIFIED_GAPS.md` / FRD / scenario comment → probe
-deleted.
+**Suite isn't green:** `review-report`&nbsp;→&nbsp;`analyse-*` →&nbsp;`write-a-probe` →&nbsp;finding lands in `IDENTIFIED_GAPS.md` /&nbsp;FRD
+/&nbsp;scenario comment &nbsp;→&nbsp;probe deleted.
 
-**Black-hat scenario looks promising:** `empiricism` → `extend-coverage` (often intentional-fail).
+**Black-hat scenario looks promising:** `empiricism` →&nbsp;`extend-coverage` (often intentional-fail).
 
 **Spec changes:** `update-frd-and-tests` (FRD first, tests follow). Gap tests are reframed, not flipped.
 
 **New Ocarina primitive needed:** `understand-ocarina` first, then writing.
 
-**About to dispatch a run:** `propose-visual-review` — headed (`--not-headless`) or headless (CI-shaped)? Composes the command; user runs.
+**About to dispatch a run:** `propose-visual-review`&nbsp;—&nbsp;headed (`--not-headless`) or headless (CI-shaped)? Composes the command; user runs.
 
 ## Discipline
 
@@ -147,7 +148,7 @@ motion via `update-frd-and-tests`.
 **Watcher emissions are negative signals only.** A watcher emitting _"login succeeded"_ breaks the contract.
 
 **Distributed when scarcity is shared.** If workers contend on a SUT-capped resource (sessions, slots, quotas), coordinate through distributed
-primitives. Otherwise a worker-local in-memory cache is fine — provided keys can't collide and generation is thread-safe.
+primitives. Otherwise a worker-local in-memory cache is fine&nbsp;—&nbsp;provided keys can't collide and generation is thread-safe.
 
 **Mtime, not filename.** UUID suffixes are random; `pick-*` sorts by mtime.
 
@@ -180,6 +181,6 @@ primitives. Otherwise a worker-local in-memory cache is fine — provided keys c
 
 <p align="center" class="inspiring-quote">"On Earth and Space, he has all the tricks."</p>
 
-<p align="right" class="inspiring-quote-author">― ▒▒█𝚃𝙾𝙿 𝚂𝙴𝙲𝚁█𝚃 // 𝚂𝙲𝙸 // 𝙽▒▒▒▒𝙾𝙵𝙾𝚁𝙽</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;▒▒█𝚃𝙾𝙿 𝚂𝙴𝙲𝚁█𝚃 //&nbsp;𝚂𝙲𝙸 //&nbsp;𝙽▒▒▒▒𝙾𝙵𝙾𝚁𝙽</p>
 
 </llm-exclude>

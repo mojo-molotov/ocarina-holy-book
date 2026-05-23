@@ -368,6 +368,6 @@ API и блокировки нужно обрабатывать в POM-ах.
 
 <p align="center" class="inspiring-quote">"Мутную воду лучше всего очищать, оставив её в покое."</p>
 
-<p align="right" class="inspiring-quote-author">― Алан Уотс</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Алан Уотс</p>
 
 </llm-exclude>

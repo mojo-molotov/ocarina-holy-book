@@ -227,6 +227,6 @@ def create_log_success_with_current_url_and_take_screenshot(
 
 <p align="center" class="inspiring-quote">"Для писателя, как и для художника, стиль — это вопрос не техники, а видения."</p>
 
-<p align="right" class="inspiring-quote-author">― Марсель Пруст</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Марсель Пруст</p>
 
 </llm-exclude>

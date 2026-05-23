@@ -14,7 +14,7 @@ head:
 
 ## ValidationChain
 
-Utilisable dans les POMs, `validate` permet d'exprimer des invariants sous forme de chaînes. L'exécution est **différée** : il faut appeler
+Utilisable dans les POMs, `validate` permet d'exprimer des invariants sous forme de chaînes. L'exécution est **différée**&nbsp;:&nbsp;il faut appeler
 `.execute()` explicitement.
 
 Le résultat expose `is_valid`, `errors` et `validated_values`. Il est inerte par défaut. `.raise_if_invalid()` remonte l'exception si besoin.
@@ -27,7 +27,7 @@ validate(checkbox.is_selected(), name="checkbox_is_selected").assert_that(
 
 ### Chaînage d'invariants
 
-Plusieurs assertions sur une même valeur :
+Plusieurs assertions sur une même valeur&nbsp;:
 
 ```python
 validate(unsafe_min_date, name="cached_min_date")
@@ -37,7 +37,7 @@ validate(unsafe_min_date, name="cached_min_date")
 
 ### Chaînage de validations
 
-Plusieurs validations sur des valeurs différentes :
+Plusieurs validations sur des valeurs différentes&nbsp;:
 
 ```python
 chain_validations(
@@ -50,7 +50,7 @@ chain_validations(
 
 ### Invariants réutilisables
 
-Pour factoriser une validation récurrente, créer un _Invariant Validator_ :
+Pour factoriser une validation récurrente, créer un _Invariant Validator_&nbsp;:
 
 ```python
 def _workers_amount_chain(
@@ -75,11 +75,11 @@ validate_workers_amount(
 ).execute().raise_if_invalid()
 ```
 
-Convention : `FrameworkInvariantValidator.create` pour les invariants techniques, `BusinessInvariantValidator.create` pour le métier.
+Convention&nbsp;:&nbsp;`FrameworkInvariantValidator.create` pour les invariants techniques, `BusinessInvariantValidator.create` pour le métier.
 
 ### Assertions personnalisées
 
-Sans argument :
+Sans argument&nbsp;:
 
 ```python
 def is_str(value: Any) -> None:
@@ -88,7 +88,7 @@ def is_str(value: Any) -> None:
         raise InvariantViolationError(msg)
 ```
 
-Avec argument :
+Avec argument&nbsp;:
 
 ```python
 def is_equal_to(cmp: Any) -> Predicate[Any]:
@@ -102,7 +102,7 @@ def is_equal_to(cmp: Any) -> Predicate[Any]:
 
 ### Type safety
 
-Le _type checker_ détecte les assertions incompatibles avec le type de la valeur :
+Le _type checker_ détecte les assertions incompatibles avec le type de la valeur&nbsp;:
 
 ```python
 validate("lol", name="n").assert_that(is_positive)
@@ -113,8 +113,8 @@ validate("lol", name="n").assert_that(is_positive)
 ## Success et failure
 
 `.success` et `.failure` prennent chacun un _effet_ à exécuter.  
-[L'exemple canonique](https://github.com/mojo-molotov/ocarina-example) implémente plusieurs handlers : log simple d'erreur, log avec URL courante, log
-de succès, et log de succès avec screenshot (+ URL).
+[L'exemple canonique](https://github.com/mojo-molotov/ocarina-example) implémente plusieurs handlers&nbsp;:&nbsp;log simple d'erreur, log avec URL
+courante, log de succès, et log de succès avec screenshot (+&nbsp;URL).
 
 ```python
 def _append_current_url_in_msg(msg: str, driver: WebDriver) -> str:
@@ -182,12 +182,12 @@ def create_log_success_with_current_url_and_take_screenshot(
     return unwrapped
 ```
 
-D'autres _handlers_ sont envisageables :
+D'autres _handlers_ sont envisageables&nbsp;:
 
-- **`create_log_error_with_retry_hint`** : signale une _transient error_ et donc la possibilité de flakiness,
-- **`create_log_error_and_send_alert`** : envoie un webhook à l'échec, sans polluer le test,
-- **`create_log_success_and_record_timing`** : capture un timestamp de fin pour mesurer la durée d'un step (à combiner avec `on_run_effect` de
-  `create_act`),
+- **`create_log_error_with_retry_hint`**&nbsp;:&nbsp;signale une _transient error_ et donc la possibilité de flakiness,
+- **`create_log_error_and_send_alert`**&nbsp;:&nbsp;envoie un webhook à l'échec, sans polluer le test,
+- **`create_log_success_and_record_timing`**&nbsp;:&nbsp;capture un timestamp de fin pour mesurer la durée d'un step (à combiner avec `on_run_effect`
+  de `create_act`),
 - Etc.
 
 La création d'un _combinateur_ est également envisageable.
@@ -198,22 +198,22 @@ La création d'un _combinateur_ est également envisageable.
 l'arborescence de logs et génère un document Word (preuve de test) par cas de test, en insérant les captures d'écran et en convertissant les dates UTC
 en heure locale.
 
-Le principe : les plugins réassemblent les artefacts générés en cours de route sous une forme différente. Un plugin pour créer un rapport sous forme
-de tableau de bord web serait par exemple tout à fait envisageable.
+Le principe&nbsp;:&nbsp;les plugins réassemblent les artefacts générés en cours de route sous une forme différente. Un plugin pour créer un rapport
+sous forme de tableau de bord web serait par exemple tout à fait envisageable.
 
 ## Grammaire extensible
 
-La grammaire des scénarios de test repose sur un seul type : `ChainRunner[T]`. Un scénario est une `list[ChainRunner]` exécutée séquentiellement,
-court-circuitée au premier échec. `drive_page` n'est qu'une fine enveloppe autour de `chain_actions`, qui construit un `ChainRunner`. N'importe quelle
-fonction renvoyant un `ChainRunner` s'insère sans toucher au framework.
+La grammaire des scénarios de test repose sur un seul type&nbsp;:&nbsp;`ChainRunner[T]`. Un scénario est une `list[ChainRunner]` exécutée
+séquentiellement, court-circuitée au premier échec. `drive_page` n'est qu'une fine enveloppe autour de `chain_actions`, qui construit un
+`ChainRunner`. N'importe quelle fonction renvoyant un `ChainRunner` s'insère sans toucher au framework.
 
-`match_page` a été ajouté après coup pour gérer les pages à état variable (banners optionnels, A/B tests, pages de maintenance...) : elle évalue des
-conditions dans l'ordre et exécute la première branche correspondante.
+`match_page` a été ajouté après coup pour gérer les pages à état variable (banners optionnels, A/B tests, pages de maintenance...)&nbsp;:&nbsp;elle
+évalue des conditions dans l'ordre et exécute la première branche correspondante.
 
-Autre exemple envisageable : **`skip_if`**, qui court-circuiterait volontairement une portion du scénario sur une condition sans échouer (retournerait
-un `Ok` neutre), utile pour des étapes optionnelles selon l'environnement ou les données de test.
+Autre exemple envisageable&nbsp;:&nbsp;**`skip_if`**, qui court-circuiterait volontairement une portion du scénario sur une condition sans échouer
+(retournerait un `Ok` neutre), utile pour des étapes optionnelles selon l'environnement ou les données de test.
 
-**La seule contrainte du point d'extension : retourner un `ChainRunner`.**
+**La seule contrainte du point d'extension&nbsp;:&nbsp;retourner un `ChainRunner`.**
 
 <llm-exclude>
 
@@ -221,12 +221,12 @@ un `Ok` neutre), utile pour des étapes optionnelles selon l'environnement ou le
 
 ![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
 
-<p align="center" class="good-work-mojo-msg"><i>Bon travail !<br/>À une prochaine fois, lecteur Mojo.</i></p>
+<p align="center" class="good-work-mojo-msg"><i>Bon travail&nbsp;!<br/>À une prochaine fois, lecteur Mojo.</i></p>
 
 ---
 
 <p align="center" class="inspiring-quote">"Le style, pour l'écrivain aussi bien que pour le peintre, est une question non de technique, mais de vision."</p>
 
-<p align="right" class="inspiring-quote-author">― Marcel Proust</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Marcel Proust</p>
 
 </llm-exclude>

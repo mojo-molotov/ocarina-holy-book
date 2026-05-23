@@ -430,6 +430,6 @@ Everything can be redeclared elsewhere, reorganized elsewhere, as long as the fi
 
 <p align="center" class="inspiring-quote">"Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away."</p>
 
-<p align="right" class="inspiring-quote-author">― Antoine de Saint-Exupéry</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Antoine de Saint-Exupéry</p>
 
 </llm-exclude>

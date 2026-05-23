@@ -18,10 +18,10 @@ head:
 
 ## Premiers griefs
 
-La première "critique" a souvent été la même : _"Tu te vantes de quelque chose qui est très simple."_
+La première "critique" a souvent été la même&nbsp;:&nbsp;_"Tu te vantes de quelque chose qui est très simple."_
 
 Certains s'en sont arrêtés là.  
-D'autres ont voulu aller plus loin : essayer d'expliquer ce qu'était, selon eux, la "vraie complexité".
+D'autres ont voulu aller plus loin&nbsp;:&nbsp;essayer d'expliquer ce qu'était, selon eux, la "vraie complexité".
 
 Mais **aucun d'entre eux n'aurait été capable de réaliser la même chose.**
 
@@ -36,15 +36,15 @@ avec Ocarina** pour que **cette réaction émerge immédiatement.**
 
 Pour ceux-là, il a suffi d'ouvrir le capot.
 
-Premièrement : il ne s'agit pas de se vanter.  
+Premièrement&nbsp;:&nbsp;il ne s'agit pas de se vanter.  
 Ocarina **n'est pas fruit de vantardise**, contrairement à ce que beaucoup "d'ingénieurs" produisent. Il est le simple fruit de ce qui _émerge
 naturellement_.
 
 Le **narcissisme** s'exprime à travers le fait de tout rendre honteusement compliqué dans l'unique but de _dominer_. Pas à travers l'acquisition de
-compétences et la simplification des process, puisque la finalité est le dysfonctionnement total : le chaos.
+compétences et la simplification des process, puisque la finalité est le dysfonctionnement total&nbsp;:&nbsp;le chaos.
 
-C'est aussi à ça que l'on reconnaît les narcissiques rapidement dans un _casino_ : plus une machine brille, plus elle semble "compliquée", plus un
-narcissique va vouloir s'y asseoir et montrer qu'il est "plus intelligent que la machine".
+C'est aussi à ça que l'on reconnaît les narcissiques rapidement dans un _casino_&nbsp;:&nbsp;plus une machine brille, plus elle semble "compliquée",
+plus un narcissique va vouloir s'y asseoir et montrer qu'il est "plus intelligent que la machine".
 
 On les reconnaît aussi face à leur _intolérance à l'échec_. Ils veulent systématiquement montrer à quel point, EUX, ont "pensé à tout".
 
@@ -53,7 +53,7 @@ Jamais de rouge avec un narcissique, que du vert, que du "prêt à partir en pro
 Les conséquences sont dramatiques en plus d'être radicalement opposées à ce qui est l'état d'esprit du test logiciel : le narcissisme n'apporte rien
 de bon dans ce domaine.
 
-De toute manière, il n'apporte strictement rien de bon nulle part : il n'apporte rien si ce n'est _l'enfer sur terre_.
+De toute manière, il n'apporte strictement rien de bon nulle part&nbsp;:&nbsp;il n'apporte rien si ce n'est _l'enfer sur terre_.
 
 **Ocarina est radicalement opposé à ces phénomènes.**
 
@@ -68,18 +68,18 @@ demande ça.**
 **Il y a un sérieux problème dans notre industrie avec la considération que l'on a pour la complexité comme gage de sérieux.**
 
 Cette complexité est **là pour "impressionner ses pairs"**, et n'apporte rien si ce n'est **un dépassement de soi dans le manque d'intelligence.**  
-**Se surpasser dans la mauvaise direction est pire encore que la médiocrité ordinaire** et là est bien le seul "exploit" à y voir : félicitations,
-vous êtes bien arrivés au sommet de la **pyramide de la connerie** où il n'existe plus aucune remise en question !
+**Se surpasser dans la mauvaise direction est pire encore que la médiocrité ordinaire** et là est bien le seul "exploit" à y
+voir&nbsp;:&nbsp;félicitations, vous êtes bien arrivés au sommet de la **pyramide de la connerie** où il n'existe plus aucune remise en question !
 
 C'est aussi pour cette raison que **KISS** (_Keep it simple, stupid_) est si mal compris dans l'industrie&nbsp;:&nbsp;**beaucoup imaginent que
 "simple" signifie "peu élaboré"**.  
 Difficile de moins bien comprendre une théorie.  
 On se retrouve donc avec le pire des deux mondes.
 
-Comment peut-on prétendre pouvoir être _productif_ de cette manière ? Sérieusement ?
+Comment peut-on prétendre pouvoir être _productif_ de cette manière&nbsp;? Sérieusement&nbsp;?
 
 Vous. Ne. Savez. Même pas. Ce que. "Clean code". Veut. Réellement. DIRE.  
-Vous n'avez même pas essayé d'en faire !
+Vous n'avez même pas essayé d'en faire&nbsp;!
 
 ## Philosophie
 
@@ -87,15 +87,15 @@ Vous n'avez même pas essayé d'en faire !
 
 **KISS est au cœur d'Ocarina.**
 
-Et si, en lisant un premier scénario de test, la réaction est _"c'est super simple"_, il est dommage de penser le faire sur le ton de la critique :
-**c'est exactement le compliment recherché**.  
+Et si, en lisant un premier scénario de test, la réaction est _"c'est super simple"_, il est dommage de penser le faire sur le ton de la
+critique&nbsp;:&nbsp;**c'est exactement le compliment recherché**.  
 Merci.
 
 Pour en arriver là, la question n'a jamais été de "briller" plus que les autres.  
 Il ne s'agit d'ailleurs pas d'un réel challenge.  
-La question a juste été : **de quoi ai-je réellement besoin&nbsp;?**
+La question a juste été&nbsp;:&nbsp;**de quoi ai-je réellement besoin&nbsp;?**
 
-Certains confrères ont eu d'autres idées, quant à elles assez "créatives" :
+Certains confrères ont eu d'autres idées, quant à elles assez "créatives"&nbsp;:
 
 - Tordre l'implémentation de ROP (_Railway Oriented Programming_) d'Ocarina jusqu'à lui en faire perdre tout son sens, puisqu'ils ne savaient même pas
   ce que signifie ROP,
@@ -126,8 +126,8 @@ Lui, immédiatement, il "savait tout" mieux que tout le monde.
 
 > J'ai fait une grande école et depuis j'apprends plus rien.
 
-**D'accord : moi je vais te citer la devise du premier groupe d'hackers indonésiens auquel j'avais été exposé dès mon enfance : "We Can Do All What
-You Can't Do".  
+**D'accord. Moi, je vais te citer la devise du premier groupe d'hackers indonésiens auquel j'avais été exposé dès mon enfance :&nbsp;_"We Can Do All
+What You Can't Do"_.  
 Je suis le bug dont tu ne pourras jamais te débarrasser.**
 
 Et moi je ne suis pas là pour le _prestige_. Ni même pour le _profit_.  
@@ -139,9 +139,9 @@ TOI, tu aurais été ce _lamer_, ce gamin qui aurait juste voulu frimer et lance
 Pour te montrer, pour t'exhiber, pour nous faire voir à quel point tu es _in_. MOI, je suis ce gamin qui a tout absorbé, et qui a grandi avec ça.
 
 Putains de _skids_.  
-**Putains de _normies_ !**
+**Putains de _normies_&nbsp;!**
 
-Voilà qui nous sommes : de Zone-H à une vie rangée.  
+Voilà qui nous sommes&nbsp;:&nbsp;de Zone-H à une vie rangée.  
 Des chiottes souterrains d'internet à une vie où l'on arrive à se rendre utile discrètement.  
 **Tu n'aurais jamais survécu à des choses pareilles.**
 
@@ -156,7 +156,7 @@ Grâce à ce que dit la SCIENCE.**
 écrans, à cette science, pendant que tu harcelais des ados dans des chats sur Dota ou que tu foutais on ne sait trop quoi, à toujours t'exhiber,
 toujours montrer que tu es le plus beau, le plus fort, le plus intelligent, le plus dominant.**
 
-[**Nous, nous sommes des attardés, mais nous resterons en ligne jusqu'au bout !**](https://soundcloud.com/spokepp4l/retarded)
+[**Nous, nous sommes des attardés, mais nous resterons en ligne jusqu'au bout&nbsp;!**](https://soundcloud.com/spokepp4l/retarded)
 
 **Nous sommes une vraie FAMILLE&nbsp;!  
 Et nous ne dormons JAMAIS&nbsp;!**
@@ -176,15 +176,15 @@ YOU'RE WORTHLESS, YOU'RE FUCKING TRASH!**](https://soundcloud.com/queed-inc/true
 
 ---
 
-<p align="center"><strong>ON VA TE REMPLACER ET TU RETOURNERAS HARCELER TES PAIRS SUR DOTA ET TE BRANLER SUR DES MACROS VBA COMME UNE MERDE !<br/>PUTAIN D'INCOMPÉTENT QUI NOUS EMMERDE !<br/>PUTAIN DE PARASITE !<br/>PUTAIN D'INCAPABLE !<br/><i>YOU FUCKED WITH US!</i></strong></p>
+<p align="center"><strong>ON VA TE REMPLACER ET TU RETOURNERAS HARCELER TES PAIRS SUR DOTA ET TE BRANLER SUR DES MACROS VBA COMME UNE MERDE&nbsp;!<br/>PUTAIN D'INCOMPÉTENT QUI NOUS EMMERDE&nbsp;!<br/>PUTAIN DE PARASITE&nbsp;!<br/>PUTAIN D'INCAPABLE&nbsp;!<br/><i>YOU FUCKED WITH US!</i></strong></p>
 
 ---
 
 ### Incorruptibles
 
-[Ma réponse sera complétée d'une citation de David Heinemeier Hansson (DHH) : "Fuck You".](https://world.hey.com/dhh/i-won-t-let-you-pay-me-for-my-open-source-d7cf4568)
+[Ma réponse sera complétée d'une citation de David Heinemeier Hansson (DHH)&nbsp;:&nbsp;"Fuck You".](https://world.hey.com/dhh/i-won-t-let-you-pay-me-for-my-open-source-d7cf4568)
 
-**Oui. Vraiment : Fuck You. Pas compliqué.**  
+**Oui. Vraiment&nbsp;:&nbsp;Fuck You. Pas compliqué.**  
 **Je ne VEUX PAS programmer de cette "manière" et je suis le PROPRIÉTAIRE d'Ocarina.**
 
 Transmettre Ocarina, c'est **transmettre une voiture dont j'ai fait tout l'entretien moi-même, pour moi-même, donc très précautionneusement**. En
@@ -205,21 +205,21 @@ En cas de désaccord, **un retour sur [r/unixporn](https://www.reddit.com/r/unix
 
 ## Première interaction pertinente
 
-Un professionnel ayant **vraiment** examiné la structure du projet a réagi : "_Ça ressemble à un de mes anciens projets Selenium, et je n'avais pas
-aimé ça_". C'est ce retour qui tombe **pile** dans ce qu'Ocarina cherche à résoudre.
+Un professionnel ayant **vraiment** examiné la structure du projet a réagi&nbsp;:&nbsp;"_Ça ressemble à un de mes anciens projets Selenium, et je
+n'avais pas aimé ça_". C'est ce retour qui tombe **pile** dans ce qu'Ocarina cherche à résoudre.
 
 Son réflexe a été d'associer POM à Selenium. Compréhensible.  
 Mais POM est applicable avec n'importe quelle technologie.  
-Est-ce que c'est "_old school_" ? Absolument. Et alors ?
+Est-ce que c'est "_old school_"&nbsp;? Absolument. Et alors&nbsp;?
 
-En échangeant sur ses frustrations, il a découvert comment Ocarina y répond : "Ah ? C'est tout ?", mais cette fois avec respect. Lui, a reconnu qu'il
-était bon d'arrêter de vouloir être _le plus malin_. Car passé un certain stade, c'est ce qui tue un projet.
+En échangeant sur ses frustrations, il a découvert comment Ocarina y répond&nbsp;:&nbsp;"Ah&nbsp;? C'est tout&nbsp;?", mais cette fois avec respect.
+Lui, a reconnu qu'il était bon d'arrêter de vouloir être _le plus malin_. Car passé un certain stade, c'est ce qui tue un projet.
 
 ### La VRAIE entraide
 
 Plutôt que de vouloir "faire des trucs de geeks", Ocarina propose de résoudre de _petits problèmes_ sans en créer de plus importants.  
-La conclusion qui en a été tirée est : "Ocarina est pratique".  
-C'est le but d'Ocarina : sa praticité.
+La conclusion qui en a été tirée est&nbsp;:&nbsp;"Ocarina est pratique".  
+C'est le but d'Ocarina&nbsp;:&nbsp;sa praticité.
 
 C'est dans cette ambiance que l'on travaille **ensemble**.  
 Il ne suffit que de ça pour commencer à partager la philosophie autour d'Ocarina.
@@ -237,11 +237,11 @@ Loin de ceux qui ont pillé ce que nous étions.
 
 ### Pourquoi pas Playwright ?
 
-Son second retour : "Pourquoi pas Playwright ?".
+Son second retour&nbsp;:&nbsp;"Pourquoi pas Playwright&nbsp;?".
 
 Tout aussi pertinent.  
 Ocarina est agnostique, donc c'est un simple branchement différent à faire.  
-Une seule contrainte : Ocarina ne supporte pas `async`/`await` et ne le fera jamais.
+Une seule contrainte&nbsp;:&nbsp;Ocarina ne supporte pas `async`/`await` et ne le fera jamais.
 
 ## Sécession
 
@@ -249,13 +249,14 @@ Aujourd'hui les gens lancent des projets comme on descend de chez soi acheter un
 Ils essaient, parce que c'est "branché". Alors, ils se copient tous entre eux, se prennent tous des abonnements entre eux pour gonfler mutuellement
 leurs chiffres et dégonfler leurs taux de litige _Stripe_.
 
-Ils se croient malins : la réalité est que **tout VC, tout LP, tout le monde, en est bien conscient** et chacun tient son rôle dans un _jeu de dupes_.
+Ils se croient malins&nbsp;:&nbsp;la réalité est que **tout VC, tout LP, tout le monde, en est bien conscient** et chacun tient son rôle dans un _jeu
+de dupes_.
 
 Mais il y a quelque chose qu'ils ne comprendront jamais. C'est qu'ils n'ont rien "d'underground" et ne sont que **des gamins en crise d'identité.**
 Des enfants à qui on a gentiment troqué leurs crayons de couleur contre _Powerpoint_.
 
-Leçon à ces amateurs : n'importe quel projet "_cutting-edge_", quel qu'il soit, démarre d'un **pamphlet**, est **identitaire** et passe par une étape
-de réel **anti-marketing**. Mais comme vous avez _peur de faire honte à votre maman_, vous n'y passez jamais.
+Leçon à ces amateurs&nbsp;:&nbsp;n'importe quel projet "_cutting-edge_", quel qu'il soit, démarre d'un **pamphlet**, est **identitaire** et passe par
+une étape de réel **anti-marketing**. Mais comme vous avez _peur de faire honte à votre maman_, vous n'y passez jamais.
 
 Quant à moi, je n'ai rien à perdre en termes de réputation puisqu'il n'y a pas de réputation à construire sous ce nom. Uniquement un message à livrer,
 tel qu'il est, sans filtre.
@@ -268,7 +269,7 @@ Avec ce **sourire en coin**, celui de ceux **qui sont enfin parvenus à avoir de
 L'informatique est ce qui nous a **redonné le sourire dans nos vies**, pas ce qui nous a persécuté à travers des soi-disant "patterns" tous plus
 idiots et inaccessibles les uns que les autres.
 
-**Vous pensiez que l'informatique allait mourir ?  
+**Vous pensiez que l'informatique allait mourir&nbsp;?  
 Et bien non.**
 
 ### Anti No-Code
@@ -276,13 +277,13 @@ Et bien non.**
 Le code est une donnée brute. Auditable. Consultable. **Une boîte blanche.**  
 Très exactement ce avec quoi l'IA sait travailler depuis ses débuts.
 
-Dans nos silos, on y avait déjà goûté, avant même _IntelliCode_ (2018). Dès 2013 de notre côté&nbsp;: un plugin _Emacs_ (ouch) privé créé par l'un de
-nos savants fous, R. Personne ne comprenait son niveau en _reverse engineering_, ni sa concision. De même dans les autres domaines, à vrai dire, il
-n'était mauvais nulle part et avait une capacité extraordinaire à toujours écrire _exactement ce qu'il fallait écrire_.
+Dans nos silos, on y avait déjà goûté, avant même _IntelliCode_ (2018). Dès 2013 de notre côté&nbsp;:&nbsp;un plugin _Emacs_ (ouch) privé créé par
+l'un de nos savants fous, R. Personne ne comprenait son niveau en _reverse engineering_, ni sa concision. De même dans les autres domaines, à vrai
+dire, il n'était mauvais nulle part et avait une capacité extraordinaire à toujours écrire _exactement ce qu'il fallait écrire_.
 
-Fin d'un mythe : il avait sa propre _autocomplétion_ et _auto-review_ IA. En 2013.
+Fin d'un mythe&nbsp;:&nbsp;il avait sa propre _autocomplétion_ et _auto-review_ IA. En 2013.
 
-Il rejetait la majorité du code généré, mais disait ceci : "_Ça ne me dérange pas de supprimer 15 000 lignes si ça m'évite d'en écrire 1000
+Il rejetait la majorité du code généré, mais disait ceci&nbsp;:&nbsp;"_Ça ne me dérange pas de supprimer 15 000 lignes si ça m'évite d'en écrire 1000
 moi-même._"
 
 Dès 2013, l'enjeu n'était plus d'être des imbéciles de "codeurs".  
@@ -290,7 +291,7 @@ Mais de se cultiver pour savoir comment une machine inspirée de notre raisonnem
 vouée à mourir.
 
 Mais la POO "savante" ne sera ni la première ni la dernière morte au combat.  
-L'informatique évolue majoritairement dans un seul sens : qui choisirait librement d'utiliser Windows 95 aujourd'hui ?
+L'informatique évolue majoritairement dans un seul sens&nbsp;:&nbsp;qui choisirait librement d'utiliser Windows 95 aujourd'hui&nbsp;?
 
 Pourtant, λ-calcul (1930) est si puissant qu'il revient sur le devant de la scène aujourd'hui, tout comme l'IA (première formalisation du neurone
 artificiel en 1943, McCulloch & Pitts).  
@@ -303,9 +304,9 @@ Des entreprises comme celles de l'écosystème _Prisma_ ou _Vercel_ investissent
 _vibe coding_, et elles disent adieu aux SaaS aux mille fonctionnalités, trop chers, trop inertes, au profit du _développement interne_ et du retour à
 la **donnée brute**.
 
-Décembre 2025 : Lee Robinson, ex-Vercel, figure des dernières présentations _Next.js_ et _Turborepo_ entre autres, annonce qu'il se débarrasse de
-_Sanity_, le CMS jusqu'alors utilisé chez _Cursor_. Au profit d'un retour à de la **donnée brute**, à de simples fichiers _Markdown_. Quelques tokens,
-du _vibe coding_ bien exécuté. Merci, au revoir.
+Décembre 2025&nbsp;:&nbsp;Lee Robinson, ex-Vercel, figure des dernières présentations _Next.js_ et _Turborepo_ entre autres, annonce qu'il se
+débarrasse de _Sanity_, le CMS jusqu'alors utilisé chez _Cursor_. Au profit d'un retour à de la **donnée brute**, à de simples fichiers _Markdown_.
+Quelques tokens, du _vibe coding_ bien exécuté. Merci, au revoir.
 
 ---
 
@@ -314,29 +315,30 @@ Puis repris par Ethereum, 2015, à l'inverse comme idéal politique. Une belle a
 
 ### Anti dévs
 
-2016 : hack de The DAO, fonds d'investissement décentralisé sur $ETH.  
-Pourquoi ?
+2016&nbsp;:&nbsp;hack de The DAO, fonds d'investissement décentralisé sur $ETH.  
+Pourquoi&nbsp;?
 
 Des bugs. Des satanés bugs, à cause de satanés dévs.
 
 Retour idéologique de quasi 20 ans en arrière. Le contre-pouvoir avait fait le choix paresseux de "ne pas comprendre", même choix qui a permis à une
 bande de nuls de passer inaperçue.
 
-C'est pourtant simple : contrairement aux _Chercheurs_, les ingénieurs et leurs amis d'école de commerce s'appuient sur des _vues de l'esprit_.  
-Les écoles les plus "prestigieuses" leur ont appris une chose : faire passer le melon pour de "l'ingénierie", là où ceux qui savent qualifient ce
-travail d'_astrologie de la programmation_.
+C'est pourtant simple&nbsp;:&nbsp;contrairement aux _Chercheurs_, les ingénieurs et leurs amis d'école de commerce s'appuient sur des _vues de
+l'esprit_.  
+Les écoles les plus "prestigieuses" leur ont appris une chose&nbsp;:&nbsp;faire passer le melon pour de "l'ingénierie", là où ceux qui savent
+qualifient ce travail d'_astrologie de la programmation_. C'est du _melon-engineering_.
 
 ### Anti startup nations
 
 Et à nouveau ce débat de cheveux gris sur la "gouvernance démocratique du code".  
-Mais qui y participe ?
+Mais qui y participe&nbsp;?
 
-Des RH ?  
-Des PDG ?  
-Des avant-ventes ?
+Des RH&nbsp;?  
+Des PDG&nbsp;?  
+Des avant-ventes&nbsp;?
 
-2022 : ChatGPT. Mais, trois ans plus tard, des startupers persistent à vendre du _No-Code_ "augmenté par l'IA". Du _cash burn_ dans un espoir
-d'_anomalie de marché_, rien d'autre. L'_alpha_ des investisseurs, autrement dit leur _casino_.
+2022&nbsp;:&nbsp;ChatGPT. Mais, trois ans plus tard, des startupers persistent à vendre du _No-Code_ "augmenté par l'IA". Du _cash burn_ dans un
+espoir d'_anomalie de marché_, rien d'autre. L'_alpha_ des investisseurs, autrement dit leur _casino_.
 
 On ne citera personne, d'autant que leurs résultats sont attendus pour T2 2026.  
 Disons juste que sur la base de l'_analyse fondamentale_, ce pari n'a aucun sens. Il n'est pour autant pas nécessaire de leur interdire de vivre. Ce
@@ -347,9 +349,9 @@ nez.
 Le vrai problème, ce sont les dévs qu'on laisse taper sur leurs claviers sans savoir ce qu'ils font, comme des singes savants. Aujourd'hui _Claude
 Code_ exécute mieux que 99% d'entre eux, et ils crient. _Les chiens aboient, la caravane passe._
 
-La vraie valeur ajoutée humaine n'a jamais été aussi clairement désignée : le _bon goût_ et le _sens des responsabilités_, qualités dont sont
-précisément dépourvus ces "professionnels" qui nous noient dans des "idéologies" entières, tout comme ceux qui _vendent_ ce à quoi ils ne comprennent
-rien.
+La vraie valeur ajoutée humaine n'a jamais été aussi clairement désignée&nbsp;:&nbsp;le _bon goût_ et le _sens des responsabilités_, qualités dont
+sont précisément dépourvus ces "professionnels" qui nous noient dans des "idéologies" entières, tout comme ceux qui _vendent_ ce à quoi ils ne
+comprennent rien.
 
 ### Anti hype
 
@@ -371,16 +373,17 @@ les invitons à reconsidérer leur arrogance.
 
 Aujourd'hui, le défi d'être le plus gros menteur devient de moins en moins rentable.  
 Et n'en soyons que bien-portants. De nouveau, avec l'IA, ce maillon qu'il manquait cruellement, crions-le, aussi fort que l'on criait "**HACK THE
-PLANET**" en 99 : **CODE IS LAW.**
+PLANET**" en 99&nbsp;:&nbsp;**CODE IS LAW.**
 
 ### Anti slipologues
 
 Pendant trop longtemps, **l'informatique a été prise en otage** par une minorité, un "1%", qui a cru bon de la **transformer en terrain de jeux pour
-initiés** : "trucs de geeks", "techniques de ninjas", "orienté objet". **Le verdict est sans appel&nbsp;:&nbsp;ça ne tient pas, ou alors très mal.**
+initiés**&nbsp;:&nbsp;"trucs de geeks", "techniques de ninjas", "orienté objet". **Le verdict est sans appel&nbsp;:&nbsp;ça ne tient pas, ou alors
+très mal.**
 
 Ce que l'on pensait depuis les années 1930, **depuis l'invention du λ-calcul**, est enfin scalable à l'échelle que l'on aurait toujours voulu lui
 donner.  
-N'a-t-on jamais connu une si belle _formalisation_ avec une telle paternité dans l'Histoire de notre industrie ?
+N'a-t-on jamais connu une si belle _formalisation_ avec une telle paternité dans l'Histoire de notre industrie&nbsp;?
 
 Les récentes évolutions du _système de types_ de Python, sur lequel Ocarina s'appuie profondément, font partie de la raison-même de sa faisabilité.  
 Sans non plus être "le futur", **puisqu'il s'agit d'une science établie mais qui est arrivée cruellement tardivement dans notre écosystème.**
@@ -395,7 +398,7 @@ contrées les _slipologues_.
 Pour toutes ces raisons, j'ai pris la décision de **ne JAMAIS perdre mon temps à argumenter lorsque ce n'est pas la peine.** J'apprécie argumenter
 avec des personnes **focalisées sur la résolution de problèmes et qui sont douées de bon sens.**
 
-Pour le reste : **aucun regret à fermer toute PR ou issue inutile.**  
+Pour le reste&nbsp;:&nbsp;**aucun regret à fermer toute PR ou issue inutile.**  
 **Certaines personnes ne sont tout bonnement pas faites pour me plaire, et qu'il en soit ainsi.**
 
 Ocarina est _le premier de mes projets que j'ouvre au public_, **mais d'autres sont aussi à venir, dont des nettement plus intéressants.**
@@ -409,13 +412,13 @@ For Now and Forever.
 
 <p align="center" class="inspiring-quote"><i>"Un idiot admire la complexité, un génie admire la simplicité, un physicien essaie de simplifier. Pour un idiot, plus c'est compliqué, plus il est admiratif : si l'on produit quelque chose de tellement bordélique qu'il n'y comprend rien, il va te prendre pour un dieu parce que tu as fait quelque chose que personne ne peut comprendre. C'est comme ça qu'on écrit dans les revues académiques : on essaie de tout rendre le plus compliqué possible afin que les gens croient que ces torchons sont géniaux."</i></p>
 
-<p align="right" class="inspiring-quote-author">― Terry Davis, "<i>le programmeur le plus intelligent qui ait jamais existé</i>"</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Terry Davis, "<i>le programmeur le plus intelligent qui ait jamais existé</i>"</p>
 
 ---
 
 <p align="center" class="inspiring-quote"><i>"Pour avoir de la connaissance, ajouter des choses chaque jour. Pour avoir de la sagesse, enlever des choses chaque jour."</i></p>
 
-<p align="right" class="inspiring-quote-author">― Lao-Tseu</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Lao-Tseu</p>
 
 ---
 

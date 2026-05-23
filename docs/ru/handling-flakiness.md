@@ -376,6 +376,6 @@ def create_suite(
 
 <p align="center" class="inspiring-quote">"Retry flaky blocks."</p>
 
-<p align="right" class="inspiring-quote-author">― Егор Бугаенко, <i><a href="https://github.com/yegor256/prompt" target="_blank" rel="noreferrer">Prompt</a></i></p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Егор Бугаенко, <i><a href="https://github.com/yegor256/prompt" target="_blank" rel="noreferrer">Prompt</a></i></p>
 
 </llm-exclude>

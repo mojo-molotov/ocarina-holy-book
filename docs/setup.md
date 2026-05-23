@@ -505,7 +505,8 @@ The flow is as follows:
 1. Arguments retrieved from the CLI are pushed into a global store.
 2. A driver pool is created: it manages the lifecycle of web browsers running in parallel.
 3. A `_post_exec` callback is defined: it runs after tests and plugins, prints the results, and exits with an error code if the cycle has failed.
-4. Everything is bootstrapped inside a timer measuring the total execution duration. The execution flow is therefore: **cycle → plugins → post_exec**.
+4. Everything is bootstrapped inside a timer measuring the total execution duration. The execution flow is therefore:
+   **cycle&nbsp;→&nbsp;plugins&nbsp;→&nbsp;post_exec**.
 
 > ℹ️ Plugins are deferred functions passed to `run_plugins`.  
 > `run_plugins` takes `results` as an argument,  
@@ -523,6 +524,6 @@ The flow is as follows:
 
 <p align="center" class="inspiring-quote">"Live the questions now. Perhaps then, someday far in the future, you will gradually, without even noticing it, live your way into the answer."</p>
 
-<p align="right" class="inspiring-quote-author">― Rainer Maria Rilke</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Rainer Maria Rilke</p>
 
 </llm-exclude>

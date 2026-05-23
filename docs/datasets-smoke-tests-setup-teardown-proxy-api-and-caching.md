@@ -367,6 +367,6 @@ Some cases require passing a profile with `--profile-path`:
 
 <p align="center" class="inspiring-quote">"Muddy water is best cleared by leaving it alone."</p>
 
-<p align="right" class="inspiring-quote-author">― Alan Watts</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Alan Watts</p>
 
 </llm-exclude>

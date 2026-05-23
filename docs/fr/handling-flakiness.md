@@ -22,7 +22,7 @@ Les erreurs serveur aléatoires sont coriaces.
 Durant une expérience de travail particulièrement pénible, j'ai eu à faire face à un environnement qui affichait régulièrement des pages d'erreur 500
 totalement aléatoires, quelle que soit la zone explorée de l'application.
 
-Dans ce genre de cas, Ocarina propose une réponse directement à la création du verbe `act` :
+Dans ce genre de cas, Ocarina propose une réponse directement à la création du verbe `act`&nbsp;:
 
 ```python
 ERROR_PAGE_REGEX = re.compile(r"^\d{3}(?!\d)")
@@ -55,7 +55,7 @@ Le hook `on_failure` a précisément été conçu pour ça.
 Il suffit de créer des _guards_ et de modifier l'erreur encapsulée dans `Fail` pour provoquer un _rejeu_ du test ayant échoué en raison d'une cause
 externe.
 
-L'étape suivante devrait paraître familière :
+L'étape suivante devrait paraître familière&nbsp;:
 
 ```python
 transient_errors = (
@@ -92,7 +92,7 @@ Les logs des tests automatisés permettront d'amorcer une première conversation
 Pensant avoir laissé derrière moi ce genre de désagréments, j'ai changé de crémerie... pour y découvrir des formulaires instables et des systèmes
 d'authentification qui fonctionnaient une fois sur deux.
 
-Face à cela, la réponse d'Ocarina est différente : on délègue la responsabilité au POM.
+Face à cela, la réponse d'Ocarina est différente&nbsp;:&nbsp;on délègue la responsabilité au POM.
 
 ```python
 @final
@@ -147,7 +147,7 @@ class CorsicamonEnterXXXKeyPage(SeleniumTitleMixin, POMBase):
         return self
 ```
 
-Cela soulève aussi une question sur les _connectors_ : comment leur ajouter des paramètres&nbsp;?
+Cela soulève aussi une question sur les _connectors_&nbsp;:&nbsp;comment leur ajouter des paramètres&nbsp;?
 
 ```python
 """Functional connectors."""
@@ -180,18 +180,18 @@ C'est une [_closure_](<https://fr.wikipedia.org/wiki/Fermeture_(informatique)>).
 
 ## Aléas de Selenium
 
-Selenium offre de nombreuses occasions de se tirer une balle dans le pied : _race conditions_, erreurs de "_stale element_", etc.
+Selenium offre de nombreuses occasions de se tirer une balle dans le pied&nbsp;:&nbsp;_race conditions_, erreurs de "_stale element_", etc.
 
-La réponse ici est **pragmatique** : ajouter `WebDriverException` directement aux `transient_errors`, avec un nombre de rejeux généreux (8, soit 9
-vies, comme un chat 🐱).
+La réponse ici est **pragmatique**&nbsp;:&nbsp;ajouter `WebDriverException` directement aux `transient_errors`, avec un nombre de rejeux généreux (8,
+soit 9 vies, comme un chat 🐱).
 
 On capture toutes les erreurs Selenium et on observe les rejeux dans les logs.  
 De là, il devient possible d'identifier les tests qui mériteraient d'être améliorés.
 
 ## Erreurs aléatoires discrètes
 
-Plus surprenant encore : des applications affichant des toasts d'erreur sans raison apparente, ou des formulaires signalant des erreurs de validation
-sur des saisies pourtant correctes, sans pour autant bloquer le parcours.
+Plus surprenant encore&nbsp;:&nbsp;des applications affichant des toasts d'erreur sans raison apparente, ou des formulaires signalant des erreurs de
+validation sur des saisies pourtant correctes, sans pour autant bloquer le parcours.
 
 Ces erreurs sont les plus pénibles à détecter, car elles sont _indolores_. On ne peut pas simplement constater un crash et ajouter une _politique de
 retry_ en attendant que l'anomalie soit corrigée. Elles sont, pour ainsi dire, invisibles.
@@ -199,7 +199,7 @@ retry_ en attendant que l'anomalie soit corrigée. Elles sont, pour ainsi dire, 
 Il resterait à massacrer les scénarios de test ou à recourir à des "techniques de ninjas".  
 Ocarina refuse ces deux options.
 
-La solution, les _watchers_ :
+La solution, les _watchers_&nbsp;:
 
 ```python
 def catch_me_if_you_can_cb(watcher: SeleniumWatcher) -> None:
@@ -283,7 +283,7 @@ Détaillons un peu plus l'approche.
 
 ### Utilisation de Javascript
 
-Le _watcher_ est tolérant aux erreurs : il les avale silencieusement.  
+Le _watcher_ est tolérant aux erreurs&nbsp;:&nbsp;il les avale silencieusement.  
 Il n'y a donc aucun intérêt à utiliser une fonction Selenium pour capturer un élément de la page, si ce n'est s'encombrer.  
 Utiliser les fonctions natives de Selenium imposerait de gérer des questions d'_implicit timeout_.
 
@@ -300,8 +300,8 @@ d'ignorer ce qu'on a déjà vu.
 
 ### Report
 
-La _callback_ finit par : `watcher.report`.  
-Cet appel s'occupe de :
+La _callback_ finit par&nbsp;:&nbsp;`watcher.report`.  
+Cet appel s'occupe de&nbsp;:
 
 1. Logguer la friction détectée par le watcher,
 2. Prendre une capture d'écran comme trace de ce qui a été détecté.
@@ -309,7 +309,7 @@ Cet appel s'occupe de :
 ### HumanizedDriver
 
 Rien ne nous empêche de greffer des comportements sur le _logger_ ou sur le _driver_. Ici, le formulaire étant capricieux, on opte pour un test lent
-et "humanisé" : saisie avec fautes de frappe, corrections, hésitations. On wrappe simplement le _driver_ dans un _proxy_, `HumanizedDriver`.
+et "humanisé"&nbsp;:&nbsp;saisie avec fautes de frappe, corrections, hésitations. On wrappe simplement le _driver_ dans un _proxy_, `HumanizedDriver`.
 
 ## Heisenbugs de concurrence
 
@@ -373,12 +373,12 @@ effet est amplifié par le degré de scaling horizontal et le nombre de workers 
 
 ![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
 
-<p align="center" class="good-work-mojo-msg"><i>Bon travail !<br/>À une prochaine fois, lecteur Mojo.</i></p>
+<p align="center" class="good-work-mojo-msg"><i>Bon travail&nbsp;!<br/>À une prochaine fois, lecteur Mojo.</i></p>
 
 ---
 
 <p align="center" class="inspiring-quote">"Retry flaky blocks."</p>
 
-<p align="right" class="inspiring-quote-author">― Yegor Bugayenko, <i><a href="https://github.com/yegor256/prompt" target="_blank" rel="noreferrer">Prompt</a></i></p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Yegor Bugayenko, <i><a href="https://github.com/yegor256/prompt" target="_blank" rel="noreferrer">Prompt</a></i></p>
 
 </llm-exclude>

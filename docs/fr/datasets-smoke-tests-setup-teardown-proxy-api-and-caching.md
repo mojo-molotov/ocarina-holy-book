@@ -14,7 +14,7 @@ head:
 
 ## Jeux de données
 
-Piloter un test grâce à un jeu de données est très simple avec Ocarina :
+Piloter un test grâce à un jeu de données est très simple avec Ocarina&nbsp;:
 
 ```python
 multi_login_dataset: Sequence[MappingProxyType[ImmutableCredentialsKeys, str]] = [
@@ -105,9 +105,9 @@ multi_login_tests = [
 ```
 
 Une [_closure_](<https://fr.wikipedia.org/wiki/Fermeture_(informatique)>) suffit.  
-On notera que `Scenario` est déclaré depuis l'intérieur ici : logique, puisqu'il s'agit de l'encapsuler.
+On notera que `Scenario` est déclaré depuis l'intérieur ici&nbsp;:&nbsp;logique, puisqu'il s'agit de l'encapsuler.
 
-`multi_login_tests` est donc une _liste_ de `Test`, que l'on _unpack_ dans une `TestSuite`, tel que :
+`multi_login_tests` est donc une _liste_ de `Test`, que l'on _unpack_ dans une `TestSuite`, tel que&nbsp;:
 
 ```python
 def create_suite(
@@ -126,12 +126,12 @@ def create_suite(
 <llm-exclude>
 
 > 📖 Un test de fumée (_smoke test_) est une vérification rapide et superficielle d'un logiciel ou d'un système pour s'assurer que ses fonctions de
-> base fonctionnent correctement, avant de lancer des tests plus approfondis. L'objectif est de détecter rapidement les défauts bloquants évidents :
-> si ça "prend feu" dès le départ, inutile d'aller plus loin.
+> base fonctionnent correctement, avant de lancer des tests plus approfondis. L'objectif est de détecter rapidement les défauts bloquants
+> évidents&nbsp;:&nbsp; si ça "prend feu" dès le départ, inutile d'aller plus loin.
 
 </llm-exclude>
 
-Pour lancer des tests de fumée en début de cycle avec Ocarina :
+Pour lancer des tests de fumée en début de cycle avec Ocarina&nbsp;:
 
 ```python
 E2E_CYCLE_NAME = "My very first cycle with Ocarina"
@@ -151,10 +151,10 @@ def create_e2e_test_cycle(drivers_pool: SeleniumWebDriversPool):
     )
 ```
 
-`mode` accepte deux valeurs (par défaut, `"fail-fast-on-first-smoke-campaigns-sequence-fail"`) :
+`mode` accepte deux valeurs (par défaut, `"fail-fast-on-first-smoke-campaigns-sequence-fail"`)&nbsp;:
 
-- `"fail-fast-on-first-smoke-campaigns-sequence-fail"` : dès qu'une campagne de tests de fumée échoue, les suivantes sont passées (_skip_).
-- `"wait-for-all-smoke-tests"` : toutes les campagnes de tests de fumée s'exécutent, même en cas d'échec intermédiaire.
+- `"fail-fast-on-first-smoke-campaigns-sequence-fail"`&nbsp;:&nbsp;dès qu'une campagne de tests de fumée échoue, les suivantes sont passées (_skip_).
+- `"wait-for-all-smoke-tests"`&nbsp;:&nbsp;toutes les campagnes de tests de fumée s'exécutent, même en cas d'échec intermédiaire.
 
 Dans les deux cas, les tests principaux sont ignorés si au moins un test de fumée a échoué.
 
@@ -178,19 +178,19 @@ Scenario(
 
 ### Cycle de vie
 
-1. `setup()` : exécuté avant la `test_chain`. En cas d'échec, la `test_chain` est ignorée et le `teardown` s'exécute quand même. Si toutes les
-   tentatives échouent à cause du setup, le test est marqué **SKIPPED** (pas **FAILED**),
-2. `test_chain` : les étapes du test,
-3. `teardown()` : toujours exécuté, même en cas d'échec. Les erreurs sont loggées et ignorées.
+1. `setup()`&nbsp;:&nbsp;exécuté avant la `test_chain`. En cas d'échec, la `test_chain` est ignorée et le `teardown` s'exécute quand même. Si toutes
+   les tentatives échouent à cause du setup, le test est marqué **SKIPPED** (pas **FAILED**),
+2. `test_chain`&nbsp;:&nbsp;les étapes du test,
+3. `teardown()`&nbsp;:&nbsp;toujours exécuté, même en cas d'échec. Les erreurs sont loggées et ignorées.
 
 `setup` et `teardown` sont des `Effect`.  
 Elles sont destinées aux préoccupations d'infrastructure : seeder une base de données, appeler une API, nettoyer un état...
 
-Si une encapsulation est nécessaire : _closure_.
+Si une encapsulation est nécessaire&nbsp;:&nbsp;_closure_.
 
 ## Proxy pattern
 
-Un cas d'usage de [l'exemple canonique](https://github.com/mojo-molotov/ocarina-example) est `HumanizedDriver` :
+Un cas d'usage de [l'exemple canonique](https://github.com/mojo-molotov/ocarina-example) est `HumanizedDriver`&nbsp;:
 
 ```python
 class HumanizedDriver(WebDriver):
@@ -225,7 +225,7 @@ Le principe est de retourner des _Web Elements_ qui intègrent des comportements
 l'occurrence.  
 Transparent pour le _système de types_, transparent pour le _runtime_.
 
-On peut alors faire :
+On peut alors faire&nbsp;:
 
 ```python
 create_selenium_test(
@@ -246,7 +246,7 @@ create_selenium_test(
 )
 ```
 
-Ou, avec une _closure_ :
+Ou, avec une _closure_&nbsp;:
 
 ```python
 def _scenario(driver: WebDriver, logger: ILogger):
@@ -264,7 +264,7 @@ def _scenario(driver: WebDriver, logger: ILogger):
 
 Le même principe s'applique au logger, pour le router vers un _sink_, par exemple, bien que ce cas ne soit pas couvert canoniquement par Ocarina.
 
-## Programmation réactive : NON
+## Programmation réactive&nbsp;:&nbsp;NON
 
 Les scénarios de test d'Ocarina sont volontairement statiques.  
 Pourtant, une application web est dynamique et parfois, enregistrer une valeur à la volée pour la passer à une étape suivante est tout à fait
@@ -278,7 +278,7 @@ Ce qu'on cherche ici est un _cache in-memory_.
 
 On génère des clés juste avant le lancement de la chaîne de test, et on les passe aux actions du POM. Les actions enregistrent et consomment via une
 clé unique.  
-Le scénario se contente de les fournir :
+Le scénario se contente de les fournir&nbsp;:
 
 ```python
 # * ...
@@ -345,14 +345,14 @@ return [
 
 Les appels API et les verrous sont à gérer dans les POMs.
 
-> ⚠️ Ocarina ne supporte pas `async`/`await` et ne le fera pas.
+> ⚠️&nbsp;Ocarina ne supporte pas `async`/`await` et ne le fera pas.
 
-**Appels API** : `requests` (synchrone) suffit.  
-**Verrous** : `threading.Lock` si un seul process à la fois, sinon verrous distribués Redis (`redis.StrictRedis` + `redis.lock`).
+**Appels API**&nbsp;:&nbsp;`requests` (synchrone) suffit.  
+**Verrous**&nbsp;:&nbsp;`threading.Lock` si un seul process à la fois, sinon verrous distribués Redis (`redis.StrictRedis`&nbsp;+&nbsp;`redis.lock`).
 
 ## Profil navigateur
 
-Certains cas nécessitent de passer un profil via `--profile-path` :
+Certains cas nécessitent de passer un profil via `--profile-path`&nbsp;:
 
 - **Authentification proxy**,
 - **Extensions préchargées**,
@@ -365,12 +365,12 @@ Certains cas nécessitent de passer un profil via `--profile-path` :
 
 ![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
 
-<p align="center" class="good-work-mojo-msg"><i>Bon travail !<br/>À une prochaine fois, lecteur Mojo.</i></p>
+<p align="center" class="good-work-mojo-msg"><i>Bon travail&nbsp;!<br/>À une prochaine fois, lecteur Mojo.</i></p>
 
 ---
 
 <p align="center" class="inspiring-quote">"La meilleure façon de résoudre un problème est souvent d'en sortir."</p>
 
-<p align="right" class="inspiring-quote-author">― Alan Watts</p>
+<p align="right" class="inspiring-quote-author">―&nbsp;Alan Watts</p>
 
 </llm-exclude>

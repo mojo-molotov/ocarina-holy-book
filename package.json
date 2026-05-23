@@ -16,7 +16,7 @@
     "prepare": "is-ci || husky"
   },
   "dependencies": {
-    "@sugarat/theme": "0.5.17"
+    "@sugarat/theme": "0.5.20"
   },
   "directories": {
     "doc": "docs"
@@ -48,14 +48,6 @@
   },
   "engines": {
     "node": "^24.x",
-    "pnpm": "10.x"
-  },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "@algolia/client-search",
-        "search-insights"
-      ]
-    }
+    "pnpm": "11.x"
   }
 }

@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 
 import { generateSkills } from './plugins/skills';
+import { generateManual } from './plugins/manual';
 import { generateLlms } from './plugins/llm';
 import { generatePub } from './plugins/pub';
 import { blogTheme } from './blog-theme';
@@ -73,6 +74,7 @@ export default defineConfig({
       },
       ...generateLlms(),
       ...generateSkills(),
+      ...generateManual(),
       ...generatePub(),
       ...(webpConfig.vite!.plugins as any)
     ]

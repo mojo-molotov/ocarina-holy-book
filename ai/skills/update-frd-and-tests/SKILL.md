@@ -3,10 +3,13 @@ name: update-frd-and-tests
 description:
   Workflow for updating an item in the FRD (a requirement, a known-bug entry, an element ID, a business rule) and propagating the change to every
   affected POM, connector, scenario, the test-strategy doc, and the gap inventory — verifying empirically before writing any new assertion, and never
-  silently flipping a gap test green when the SUT appears to have fixed something. The FRD may be Markdown,, a Confluence page, a Jira epic, an
-  OpenAPI spec, a PDF; the workflow is the same. Plan first, surface for review (the changes are authoring data), then apply per the user's sign-off.
-  Use whenever the user asks to update the spec, amend a requirement, mark a gap resolved, change an element ID, or adapt tests after a SUT spec
-  change. Never auto-apply; never "fix" a gap test to green without explicit gap-resolution evidence and a spec + gap-inventory update.
+  silently flipping a gap test green when the SUT appears to have fixed something. **The "FRD" here is the project-internal artifact carried by the
+  automated-tests repository** (the local file the suite reads as its source of truth — typically a Markdown file like `CURA_FRD.md`); this skill
+  never reaches into upstream systems (Confluence, Jira, an external OpenAPI registry, a PDF in a SharePoint) — those are read-only sources the
+  internal FRD may be derived from, edited by their own owners. Plan first, surface for review (the changes are authoring data), then apply per the
+  user's sign-off. Use whenever the user asks to update the project's internal spec copy, amend a requirement in it, mark a gap resolved, change an
+  element ID, or adapt tests after a SUT spec change. Never auto-apply; never "fix" a gap test to green without explicit gap-resolution evidence and a
+  spec + gap-inventory update.
 ---
 
 # Update a spec item and adapt the affected tests
@@ -17,8 +20,10 @@ proposed updates → review → apply → strategy/gaps reconciliation.
 
 The discipline:
 
-- **The FRD is the spec.** Update it first, deliberately, with a one-sentence reason for the change. Whatever form it takes — Markdown FRD, Confluence
-  page, Jira epic, OpenAPI spec, PDF — the change goes there first.
+- **The FRD is the project-internal spec artifact.** The file lives _in this repository_ (typically Markdown, e.g. `CURA_FRD.md`); it is the suite's
+  source of truth and the only thing this skill writes to. Upstream artifacts — a Confluence page, a Jira epic, an external OpenAPI registry, a PDF in
+  SharePoint — are read-only sources for the internal FRD; they are **never** edited by this skill, and the user is responsible for updating them
+  out-of-band through their own ownership channels. Update the internal FRD first, deliberately, with a one-sentence reason for the change.
 - **Verify empirically before adapting any assertion.** Don't rewrite a test against the new claim until a probe / source read / live HTML confirms
   it.
 - **Never silently flip a gap test to green.** If the spec change marks a gap as resolved, the corresponding intentional-fail test does **not**
@@ -40,10 +45,13 @@ The one-sentence form forces clarity. Bigger changes split into multiple invocat
 
 ### Step 2 — Update the spec entry
 
-Apply the change to the relevant section of the FRD — the requirement definition, the known-bug entry, the element ID in the form table, the business
-rule. Add a one-line revision note in the doc's revision history (if it has one — most should).
+Apply the change to the relevant section of **the project-internal FRD file in this repository** — the requirement definition, the known-bug entry,
+the element ID in the form table, the business rule. Add a one-line revision note in the doc's revision history (if it has one — most should).
 
-This is the spec moving. Apply it before touching tests. The tests adapt to the spec, not the other way around.
+This is the project's copy of the spec moving. Apply it before touching tests. The tests adapt to the spec, not the other way around.
+
+If the upstream source-of-truth (Confluence, Jira, an external OpenAPI registry, a PDF) also needs to change to stay coherent, **surface that as a
+follow-up the user owns** — name the upstream artifact and what should change there, then stop. This skill does not write to upstream systems.
 
 ### Step 3 — Empirically verify the new claim
 
@@ -188,6 +196,9 @@ Do not iterate without the user. Do not "go on" to neighbouring changes the audi
 
 ## What this skill never does
 
+- **It never writes to upstream spec systems.** Confluence pages, Jira tickets/epics, external OpenAPI registries, SharePoint PDFs — these are
+  read-only here. The scope is the project-internal FRD artifact in this repository. If the upstream needs to change too, surface that as a follow-up
+  the user owns and stop.
 - It never flips an intentional-fail test to green without explicit resolution evidence and the full reframing pass (spec, gap inventory, strategy,
   test rename).
 - It never deletes a test that was previously an intentional-fail gap test. They stay as regression guards, reframed.

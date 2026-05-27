@@ -213,6 +213,26 @@ Add a §5 sub-table header per feature, in §6 order. The mapping from scenario-
 Two paragraphs. Pull from the FRD's scope section and the project README. Ask the user for explicit out-of-scope items (performance, accessibility,
 payment, etc.) — these usually aren't written down anywhere else.
 
+**Out-of-scope is for surfaces the SUT actually has but the suite deliberately does not test — not for things the SUT doesn't have at all.** The trap,
+especially for LLMs, is to leave the SUT and start enumerating what a product _of this kind_ usually has: a real healthcare-booking app would have
+email/SMS notifications, payment, cancellation, an admin console, an API layer. That's category inference, not SUT analysis. CURA has none of those —
+listing them as "out of scope" invents features the SUT doesn't ship, and tells the reader nothing about _this_ suite. The contrast in the worked
+example: `email/SMS notifications` is wrong (CURA has no notification feature at all — it doesn't belong in §1 in any form); `accessibility` is right
+(CURA renders real HTML with real form controls that _could_ be audited, but the suite is functional, so the exclusion is a real choice worth
+surfacing).
+
+The filter, in order:
+
+1. **Does the SUT have this surface at all?** Open the deployed app, the FRD, the source. If no — the feature doesn't exist — omit it. Absence from §5
+   already says "not tested"; saying "not in scope" adds nothing and tells a future reader the suite considered something it never could.
+2. **If yes, does the FRD include it in scope but the suite deliberately exclude it?** That's the real out-of-scope candidate. Typical shapes: a
+   performance dimension on a functional suite, an accessibility audit deferred to a specialist tool, an admin path the project owns but doesn't
+   regress here.
+3. **If you're inferring from "what an app like this should have", stop.** That's a category prior, not a SUT fact. Either verify the surface exists
+   (then it's filter 2) or drop the item.
+
+When in doubt, ask the user rather than invent. A short, SUT-faithful list beats a long, plausibility-padded one.
+
 `Objectives` are typically: verify FRD requirements; verify rejection of invalid input; document gaps as failing tests. If the project has a different
 stance (e.g., gaps tracked in Jira instead of failing tests), record that.
 

@@ -49,7 +49,7 @@ Chaque règle contient un "_pourquoi_" d'une ligne.
 
 Un fichier Markdown par skill, frontmatter YAML + corps. Dix familles.
 
-### Review (13)
+### Review (14)
 
 Lectures statiques&nbsp;;&nbsp;remontent des constats.
 
@@ -58,6 +58,9 @@ Lectures statiques&nbsp;;&nbsp;remontent des constats.
 - `review-compartmentalisation-leaks`&nbsp;—&nbsp;URLs, sélecteurs, nombres magiques aux mauvais endroits.
 - `review-dead-code`&nbsp;—&nbsp;connecteurs /&nbsp;POMs /&nbsp;scénarios /&nbsp;suites /&nbsp;fragments /&nbsp;constantes non utilisés&nbsp;;&nbsp;au
   cas par cas&nbsp;:&nbsp;supprimer, mettre en incubateur (`<racine-source>/incubator/`, arbre de dépendances préservé), ou conserver.
+- `review-hierarchy-naming`&nbsp;—&nbsp;parent ⊃ enfant de même nom dans l'arbre du cycle (le plus souvent
+  `Campaign("X") ⊃ Suite("X")`)&nbsp;;&nbsp;renommer l'enfant pour son vrai périmètre de segment (la hiérarchie est stricte&nbsp;—&nbsp;pas
+  d'aplatissement possible).
 - `review-report`&nbsp;—&nbsp;classifie chaque FAIL&nbsp;/&nbsp;SKIP d'une exécution.
 - Et&nbsp;:&nbsp;`review-type-ignore`, `review-match-candidates`, `review-unverified-transitions`, `review-submit-dispatchers`,
   `review-comment-drift`, `review-suite-stability`, `review-intent-collisions`, `review-watcher-emissions`.
@@ -91,7 +94,7 @@ Par mtime, jamais par nom de fichier.
 
 - `pick-screenshots`, `pick-logs`, `pick-reports`.
 
-### Author (8)
+### Author (9)
 
 Chacun produit un livrable.
 
@@ -99,8 +102,11 @@ Chacun produit un livrable.
 - `write-a-probe`&nbsp;—&nbsp;script jetable, gitignored.
 - `write-test-strategy`&nbsp;—&nbsp;génère le document de stratégie de test à partir de la suite (scope, types, tables de couverture, arbre du cycle,
   pass/fail, gaps, matrice CI).
+- `plan-test-effort`&nbsp;—&nbsp;plan d'effort de test « premier jet », naïf&nbsp;;&nbsp;criticité (critique/majeure/mineure), registre de risques
+  léger, poids S&nbsp;/&nbsp;M&nbsp;/&nbsp;L, questions ouvertes pour la passe approfondie.
 - `extend-coverage`&nbsp;—&nbsp;étend la couverture à partir du patrimoine existant.
-- `update-frd-and-tests`&nbsp;—&nbsp;propage une mise à jour de spec.
+- `update-frd-and-tests`&nbsp;—&nbsp;propage une mise à jour de spec dans la SFD interne au projet&nbsp;;&nbsp;les systèmes amont (Confluence, Jira,
+  …) restent en lecture seule.
 - `manual-reproduction-guide`&nbsp;—&nbsp;repro exécutable par un humain.
 - `manage-backlog`&nbsp;—&nbsp;`BACKLOG.md`.
 - `pr-report`&nbsp;—&nbsp;rapport de PR adapté au type.

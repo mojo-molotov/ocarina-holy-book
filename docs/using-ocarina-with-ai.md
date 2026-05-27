@@ -48,7 +48,7 @@ Each rule carries a one-line "_why_."
 
 One Markdown file per skill, YAML frontmatter + body. Ten families.
 
-### Review (13)
+### Review (14)
 
 Static reads; surface findings.
 
@@ -57,6 +57,8 @@ Static reads; surface findings.
 - `review-compartmentalisation-leaks`&nbsp;—&nbsp;URLs, selectors, magic numbers out of place.
 - `review-dead-code`&nbsp;—&nbsp;unused connectors /&nbsp;POMs /&nbsp;scenarios /&nbsp;suites /&nbsp;fragments /&nbsp;constants; per finding: delete,
   incubate (`<source-root>/incubator/`, dependency tree preserved), or keep.
+- `review-hierarchy-naming`&nbsp;—&nbsp;parent ⊃ same-name child in the cycle tree (most often `Campaign("X") ⊃ Suite("X")`); rename the child for its
+  actual segment scope (the hierarchy is strict — no collapsing).
 - `review-report`&nbsp;—&nbsp;classify each FAIL&nbsp;/&nbsp;SKIP for one run.
 - Plus: `review-type-ignore`, `review-match-candidates`, `review-unverified-transitions`, `review-submit-dispatchers`, `review-comment-drift`,
   `review-suite-stability`, `review-intent-collisions`, `review-watcher-emissions`.
@@ -90,7 +92,7 @@ By mtime, never filename.
 
 - `pick-screenshots`, `pick-logs`, `pick-reports`.
 
-### Author (8)
+### Author (9)
 
 Each produces a deliverable.
 
@@ -98,8 +100,10 @@ Each produces a deliverable.
 - `write-a-probe`&nbsp;—&nbsp;throwaway script, gitignored.
 - `write-test-strategy`&nbsp;—&nbsp;generate the test-strategy doc from the suite (scope, types, coverage tables, cycle tree, pass/fail, gaps, CI
   matrix).
+- `plan-test-effort`&nbsp;—&nbsp;first-pass, naïve effort plan; criticality (critical/major/minor), lightweight risk register,
+  S&nbsp;/&nbsp;M&nbsp;/&nbsp;L weights, open questions for the deeper pass.
 - `extend-coverage`&nbsp;—&nbsp;extend coverage from existing assets.
-- `update-frd-and-tests`&nbsp;—&nbsp;propagate a spec update.
+- `update-frd-and-tests`&nbsp;—&nbsp;propagate a spec update in the project-internal FRD; upstream systems (Confluence, Jira, …) stay read-only.
 - `manual-reproduction-guide`&nbsp;—&nbsp;human-runnable repro.
 - `manage-backlog`&nbsp;—&nbsp;`BACKLOG.md`.
 - `pr-report`&nbsp;—&nbsp;PR-type-aware report.

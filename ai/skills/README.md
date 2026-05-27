@@ -42,6 +42,7 @@ Read the codebase or specs and surface findings; never edit.
 - [review-watcher-misuse](review-watcher-misuse/SKILL.md) — audit watcher callbacks for the negative-only convention.
 - [review-compartmentalisation-leaks](review-compartmentalisation-leaks/SKILL.md) — literals (URLs, credentials, selectors, magic numbers) outside their canonical module.
 - [review-dead-code](review-dead-code/SKILL.md) — unused connectors / POMs / scenarios / suites / fragments / constants; per-finding choice between delete, incubate (`<source-root>/incubator/`), or keep — applied with dependency-tree preservation and the project's lint/format/type-check loop.
+- [review-hierarchy-naming](review-hierarchy-naming/SKILL.md) — audit `TestCycle → TestCampaign → TestSuite → Test` naming for the lazy-naming antipattern where a child carries the parent's name (most often `Campaign("X") ⊃ Suite("X")`); flags exact / near-match / semantic-mirror pairs and proposes rename-or-flatten options. Surface only; user owns the rename.
 
 ## Analyse (diagnosis)
 

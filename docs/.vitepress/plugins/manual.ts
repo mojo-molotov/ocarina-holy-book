@@ -4,39 +4,37 @@ import path from 'path';
 import fs from 'fs';
 
 const DIST_DIR = path.resolve(__dirname, '../dist');
-const MANUAL_URL = 'https://mojo-molotov.github.io/from-ocarina-to-igor/';
-const MANUAL_LLMS_URL = 'https://mojo-molotov.github.io/from-ocarina-to-igor/llms.txt';
 
 type Locale = 'index' | 'en' | 'fr' | 'ru';
 
-const COPY: Record<Locale, { languages: string; heading: string; note: string; site: string; llms: string }> = {
+const COPY: Record<Locale, { heading: string; intro: string; bridge: string }> = {
   fr: {
-    note: 'Ressource lourde. À consulter uniquement pour un utilisateur très curieux, ou si vous avez besoin de ce niveau de formalisation supplémentaire par-dessus les outils déjà offerts par le Holy Book.',
-    heading: '## Précis compagnon — From Ocarina to Igor',
-    languages: 'Langues disponibles : English, Français.',
-    llms: 'llms.txt',
-    site: 'Site'
+    heading: '## Projets liés',
+    intro:
+      "Ocarina est une brique d'une stack plus large&nbsp;: les liens ci-dessous sont des **ponts** (« bridge docs ») — courts documents hébergés ici qui décrivent le rôle de chaque projet voisin et renvoient à sa documentation canonique. **Si une question touche le comportement d'un voisin, suivez le pont vers son `llms.txt`&nbsp;; en cas de doute, demandez à l'utilisateur — ne sautez jamais le pont silencieusement.** Le Holy Book ne décrit pas le contenu des projets voisins (ça divergerait)&nbsp;; il rend l'interconnexion lisible, point.",
+    bridge:
+      "- [From Ocarina to Igor](https://mojo-molotov.github.io/from-ocarina-to-igor/)&nbsp;: bridge doc — explique le rôle d'Igor dans la stack Ocarina et comment le framework de test s'y branche. Pour la description canonique d'Igor lui-même, voir <https://mojo-molotov.github.io/from-ocarina-to-igor/llms.txt> (langues disponibles&nbsp;: English, Français)."
   },
   ru: {
-    note: 'Объёмный ресурс. Обращайтесь к нему только для очень любознательного пользователя или если вам нужен такой уровень формализации в дополнение к инструментам, уже предоставленным Holy Book.',
-    heading: '## Дополнительный справочник — From Ocarina to Igor',
-    languages: 'Доступные языки: English, Français.',
-    llms: 'llms.txt',
-    site: 'Сайт'
+    heading: '## Связанные проекты',
+    intro:
+      'Ocarina — одна из частей более широкой стека: ссылки ниже представляют собой **мосты** («bridge docs») — короткие документы в этом репозитории, которые описывают роль каждого соседнего проекта и указывают на его собственную каноническую документацию. **Если вопрос затрагивает поведение соседа, перейдите по мосту к его `llms.txt`; при сомнении спросите пользователя — никогда не пропускайте мост молча.** Holy Book не описывает содержимое соседних проектов (это привело бы к расхождению); его задача — сделать взаимосвязи читаемыми, не более.',
+    bridge:
+      '- [From Ocarina to Igor](https://mojo-molotov.github.io/from-ocarina-to-igor/): bridge doc — описывает роль Igor в стеке Ocarina и то, как фреймворк тестирования к нему подключается. Каноническое описание самого Igor см. в <https://mojo-molotov.github.io/from-ocarina-to-igor/llms.txt> (доступные языки: English, Français).'
   },
   index: {
-    note: 'Heavy resource. Consult only for a very curious user, or if you need this extra level of formalisation on top of the tools the Holy Book already provides.',
-    heading: '## Companion primer — From Ocarina to Igor',
-    languages: 'Available languages: English, Français.',
-    llms: 'llms.txt',
-    site: 'Site'
+    heading: '## Related projects',
+    intro:
+      "Ocarina is one piece of a wider stack: the links below are **bridges** — short docs hosted here that name the role of each neighbouring project and point at its own canonical documentation. **If a question touches a neighbour's behaviour, follow the bridge to its `llms.txt`; when in doubt, ask the user — never skip the bridge silently.** The Holy Book does not describe the content of neighbouring projects (that would diverge); it makes the interconnection legible, nothing more.",
+    bridge:
+      "- [From Ocarina to Igor](https://mojo-molotov.github.io/from-ocarina-to-igor/): bridge doc — explains Igor's role in the Ocarina stack and how the test framework plugs into it. For the canonical description of Igor itself, see <https://mojo-molotov.github.io/from-ocarina-to-igor/llms.txt> (available languages: English, Français)."
   },
   en: {
-    note: 'Heavy resource. Consult only for a very curious user, or if you need this extra level of formalisation on top of the tools the Holy Book already provides.',
-    heading: '## Companion primer — From Ocarina to Igor',
-    languages: 'Available languages: English, Français.',
-    llms: 'llms.txt',
-    site: 'Site'
+    heading: '## Related projects',
+    intro:
+      "Ocarina is one piece of a wider stack: the links below are **bridges** — short docs hosted here that name the role of each neighbouring project and point at its own canonical documentation. **If a question touches a neighbour's behaviour, follow the bridge to its `llms.txt`; when in doubt, ask the user — never skip the bridge silently.** The Holy Book does not describe the content of neighbouring projects (that would diverge); it makes the interconnection legible, nothing more.",
+    bridge:
+      "- [From Ocarina to Igor](https://mojo-molotov.github.io/from-ocarina-to-igor/): bridge doc — explains Igor's role in the Ocarina stack and how the test framework plugs into it. For the canonical description of Igor itself, see <https://mojo-molotov.github.io/from-ocarina-to-igor/llms.txt> (available languages: English, Français)."
   }
 };
 
@@ -60,11 +58,13 @@ export function generateManual(): Plugin[] {
 
 function buildBlock(locale: Locale): string {
   const c = COPY[locale];
-  return ['', c.heading, '', c.note, '', c.languages, '', `- [${c.site}](${MANUAL_URL})`, `- [${c.llms}](${MANUAL_LLMS_URL})`, ''].join('\n');
+  return ['', c.heading, '', c.intro, '', c.bridge, ''].join('\n');
 }
+
+const LOCALES = ['en', 'fr', 'ru'] as const;
 
 function detectLocale(filename: string): Locale {
   const m = filename.match(/^llms-full\.([a-z]+)\.txt$/);
-  if (m && (m[1] === 'en' || m[1] === 'fr' || m[1] === 'ru')) return m[1];
+  if (m && (LOCALES as readonly string[]).includes(m[1])) return m[1] as Locale;
   return 'index';
 }

@@ -46,6 +46,8 @@ export function generateLlms(): Plugin[] {
         const indexLines = [
           '# The Ocarina Holy Book - LLMs Full Documentation',
           '',
+          "> Ocarina is a browser-testing framework, and one piece of a wider stack alongside sibling projects (notably Igor). This file is an index of this book's full-text docs by language; for the canonical description of neighbouring projects, follow the bridges under **Related projects** at the bottom.",
+          '',
           '## Languages',
           ...activeLocales.map(
             (l) => `- ${l === 'en' ? 'English' : l === 'fr' ? 'Français' : l === 'ru' ? 'Русский' : l}: ${BASE_URL}/llms-full.${l}.txt`
@@ -54,7 +56,12 @@ export function generateLlms(): Plugin[] {
         ];
         fs.writeFileSync(path.join(distDir, 'llms-full.txt'), indexLines.join('\n'));
 
-        const lines: string[] = ['# The Ocarina Holy Book', ''];
+        const lines: string[] = [
+          '# The Ocarina Holy Book',
+          '',
+          "> Ocarina is a browser-testing framework, and one piece of a wider stack alongside sibling projects (notably Igor). This file lists this book's pages; the **Related projects** section at the bottom links bridges to the neighbouring repos' canonical docs.",
+          ''
+        ];
         for (const locale of activeLocales) {
           lines.push(`## ${locale === 'en' ? 'English' : locale === 'fr' ? 'Français' : locale === 'ru' ? 'Русский' : locale}`);
           for (const { content, url } of byLocale[locale]) {

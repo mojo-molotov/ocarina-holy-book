@@ -78,7 +78,7 @@ Toute _transition_ devient explicite par l'ouverture d'un nouveau `drive_page`.
 À l'intérieur, `act` exprime une action émise sur cette page&nbsp;:&nbsp;c'est un _pas de test_. `drive_page` est variadique, elle accepte autant
 d'`act` que nécessaire, et la virgule entre chacun devient un ET&nbsp;:
 
-> Ouvre, puis vérifie la page d'accueil. _ET_ clique sur le CTA. On change de page : vérifie que l'on est sur la page pour réserver un appel.
+> Ouvre, puis vérifie la page d'accueil. _ET_ clique sur le CTA. On change de page&nbsp;: vérifie que l'on est sur la page pour réserver un appel.
 
 #### Système immunitaire
 
@@ -423,7 +423,7 @@ Tout peut être redéclaré ailleurs, réorganisé ailleurs, tant que la chaîne
 
 ---
 
-![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
+![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
 
 <p align="center" class="good-work-mojo-msg"><i>Bon travail&nbsp;!<br/>À une prochaine fois, lecteur Mojo.</i></p>
 

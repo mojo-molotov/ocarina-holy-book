@@ -56,8 +56,9 @@ Lectures statiques&nbsp;;&nbsp;remontent des constats.
 - `review-spec-gaps`&nbsp;—&nbsp;questions de clarification sur les SFD.
 - `review-watcher-misuse`&nbsp;—&nbsp;`watcher.report(...)` principe de « négatif uniquement ».
 - `review-compartmentalisation-leaks`&nbsp;—&nbsp;URLs, sélecteurs, nombres magiques aux mauvais endroits.
-- `review-dead-code`&nbsp;—&nbsp;connecteurs /&nbsp;POMs /&nbsp;scénarios /&nbsp;suites /&nbsp;fragments /&nbsp;constantes non utilisés&nbsp;;&nbsp;au
-  cas par cas&nbsp;:&nbsp;supprimer, mettre en incubateur (`<racine-source>/incubator/`, arbre de dépendances préservé), ou conserver.
+- `review-dead-code`&nbsp;—&nbsp;connecteurs&nbsp;/&nbsp;POMs&nbsp;/&nbsp;scénarios&nbsp;/&nbsp;suites&nbsp;/&nbsp;fragments&nbsp;/&nbsp;constantes
+  non utilisés&nbsp;;&nbsp;au cas par cas&nbsp;:&nbsp;supprimer, mettre en incubateur (`<racine-source>/incubator/`, arbre de dépendances préservé),
+  ou conserver.
 - `review-hierarchy-naming`&nbsp;—&nbsp;parent ⊃ enfant de même nom dans l'arbre du cycle (le plus souvent
   `Campaign("X") ⊃ Suite("X")`)&nbsp;;&nbsp;renommer l'enfant pour son vrai périmètre de segment (la hiérarchie est stricte&nbsp;—&nbsp;pas
   d'aplatissement possible).
@@ -132,10 +133,10 @@ Chacun produit un livrable.
 
 ## Chaînes récurrentes
 
-**Cycle en échec&nbsp;:**&nbsp;`review-report`&nbsp;→&nbsp;`analyse-*` →&nbsp;`write-a-probe` →&nbsp;trouvailles propagées dans `IDENTIFIED_GAPS.md`
-/&nbsp;les SFD /&nbsp;un commentaire de scénario&nbsp;→&nbsp;sonde supprimée.
+**Cycle en échec&nbsp;:**&nbsp;`review-report`&nbsp;→&nbsp;`analyse-*`&nbsp;→&nbsp;`write-a-probe`&nbsp;→&nbsp;trouvailles propagées dans
+`IDENTIFIED_GAPS.md` /&nbsp;les SFD&nbsp;/&nbsp;un commentaire de scénario&nbsp;→&nbsp;sonde supprimée.
 
-**Scénario black-hat prometteur&nbsp;:**&nbsp;`empiricism` →&nbsp;`extend-coverage` (souvent en échec intentionnel).
+**Scénario black-hat prometteur&nbsp;:**&nbsp;`empiricism`&nbsp;→&nbsp;`extend-coverage` (souvent en échec intentionnel).
 
 **Changement de spec&nbsp;:**&nbsp;`update-frd-and-tests` (SFD d'abord, tests ensuite). Les tests gap sont reformulés, pas basculés.
 

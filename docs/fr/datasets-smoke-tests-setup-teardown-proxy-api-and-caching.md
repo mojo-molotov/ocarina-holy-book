@@ -160,7 +160,7 @@ Dans les deux cas, les tests principaux sont ignorés si au moins un test de fum
 
 ## Setup et teardown
 
-`Scenario` accepte deux _callbacks_ optionnelles : `setup` et `teardown`.
+`Scenario` accepte deux _callbacks_ optionnelles&nbsp;: `setup` et `teardown`.
 
 ```python
 Scenario(
@@ -184,7 +184,7 @@ Scenario(
 3. `teardown()`&nbsp;:&nbsp;toujours exécuté, même en cas d'échec. Les erreurs sont loggées et ignorées.
 
 `setup` et `teardown` sont des `Effect`.  
-Elles sont destinées aux préoccupations d'infrastructure : seeder une base de données, appeler une API, nettoyer un état...
+Elles sont destinées aux préoccupations d'infrastructure&nbsp;: seeder une base de données, appeler une API, nettoyer un état...
 
 Si une encapsulation est nécessaire&nbsp;:&nbsp;_closure_.
 
@@ -363,7 +363,7 @@ Certains cas nécessitent de passer un profil via `--profile-path`&nbsp;:
 
 ---
 
-![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
+![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
 
 <p align="center" class="good-work-mojo-msg"><i>Bon travail&nbsp;!<br/>À une prochaine fois, lecteur Mojo.</i></p>
 

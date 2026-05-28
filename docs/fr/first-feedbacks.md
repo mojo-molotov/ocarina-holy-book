@@ -50,8 +50,8 @@ On les reconnaît aussi face à leur _intolérance à l'échec_. Ils veulent sys
 
 Jamais de rouge avec un narcissique, que du vert, que du "prêt à partir en production".
 
-Les conséquences sont dramatiques en plus d'être radicalement opposées à ce qui est l'état d'esprit du test logiciel : le narcissisme n'apporte rien
-de bon dans ce domaine.
+Les conséquences sont dramatiques en plus d'être radicalement opposées à ce qui est l'état d'esprit du test logiciel&nbsp;: le narcissisme n'apporte
+rien de bon dans ce domaine.
 
 De toute manière, il n'apporte strictement rien de bon nulle part&nbsp;:&nbsp;il n'apporte rien si ce n'est _l'enfer sur terre_.
 
@@ -69,7 +69,8 @@ demande ça.**
 
 Cette complexité est **là pour "impressionner ses pairs"**, et n'apporte rien si ce n'est **un dépassement de soi dans le manque d'intelligence.**  
 **Se surpasser dans la mauvaise direction est pire encore que la médiocrité ordinaire** et là est bien le seul "exploit" à y
-voir&nbsp;:&nbsp;félicitations, vous êtes bien arrivés au sommet de la **pyramide de la connerie** où il n'existe plus aucune remise en question !
+voir&nbsp;:&nbsp;félicitations, vous êtes bien arrivés au sommet de la **pyramide de la connerie** où il n'existe plus aucune remise en
+question&nbsp;!
 
 C'est aussi pour cette raison que **KISS** (_Keep it simple, stupid_) est si mal compris dans l'industrie&nbsp;:&nbsp;**beaucoup imaginent que
 "simple" signifie "peu élaboré"**.  
@@ -122,12 +123,12 @@ Lui, immédiatement, il "savait tout" mieux que tout le monde.
 
 > Oui et moi je connais la reine d'Angleterre.
 
-> Je vous ai déjà parlé des yakuzas ?
+> Je vous ai déjà parlé des yakuzas&nbsp;?
 
 > J'ai fait une grande école et depuis j'apprends plus rien.
 
-**D'accord. Moi, je vais te citer la devise du premier groupe d'hackers indonésiens auquel j'avais été exposé dès mon enfance :&nbsp;_"We Can Do All
-What You Can't Do"_.  
+**D'accord. Moi, je vais te citer la devise du premier groupe d'hackers indonésiens auquel j'avais été exposé dès mon enfance&nbsp;:&nbsp;_"We Can Do
+All What You Can't Do"_.  
 Je suis le bug dont tu ne pourras jamais te débarrasser.**
 
 Et moi je ne suis pas là pour le _prestige_. Ni même pour le _profit_.  
@@ -235,7 +236,7 @@ Pour une fois, serrons-nous les coudes.
 
 Loin de ceux qui ont pillé ce que nous étions.
 
-### Pourquoi pas Playwright ?
+### Pourquoi pas Playwright&nbsp;?
 
 Son second retour&nbsp;:&nbsp;"Pourquoi pas Playwright&nbsp;?".
 
@@ -393,7 +394,7 @@ Sans non plus être "le futur", **puisqu'il s'agit d'une science établie mais q
 La gratitude que l'on doit à ces progrès technologiques est aussi immense que la colère de tous ceux qui pestent après, que nous surnommons dans nos
 contrées les _slipologues_.
 
-[Lire aussi : _Haters_, par _Paul Graham_.](https://paulgraham.com/fh.html)
+[Lire aussi&nbsp;: _Haters_, par _Paul Graham_.](https://paulgraham.com/fh.html)
 
 Pour toutes ces raisons, j'ai pris la décision de **ne JAMAIS perdre mon temps à argumenter lorsque ce n'est pas la peine.** J'apprécie argumenter
 avec des personnes **focalisées sur la résolution de problèmes et qui sont douées de bon sens.**
@@ -410,7 +411,7 @@ For Now and Forever.
 
 ---
 
-<p align="center" class="inspiring-quote"><i>"Un idiot admire la complexité, un génie admire la simplicité, un physicien essaie de simplifier. Pour un idiot, plus c'est compliqué, plus il est admiratif : si l'on produit quelque chose de tellement bordélique qu'il n'y comprend rien, il va te prendre pour un dieu parce que tu as fait quelque chose que personne ne peut comprendre. C'est comme ça qu'on écrit dans les revues académiques : on essaie de tout rendre le plus compliqué possible afin que les gens croient que ces torchons sont géniaux."</i></p>
+<p align="center" class="inspiring-quote"><i>"Un idiot admire la complexité, un génie admire la simplicité, un physicien essaie de simplifier. Pour un idiot, plus c'est compliqué, plus il est admiratif&nbsp;: si l'on produit quelque chose de tellement bordélique qu'il n'y comprend rien, il va te prendre pour un dieu parce que tu as fait quelque chose que personne ne peut comprendre. C'est comme ça qu'on écrit dans les revues académiques&nbsp;: on essaie de tout rendre le plus compliqué possible afin que les gens croient que ces torchons sont géniaux."</i></p>
 
 <p align="right" class="inspiring-quote-author">―&nbsp;Terry Davis, "<i>le programmeur le plus intelligent qui ait jamais existé</i>"</p>
 

@@ -14,7 +14,7 @@ head:
 
 ## Disclaimer
 
-> **Note:** This book is intended to help you get familiar with the provided `ocarina-example` project, which remains **the source of truth** to refer
+> **Note:** this book is intended to help you get familiar with the provided `ocarina-example` project, which remains **the source of truth** to refer
 > to in all circumstances.
 
 > ⚠️ _The Ocarina Holy Book_ is NOT and will never be "plug-and-play." Ocarina requires a good level of maturity to use. As such, we will only focus
@@ -106,7 +106,7 @@ print(dashboard_creds["login"])
 print(dashboard_creds["password"])
 ```
 
-> **Note:** Valid keys are provided through two types: `EnvGetters[_CredsKeys, _ValuesKeys]`. If the user only wants to use `.get_value()`, it is
+> **Note:** valid keys are provided through two types: `EnvGetters[_CredsKeys, _ValuesKeys]`. If the user only wants to use `.get_value()`, it is
 > enough to type `_CredsKeys` as `Never`. The same applies to `_ValuesKeys`, which should be typed as `Never` if the user only wants to use
 > `.get_credentials()`.
 

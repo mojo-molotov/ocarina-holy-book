@@ -14,7 +14,7 @@ head:
 
 ## Avertissement
 
-> **Note&nbsp;:**&nbsp;Ce livre a pour but de faciliter la prise en main du projet `ocarina-example` fourni, qui reste **la source de vérité** à
+> **Note&nbsp;:**&nbsp;ce livre a pour but de faciliter la prise en main du projet `ocarina-example` fourni, qui reste **la source de vérité** à
 > consulter en toutes circonstances.
 
 > ⚠️&nbsp;Le livre sacré d'Ocarina N'EST PAS et ne sera jamais "clé en main". Ocarina demande une certaine maturité pour être utilisé. Par conséquent,
@@ -106,7 +106,7 @@ print(dashboard_creds["login"])
 print(dashboard_creds["password"])
 ```
 
-> **Note&nbsp;:**&nbsp;Les clés valides sont à fournir à travers deux types tel que&nbsp;:&nbsp;`EnvGetters[_CredsKeys, _ValuesKeys]`. Dans le cas où
+> **Note&nbsp;:**&nbsp;les clés valides sont à fournir à travers deux types tel que&nbsp;:&nbsp;`EnvGetters[_CredsKeys, _ValuesKeys]`. Dans le cas où
 > l'utilisateur ne souhaite utiliser QUE la fonctionnalité `.get_value()`, il suffit de typer `_CredsKeys` tel que&nbsp;:&nbsp;`Never`. Il en va de
 > même pour `_ValuesKeys` à typer en tant que `Never` si l'utilisateur ne souhaite utiliser QUE la fonctionnalité `.get_credentials()`.
 
@@ -525,7 +525,7 @@ Le déroulement est le suivant&nbsp;:
 
 ---
 
-![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
+![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
 
 <p align="center" class="good-work-mojo-msg"><i>Bon travail&nbsp;!<br/>À une prochaine fois, lecteur Mojo.</i></p>
 

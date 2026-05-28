@@ -27,8 +27,8 @@ A working setup: a full test cycle built alongside Claude Code and Ocarina, agai
 Two variants. `CLAUDE.md` is full (rules + project layout, hierarchy, conventions, CI shape, PR template). `CLAUDE.slim.md` is rules only. Slim when
 context is heavy; full for onboarding and reviews. Full wins on disagreement.
 
-Onboarding steps (venv, `pip install`, the skill battery copied into Claude Code, `ruff` /&nbsp;`mypy` /&nbsp;`pre-commit`, runner smoke-check) live
-in `setup-environment`.
+Onboarding steps (venv, `pip install`, the skill battery copied into Claude Code, `ruff`&nbsp;/&nbsp;`mypy`&nbsp;/&nbsp;`pre-commit`, runner
+smoke-check) live in `setup-environment`.
 
 Rules:
 
@@ -55,8 +55,9 @@ Static reads; surface findings.
 - `review-spec-gaps&nbsp;—&nbsp;clarification questions on the FRD.
 - `review-watcher-misuse`&nbsp;—&nbsp;`watcher.report(...)` against the negative-only convention.
 - `review-compartmentalisation-leaks`&nbsp;—&nbsp;URLs, selectors, magic numbers out of place.
-- `review-dead-code`&nbsp;—&nbsp;unused connectors /&nbsp;POMs /&nbsp;scenarios /&nbsp;suites /&nbsp;fragments /&nbsp;constants; per finding: delete,
-  incubate (`<source-root>/incubator/`, dependency tree preserved), or keep.
+- `review-dead-code`&nbsp;—&nbsp;unused
+  connectors&nbsp;/&nbsp;POMs&nbsp;/&nbsp;scenarios&nbsp;/&nbsp;suites&nbsp;/&nbsp;fragments&nbsp;/&nbsp;constants; per finding: delete, incubate
+  (`<source-root>/incubator/`, dependency tree preserved), or keep.
 - `review-hierarchy-naming`&nbsp;—&nbsp;parent ⊃ same-name child in the cycle tree (most often `Campaign("X") ⊃ Suite("X")`); rename the child for its
   actual segment scope (the hierarchy is strict — no collapsing).
 - `review-report`&nbsp;—&nbsp;classify each FAIL&nbsp;/&nbsp;SKIP for one run.
@@ -129,10 +130,10 @@ Each produces a deliverable.
 
 ## Recurring chains
 
-**Suite isn't green:** `review-report`&nbsp;→&nbsp;`analyse-*` →&nbsp;`write-a-probe` →&nbsp;finding lands in `IDENTIFIED_GAPS.md` /&nbsp;FRD
-/&nbsp;scenario comment &nbsp;→&nbsp;probe deleted.
+**Suite isn't green:** `review-report`&nbsp;→&nbsp;`analyse-*`&nbsp;→&nbsp;`write-a-probe`&nbsp;→&nbsp;finding lands in
+`IDENTIFIED_GAPS.md`&nbsp;/&nbsp;FRD /&nbsp;scenario comment&nbsp;→&nbsp;probe deleted.
 
-**Black-hat scenario looks promising:** `empiricism` →&nbsp;`extend-coverage` (often intentional-fail).
+**Black-hat scenario looks promising:** `empiricism`&nbsp;→&nbsp;`extend-coverage` (often intentional-fail).
 
 **Spec changes:** `update-frd-and-tests` (FRD first, tests follow). Gap tests are reframed, not flipped.
 

@@ -17,7 +17,7 @@ head:
 Ocarina a été conçu pour permettre de créer **le plus facilement possible** des tests automatisés via navigateur web, en laissant un **contrôle total
 à son utilisateur**.
 
-## Encore un !
+## Encore un&nbsp;!
 
 ### Eux
 
@@ -30,8 +30,8 @@ _Robot Framework_, a essayé de la **contourner** avec un _DSL_ (_Domain Specifi
 De la même sorte, _Cucumber_ a essayé avec le _Gherkin_&nbsp;:&nbsp;un langage "naturel" qui, en pratique, **contraint tout le monde sans vraiment
 libérer personne**. Coût&nbsp;:&nbsp;**couche de traduction permanente, désynchronisation Gherkin/code**.
 
-Tous ont parié sur la même chose : **masquer la complexité** pour réconcilier les profils.  
-Résultat : les non-techniques restent spectateurs, et les techniques se retrouvent **prisonniers d'un outil qu'ils n'auraient jamais choisi**.
+Tous ont parié sur la même chose&nbsp;: **masquer la complexité** pour réconcilier les profils.  
+Résultat&nbsp;: les non-techniques restent spectateurs, et les techniques se retrouvent **prisonniers d'un outil qu'ils n'auraient jamais choisi**.
 
 Le coût le plus important est un **nivellement par le bas, la réduction des options et une "flexibilité" qui s'obtient en se _battant_ contre des
 _outils_ plutôt que d'utiliser des _solutions_**.
@@ -46,9 +46,9 @@ _outils_ plutôt que d'utiliser des _solutions_**.
 
 <p align="center"><i>Mieux vaut être seul que mal accompagné.</i></p>
 
-**Ocarina parie sur le contraire :** cette barrière va disparaître. Il s'agit d'un non-débat sur lequel tout le monde s'est construit un nœud autour
-du cou. Outils honteusement compliqués, vendus comme "solutions". Impact&nbsp;:&nbsp;**désastre opérationnel** dès lors que l'on a un besoin qui ne
-peut pas s'exprimer dans un "cadre" qui n'est PAS réellement générique.
+**Ocarina parie sur le contraire&nbsp;:** cette barrière va disparaître. Il s'agit d'un non-débat sur lequel tout le monde s'est construit un nœud
+autour du cou. Outils honteusement compliqués, vendus comme "solutions". Impact&nbsp;:&nbsp;**désastre opérationnel** dès lors que l'on a un besoin
+qui ne peut pas s'exprimer dans un "cadre" qui n'est PAS réellement générique.
 
 Et le pire&nbsp;:&nbsp;**toutes ces technologies continueront d'évoluer dans ce sens**. AUCUNE d'entre elle ne prendra ce _shift_, puisqu'il s'agit
 d'un changement de paradigme et d'**un retour aux fondamentaux qui contredit totalement leur proposition de valeur**.
@@ -64,7 +64,7 @@ Le pont entre techniques et non-techniques n'est plus une couche d'abstraction.
 
 Il y a un autre angle mort, rarement nommé&nbsp;:&nbsp;**la méthodologie**.
 
-### ISTQB, où es-tu ?
+### ISTQB, où es-tu&nbsp;?
 
 L'ISTQB et les testeurs professionnels ont construit, depuis des décennies, un vocabulaire précis et éprouvé&nbsp;:&nbsp;_cycles de test_,
 _campagnes_, _suites de test_, _cas de test_, _pas de test_. Une hiérarchie claire, pensée pour **organiser, tracer et piloter** la qualité
@@ -101,11 +101,11 @@ Pendant ce temps, le _pourquoi_ disparaît.
 Toute sa conception ainsi que tout son livre sacré, sont focalisés sur le **pourquoi**, sur de réels problèmes.  
 Pas sur une abstraction à utiliser _"comme on aime"_.
 
-Pour le _comment_ ?  
+Pour le _comment_&nbsp;?  
 La réponse est simple&nbsp;:&nbsp;Ocarina est **dense, immédiatement opérationnel et strict**. Pensé pour que les humains ainsi que les LLMs en
 comprennent le cœur et l'usage sans friction.
 
-### Que dit la science ?
+### Que dit la science&nbsp;?
 
 Ici, tout repose sur des **fondations statiques**&nbsp;:
 
@@ -168,7 +168,7 @@ En pratique, un consultant peut arriver chez un client avec Ocarina dans sa poch
 
 <p align="center"><i>Ce ne sont pas les hommes qui fatiguent, mais les vieilles ficelles qui les usent.</i></p>
 
-Et c'est aussi pour ces raisons qu'il existe : pour rendre aux testeurs leur **indépendance**.  
+Et c'est aussi pour ces raisons qu'il existe&nbsp;: pour rendre aux testeurs leur **indépendance**.  
 Le tout avec un **bijou de synthèse**.
 
 <p align="right"><i>Игорь Казанова</i></p>

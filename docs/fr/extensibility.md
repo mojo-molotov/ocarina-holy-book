@@ -219,7 +219,7 @@ Autre exemple envisageable&nbsp;:&nbsp;**`skip_if`**, qui court-circuiterait vol
 
 ---
 
-![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
+![Tu es un Mojo lecteur !](/assets/content/docs/creatives/reading-mojo.png)
 
 <p align="center" class="good-work-mojo-msg"><i>Bon travail&nbsp;!<br/>À une prochaine fois, lecteur Mojo.</i></p>
 

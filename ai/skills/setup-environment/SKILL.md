@@ -1,6 +1,17 @@
 ---
 name: setup-environment
-description: Stand up the local dev environment for an Ocarina suite — Python venv, runtime + dev tooling (ruff, mypy, pre-commit), the project's driver adapter choice (Selenium by default; any other Ocarina-supported adapter, or a locally-built one if the user wants something Ocarina doesn't ship), per-machine driver paths, the quality-check loop run before every commit, and the Ocarina skill battery (the Holy Book's `ai/skills/`) copied into Claude Code's skills directory so the workflows are invokable. Use this skill on first checkout, after a `pip install`-breaking change (new dependency, Python upgrade, lockfile rewrite), when switching driver adapter (Selenium ↔ Playwright ↔ a custom one), whenever `pre-commit` / `ruff` / `mypy` invocations need to be re-grounded, or after the Holy Book's `ai/skills/` gains or loses a skill (the Claude Code copy must be refreshed). The skill is intentionally narrow: it does not modify the CI workflow, the `.pre-commit-config.yaml` hook list, or the project's lint configuration — it only walks the steps to make the existing configuration runnable locally and aligned with CI. Pairs with `CLAUDE.local.md` (per-machine driver paths + adapter choice) and the `--driver-path` flag documented in `CLAUDE.md` → "Running tests".
+description:
+  Stand up the local dev environment for an Ocarina suite — Python venv, runtime + dev tooling (ruff, mypy, pre-commit), the project's driver adapter
+  choice (Selenium by default; any other Ocarina-supported adapter, or a locally-built one if the user wants something Ocarina doesn't ship),
+  per-machine driver paths, the quality-check loop run before every commit, and the Ocarina skill battery (the Holy Book's `ai/skills/`) copied into
+  Claude Code's skills directory so the workflows are invokable. Use this skill on first checkout, after a `pip install`-breaking change (new
+  dependency, Python upgrade, lockfile rewrite), when switching driver adapter (Selenium ↔ Playwright ↔ a custom one), whenever `pre-commit` / `ruff`
+  / `mypy` invocations need to be re-grounded, or after the Holy Book's `ai/skills/` gains or loses a skill (the Claude Code copy must be refreshed).
+  The skill stays narrow on CI — it does not modify the CI workflow — but it does verify (and create if missing) the project's strict `ruff` (in
+  `pyproject.toml`), `mypy` (in `mypy.ini`), and pre-commit (`.pre-commit-config.yaml`) configuration, so a fresh project gets the `select = ["ALL"]`
+  + strict-mypy + ruff/mypy-pre-commit baseline of the worked examples instead of the tools' lenient defaults. Use it also when that strict config has
+  drifted or been reset. Pairs with `CLAUDE.local.md` (per-machine driver paths + adapter choice) and the `--driver-path` flag documented in
+  `CLAUDE.md` → "Running tests".
 ---
 
 # Setup environment — local venv, tooling, driver paths, quality checks
@@ -29,13 +40,52 @@ runtime dependency set — install them explicitly.
 
 If the project pins additional dev tooling in an optional-dependencies group (`pip install .[dev]`), use that form instead.
 
-## Step 3 — Install the pre-commit hooks
+## Step 3 — Pre-commit hooks (config + install)
+
+Two parts: the repo-tracked `.pre-commit-config.yaml` (the hook set), then `pre-commit install` (the local `.git/hooks/pre-commit` shim). Verify the
+config matches `ocarina-with-ai-example`; create it if missing. If one exists but differs (extra hooks, a different rev, a `local` mypy hook wired
+differently), surface the diff and **ask before changing it** — same rule as Step 7's config.
+
+This is the config — it runs the same three tools as the quality loop (Step 8), so a commit is gated on exactly what CI checks:
+
+```yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12 # author's choice — see note below
+    hooks:
+      - id: ruff-format
+        files: ^src/
+      - id: ruff-check
+        files: ^src/
+        args: [--fix]
+
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: mypy src/
+        language: system
+        types: [python]
+        pass_filenames: false
+        files: ^src/
+```
+
+Notes:
+
+- **`rev` is the author's call** — pin to a fixed version, track latest, or match the installed ruff; don't impose `v0.15.12` (that's just what
+  `ocarina-with-ai-example` happens to pin). Just be aware: if `rev` and the installed ruff diverge, the hook and the local `ruff check src/` can
+  disagree (the drift Step 8 warns about). If you create the file fresh, a sensible default is the installed `ruff version`, but leave an existing
+  `rev` alone unless the author wants it bumped.
+- **mypy is a `local` / `language: system` hook** — it runs the venv's `mypy`, the same binary as Step 8, so the `mypy.ini` from Step 7 is honoured.
+  `pass_filenames: false` + `entry: mypy src/` means it always checks the whole `src/` tree, not just staged files (mypy needs the full module graph).
+
+Then wire the local shim:
 
 ```bash
 pre-commit install --config .pre-commit-config.yaml
 ```
 
-The hook config is repo-tracked; `pre-commit install` only wires the local `.git/hooks/pre-commit` shim. Re-run it whenever the hook config changes
+`pre-commit install` only wires `.git/hooks/pre-commit`; it does not validate the config content. Re-run it whenever the hook config changes
 substantively (new hook IDs, new mirror revs).
 
 ## Step 4 — Install the Ocarina skill battery into Claude Code
@@ -147,7 +197,72 @@ binary at all). Step 5 only asks for paths the chosen adapter actually consumes.
   copies from). Used for framework-internals lookup (the Holy Book is authoritative for the documented surface; the source / example clones are
   authoritative for everything else). A source clone is also the canonical reference when building a local adapter (Step 5).
 
-## Step 7 — Quality checks (run before every commit)
+## Step 7 — Ensure strict lint + type config in `pyproject.toml`
+
+The quality loop (next step) is only as strict as the config it reads. On a fresh project `ruff` and `mypy` fall back to their lenient defaults —
+`ruff` runs a small default ruleset, `mypy` checks almost nothing. Verify the strict baseline matches the worked examples (`ocarina-example` /
+`ocarina-with-ai-example`); create it if missing. **Ruff lives in `pyproject.toml`; mypy lives in a separate `mypy.ini`** — that split is the example
+shape, don't collapse mypy into `[tool.mypy]`.
+
+**Ruff — `pyproject.toml`:**
+
+```toml
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    # "B008",  # NEVER ignore without understanding function-call-in-default-argument
+    "ANN002",  # *args annotation
+    "ANN003",  # **kwargs annotation
+    "ANN201",  # public-function return type
+    "ANN202",  # private-function return type (ocarina-with-ai-example only)
+    "TRY003",  # long messages in raise
+    "C901",    # function too complex
+    "D203",    # conflicts with D211
+    "D213",    # conflicts with D212
+    "COM812",  # conflicts with the ruff formatter
+]
+
+[tool.ruff]
+exclude = ["**/.venv/**", "**/bin/**", "**/__init__.py", "**/__bypass_linter__"]
+```
+
+`select = ["ALL"]` is the load-bearing baseline. The `ignore` list is **project-owned and deliberate** — the `D203`/`D213`/`COM812` entries resolve
+real conflicts with the formatter / each other, and the `ANN`/`TRY003`/`C901` entries are the project's chosen relaxations. Don't strip them to "make
+it stricter"; they're there on purpose. (`ocarina-with-ai-example` adds `ANN202` to the list — the lists are close but not byte-identical across
+projects.) In ruff ≥ 0.2 `select` lives under `[tool.ruff.lint]`; read the existing table before adding a second one — a duplicated `[tool.ruff.lint]`
+is a config error.
+
+**mypy — `mypy.ini`** (separate file, not `pyproject.toml`):
+
+```ini
+[mypy]
+mypy_path = src
+python_version = 3.14
+strict = true
+
+# * ... Allow missing annotations (type inference is cool)
+disallow_incomplete_defs = false
+
+# * ... Allow missing annotations (type inference is cool)
+disallow_untyped_defs = false
+```
+
+`strict = true` turns on the full strict bundle, then the two `disallow_*_defs = false` lines deliberately walk back the untyped-def checks so type
+inference can cover unannotated defs — that pairing **is** the example baseline, not an oversight. Match `python_version` to what the project's
+`pyproject.toml` declares (the examples pin `3.14`). `mypy_path = src` is what lets `mypy src/` resolve intra-suite imports without the `src.` prefix.
+
+Resolve in this order:
+
+- **Present and matches the examples** → leave it; the project already owns this decision.
+- **Missing** → create `mypy.ini` and the `pyproject.toml` ruff tables above.
+- **Present but weaker** (a partial `select`, `strict` absent/`false`, or per-rule `ignore` / `# noqa` blanket that guts the ruleset beyond the
+  example list) → surface the diff and **ask the user before tightening**. Reaching the example baseline is the goal, but silently overwriting a
+  project's deliberate relaxation is the one move to avoid — show what you'd change and let the user confirm.
+
+After writing, confirm the tools read it: `ruff check src/` should report the broad ruleset and `mypy src/` the strict checks. The only
+`pyproject.toml` edit this skill makes is the ruff tables — it does not touch the dependency lists, build config, or versions.
+
+## Step 8 — Quality checks (run before every commit)
 
 ```bash
 ruff format src/          # format
@@ -162,7 +277,7 @@ versa, the local environment has drifted (different tool version, missing depend
 `pre-commit run --all-files` is the catch-all — it runs every hook against the full tree, not just staged files. Useful after a bulk rename or
 refactor where the staged-file view is misleading.
 
-## Step 8 — Smoke-check the runner
+## Step 9 — Smoke-check the runner
 
 A 30-second confidence check that the venv is wired correctly and the adapter resolves. Run a single test (or the smoke campaign) before declaring
 setup done. Flags depend on the adapter chosen in Step 5 — Selenium needs `--driver-path` / `--browser`, Playwright takes a `--browser-channel`
@@ -184,7 +299,7 @@ python -u src/main.py \
 `sys.path[0]` so intra-suite imports read `from constants.urls import …`, never `from src.constants.urls import …`. CI uses the script form; match it.
 
 If this exits clean, setup is done. If it doesn't, the failure mode tells you which step regressed (unknown CLI key → Step 5 adapter mismatch; driver
-path → Step 6; import error → Step 2; lint pre-commit complaint → Step 7).
+path → Step 6; import error → Step 2; lint/type complaint with the wrong strictness → Step 7; lint pre-commit complaint → Step 8).
 
 ## When to re-run this skill
 
@@ -192,6 +307,8 @@ path → Step 6; import error → Step 2; lint pre-commit complaint → Step 7).
 - Python minor-version bump (`.venv` is version-locked; rebuild it).
 - A dependency change in `pyproject.toml` that `pip install .` would resolve differently.
 - A `.pre-commit-config.yaml` change introducing new hook IDs or mirror revs.
+- The strict `ruff` config (`pyproject.toml`) or `mypy.ini` drifted, was reset, or a new project lacks it (re-run Step 7 alone to re-ground the
+  baseline).
 - After a driver upgrade (new Chrome major → new chromedriver → new path in `CLAUDE.local.md`).
 - After the Holy Book's `ai/skills/` gains, loses, or edits a skill (a `git pull` in the Holy Book clone, an upstream skill update) — the Claude Code
   copy from Step 4 is a snapshot and must be refreshed (re-run Step 4 alone; the rest of the setup is unaffected).
@@ -200,8 +317,9 @@ path → Step 6; import error → Step 2; lint pre-commit complaint → Step 7).
 
 ## What this skill does NOT do
 
-- It does not modify `pyproject.toml`, `.pre-commit-config.yaml`, or `ruff` / `mypy` configuration — those are project-level decisions, not setup
-  steps.
+- The config it touches is the strict lint/type baseline: the `ruff` tables in `pyproject.toml` (Step 7), the `mypy.ini` file (Step 7), and the
+  `.pre-commit-config.yaml` hook set (Step 3) — and even there it asks before tightening a config the project deliberately relaxed. It does not touch
+  `pyproject.toml`'s dependency lists, build config, or versions.
 - It does not change CI workflow files. The CI gate is the canonical reference; local setup mirrors it, never the other way round.
 - It does not install browsers or download drivers. Driver acquisition is out of scope (use the browser vendor's distribution channel); this skill
   only wires the path once the binary exists.

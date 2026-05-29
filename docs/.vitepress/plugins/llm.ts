@@ -12,6 +12,12 @@ const IGNORE = ['**/what-is-it.md', '**/first-feedbacks.md', '**/index.md'];
 
 const BASE_URL = 'https://mojo-molotov.github.io/ocarina-holy-book';
 
+const FULL_INTRO: Record<Locale, string> = {
+  ru: '# The Ocarina Holy Book — Полная документация (Русский)\n\n> Ocarina: фреймворк браузерного тестирования; один репозиторий более широкого стека. **Связанные проекты** в конце файла = мосты к канонической документации соседних репозиториев. Переходить, когда вопрос выходит за пределы Holy Book.\n\n',
+  fr: "# The Ocarina Holy Book — Docs complètes (Français)\n\n> Ocarina : framework de test navigateur ; un dépôt d'une stack plus large. **Projets liés** en fin de fichier = ponts vers la doc canonique des dépôts voisins. À suivre quand une question dépasse le Holy Book.\n\n",
+  en: "# The Ocarina Holy Book — Full Docs (English)\n\n> Ocarina: browser-testing framework; one repo in a wider stack. **Related projects** at end = bridges to neighbouring repos' canonical docs. Follow when a question goes past the Holy Book.\n\n"
+};
+
 export function generateLlms(): Plugin[] {
   const mdFiles = new Map<string, { content: string; url: string }>();
 
@@ -40,13 +46,13 @@ export function generateLlms(): Plugin[] {
 
         for (const locale of activeLocales) {
           const blocks = byLocale[locale].map(({ content, url }) => `---\nurl: ${url}\n---\n\n${content.trim()}\n\n`);
-          fs.writeFileSync(path.join(distDir, `llms-full.${locale}.txt`), blocks.join(''));
+          fs.writeFileSync(path.join(distDir, `llms-full.${locale}.txt`), FULL_INTRO[locale] + blocks.join(''));
         }
 
         const indexLines = [
           '# The Ocarina Holy Book - LLMs Full Documentation',
           '',
-          "> Ocarina is a browser-testing framework, and one piece of a wider stack alongside sibling projects (notably Igor). This file is an index of this book's full-text docs by language; for the canonical description of neighbouring projects, follow the bridges under **Related projects** at the bottom.",
+          "> Ocarina is a browser-testing framework, and one piece of a wider stack alongside sibling projects. This file is an index of this book's full-text docs by language; for the canonical description of neighbouring projects, follow the bridges under **Related projects** at the bottom.",
           '',
           '## Languages',
           ...activeLocales.map(
@@ -59,7 +65,7 @@ export function generateLlms(): Plugin[] {
         const lines: string[] = [
           '# The Ocarina Holy Book',
           '',
-          "> Ocarina is a browser-testing framework, and one piece of a wider stack alongside sibling projects (notably Igor). This file lists this book's pages; the **Related projects** section at the bottom links bridges to the neighbouring repos' canonical docs.",
+          "> Ocarina is a browser-testing framework, and one piece of a wider stack alongside sibling projects. This file lists this book's pages; the **Related projects** section at the bottom links bridges to the neighbouring repos' canonical docs.",
           ''
         ];
         for (const locale of activeLocales) {

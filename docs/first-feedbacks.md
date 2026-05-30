@@ -236,6 +236,9 @@ Fair point.
 Ocarina is agnostic, so wiring Playwright is easy.  
 The only constraint: Ocarina will never support `async`/`await`.
 
+Better still: since **Ocarina 1.1.3**, there's nothing left to wire by hand. A first-class Playwright adapter ships with the framework, and
+[a worked example](https://github.com/mojo-molotov/ocarina-with-playwright) is there to prove it.
+
 ## Secession
 
 Today, people launch projects the way you'd pop out to buy a pack of cigarettes.  

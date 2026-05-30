@@ -244,6 +244,9 @@ Tout aussi pertinent.
 Ocarina est agnostique, donc c'est un simple branchement différent à faire.  
 Une seule contrainte&nbsp;:&nbsp;Ocarina ne supporte pas `async`/`await` et ne le fera jamais.
 
+Mieux encore&nbsp;:&nbsp;depuis **Ocarina&nbsp;1.1.3**, il n'y a même plus rien à brancher à la main. Un adaptateur Playwright à part entière est
+livré avec le framework, et [un exemple complet](https://github.com/mojo-molotov/ocarina-with-playwright) est là pour le démontrer.
+
 ## Sécession
 
 Aujourd'hui les gens lancent des projets comme on descend de chez soi acheter un paquet de clopes.  

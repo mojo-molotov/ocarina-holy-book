@@ -16,8 +16,8 @@ description:
 
 # Persistence-attack ideation — hardening through legitimate insistence
 
-A black-hat ideation skill, third in the trio with `business-attack-ideation` (volume / aggregate harm) and `incoherence-attack-ideation` (impossible
-combinations). This one is narrower:
+A black-hat ideation skill, third in the trio with `business-logic-vulnerability-ideation` (volume / aggregate harm) and `incoherence-attack-ideation`
+(impossible combinations). This one is narrower:
 
 > _Take an existing test that observes a permission, an access gate, a disabled state, or an auth redirect — and ask what happens when the user simply
 > refuses to accept the SUT's answer the first time._
@@ -170,7 +170,7 @@ _insistence_, not about reaching past the UI.
 - Already in the gap inventory? Cross-reference.
 - Adjacent to a `review-spec-gaps` finding? Note the linkage — the FRD often won't define what the hardened behaviour _should_ be, so this is also a
   spec-gap pass.
-- Adjacent to a `business-attack-ideation` or `incoherence-attack-ideation` finding? Note overlap.
+- Adjacent to a `business-logic-vulnerability-ideation` or `incoherence-attack-ideation` finding? Note overlap.
 
 ### Step 5 — Surface the hardening proposals
 
@@ -199,7 +199,7 @@ _insistence_, not about reaching past the UI.
 
 ## Cross-references
 
-- Sister skills: `business-attack-ideation`, `incoherence-attack-ideation`.
+- Sister skills: `business-logic-vulnerability-ideation`, `incoherence-attack-ideation`.
 - Spec-gap follow-ups: most proposals collide with `review-spec-gaps` — the FRD often doesn't define the hardened behaviour.
 - Empirical follow-up: `empiricism` to verify the SUT's actual behaviour before encoding any hardened assertion.
 
@@ -228,7 +228,7 @@ Each proposal resolves as:
 - **UI-only.** No DevTools editing, no DOM manipulation, no JavaScript console use. Address bar, buttons, forms, browser history controls — that's the
   surface.
 - **Insistence is the lens.** Each dimension is "what if the user does this _more_ than the polite test does?". If the proposal is "what if the user
-  does something _different_", it's `business-attack-ideation` or `incoherence-attack-ideation` territory.
+  does something _different_", it's `business-logic-vulnerability-ideation` or `incoherence-attack-ideation` territory.
 - **A button click is legitimate even when the button looks disabled.** The browser dispatches the click; whether the page handles it is the SUT's
   responsibility. The hardened test confirms the SUT's enforcement, not the CSS.
 - **No rate-limit _bypass_ attempts.** The hardened test confirms the rate-limit _exists_ (or surfaces that it doesn't). It does not try to evade an
@@ -240,7 +240,7 @@ Each proposal resolves as:
 ## When to run this skill
 
 - Coverage planning for access / auth / permission tests — what insistence dimensions are missing?
-- After a `business-attack-ideation` or `incoherence-attack-ideation` pass — completes the black-hat trio.
+- After a `business-logic-vulnerability-ideation` or `incoherence-attack-ideation` pass — completes the black-hat trio.
 - Before a security review (the _functional_ part) — hardened tests demonstrate that gates hold under insistence, not just on the polite first try.
 - After the SUT adds (or changes) any access gate — does the new gate hold under the seven dimensions?
 - During stakeholder review of product robustness — the catalogue is a discussion artifact.

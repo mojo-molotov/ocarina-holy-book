@@ -15,8 +15,8 @@ description:
 
 # Lateral-resource ideation — neighbouring IDs through the address bar
 
-A black-hat ideation skill, sixth in the series with `business-attack-ideation`, `incoherence-attack-ideation`, `persistence-attack-ideation`,
-`permission-appropriateness-audit`, and `bfcache-exposure-ideation`. The lens here is sharp and narrow:
+A black-hat ideation skill, sixth in the series with `business-logic-vulnerability-ideation`, `incoherence-attack-ideation`,
+`persistence-attack-ideation`, `permission-appropriateness-audit`, and `bfcache-exposure-ideation`. The lens here is sharp and narrow:
 
 > _The user has access to one resource. The URL that identifies it differs by a small, guessable change from the URL of a resource they shouldn't have
 > access to. Does the SUT enforce access when the user makes that change in the address bar?_
@@ -234,8 +234,8 @@ Per proposal: does the test shape require headers, intercepted requests, or anyt
 
 ## Cross-references
 
-- Sister skills: `business-attack-ideation`, `incoherence-attack-ideation`, `persistence-attack-ideation`, `permission-appropriateness-audit`,
-  `bfcache-exposure-ideation`.
+- Sister skills: `business-logic-vulnerability-ideation`, `incoherence-attack-ideation`, `persistence-attack-ideation`,
+  `permission-appropriateness-audit`, `bfcache-exposure-ideation`.
 - Spec-gap follow-ups: `review-spec-gaps` for proposals where the FRD doesn't define expected behaviour.
 - Empirical follow-up: `empiricism` to verify the SUT's current behaviour before encoding.
 

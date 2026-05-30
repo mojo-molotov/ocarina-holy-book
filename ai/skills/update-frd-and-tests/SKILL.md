@@ -119,7 +119,8 @@ If the spec change is **"the SUT fixed a gap" / "this known-bug entry is resolve
    - **Reframe the test** — change the assertion from "must NOT confirm" to "must confirm" (or the appropriate inversion). The test name should also
      flip: e.g. `Appointment - Past date booking accepted` → `Appointment - Past date booking rejected`. **Surface this rename for the user.**
    - **Move it in the test-strategy doc** — from the "Intentional gap fails" category to the "Pass everywhere" category. Update the coverage row's
-     "Type" column from "Business attack" / **INTENTIONAL FAIL** to "Happy path" / PASS or similar. Update the known-gaps table — remove the row.
+     "Type" column from "Business logic vulnerability" / **INTENTIONAL FAIL** to "Happy path" / PASS or similar. Update the known-gaps table — remove
+     the row.
    - **Update the gap inventory** — mark the entry resolved (or remove it, citing the resolution date and the PR / deployment that fixed it).
 5. **If the resolution is NOT confirmed** (probe shows the gap is still real on deployment): the spec update was premature; back it out or mark
    provisional.

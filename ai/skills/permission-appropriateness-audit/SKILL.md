@@ -13,8 +13,8 @@ description:
 
 # Permission-appropriateness audit — is the access right, even when enforced?
 
-A static-review skill, sibling to `business-attack-ideation` / `incoherence-attack-ideation` / `persistence-attack-ideation`. Those three look at
-_ways the SUT could be abused through legitimate UI_. This one looks at a quieter problem:
+A static-review skill, sibling to `business-logic-vulnerability-ideation` / `incoherence-attack-ideation` / `persistence-attack-ideation`. Those three
+look at _ways the SUT could be abused through legitimate UI_. This one looks at a quieter problem:
 
 > _The SUT enforces exactly what the spec says. The question is whether the spec is appropriate._
 
@@ -164,7 +164,7 @@ For each surfaced question:
 
 - Adjacent `review-spec-gaps` finding? Cross-reference.
 - Already in the gap inventory? Cross-reference.
-- Adjacent sibling-skill finding (`business-attack-ideation` etc.)? Cross-reference.
+- Adjacent sibling-skill finding (`business-logic-vulnerability-ideation` etc.)? Cross-reference.
 
 ### Step 4 — Cross-check against the hard line
 
@@ -225,7 +225,7 @@ Use a _benevolent_ tone throughout, like `review-spec-gaps`:
 
 - `review-spec-gaps §<n>` — adjacent spec-clarity findings.
 - `the gap inventory <entry-refs>`.
-- Sibling skills (`business-attack-ideation`, `incoherence-attack-ideation`, `persistence-attack-ideation`).
+- Sibling skills (`business-logic-vulnerability-ideation`, `incoherence-attack-ideation`, `persistence-attack-ideation`).
 
 ## Recommended next motions
 

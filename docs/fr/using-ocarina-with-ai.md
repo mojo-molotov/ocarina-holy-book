@@ -75,7 +75,7 @@ Lectures statiques&nbsp;;&nbsp;remontent des constats.
 
 ### Black-hat (6)
 
-- `business-attack-ideation`&nbsp;—&nbsp;faire tomber le produit.
+- `business-logic-vulnerability-ideation`&nbsp;—&nbsp;faire tomber le produit.
 - `incoherence-attack-ideation`&nbsp;—&nbsp;chaque étape légale prise isolément, incohérent quand combinées pour construire un ensemble invalide.
 - `persistence-attack-ideation`&nbsp;—&nbsp;tentatives répétées sur une action bloquée.
 - `permission-appropriateness-audit`&nbsp;—&nbsp;le modèle d'accès est-il lui-même approprié&nbsp;?

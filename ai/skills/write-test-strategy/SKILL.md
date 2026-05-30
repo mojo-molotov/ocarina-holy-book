@@ -42,14 +42,14 @@ Nine sections, in this order. Numbering matters — readers cite by section.
 
 Six types in the canonical shape. Project may refine names; keep the discriminating questions.
 
-| Type                             | Result   | Discriminating question                                                                                    |
-| -------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------- |
-| Happy path                       | PASS     | Nominal flow, valid inputs, authenticated user. Verifies the correct output appears.                       |
-| Unhappy path                     | PASS     | Invalid input or out-of-auth action. Test **passes** when the SUT correctly rejects.                       |
-| Edge case / boundary             | PASS     | Limits, surprising behaviour, ambiguous spec. Paired with an FRD note if the result is a gap.              |
-| Business attack / gap test       | **FAIL** | SUT _should_ enforce X but doesn't. Test asserts the missing enforcement; **intentionally fails**.         |
-| Exploratory / observed-behaviour | PASS     | No requirement specified; the test documents what the SUT actually does. Always paired with an FRD update. |
-| Permanent security regression    | mixed    | Guards against runtime/browser-version drift (e.g., BFcache, session handling). Never removed or skipped.  |
+| Type                                    | Result   | Discriminating question                                                                                    |
+| --------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------- |
+| Happy path                              | PASS     | Nominal flow, valid inputs, authenticated user. Verifies the correct output appears.                       |
+| Unhappy path                            | PASS     | Invalid input or out-of-auth action. Test **passes** when the SUT correctly rejects.                       |
+| Edge case / boundary                    | PASS     | Limits, surprising behaviour, ambiguous spec. Paired with an FRD note if the result is a gap.              |
+| Business logic vulnerability / gap test | **FAIL** | SUT _should_ enforce X but doesn't. Test asserts the missing enforcement; **intentionally fails**.         |
+| Exploratory / observed-behaviour        | PASS     | No requirement specified; the test documents what the SUT actually does. Always paired with an FRD update. |
+| Permanent security regression           | mixed    | Guards against runtime/browser-version drift (e.g., BFcache, session handling). Never removed or skipped.  |
 
 The discriminator that matters most: **unhappy path** passes when the SUT correctly rejects; **gap test** fails because the SUT _doesn't_ reject. Same
 shape ("submit bad input → check rejection"), opposite outcome — and the doc must say which is which.
@@ -241,9 +241,9 @@ stance (e.g., gaps tracked in Jira instead of failing tests), record that.
 Render the taxonomy table above. For each type, add a sentence specific to the project — what `unhappy path` _looks like_ in this SUT (form
 validation? redirect? error toast?), what the gap-test convention is (dedicated exception type? specific timeout?), what the exploratory pattern is.
 
-For business-attack / gap tests, include the **implementation rule** the project uses — typically a dedicated assertion helper with a fixed timeout
-independent of `--wait-timeout`, so a gap fail is visibly distinct from a generic timeout. Document the helper's name and the timeout constant.
-Without that detail, a reviewer can't tell a gap-test fail from a transient timeout.
+For business-logic-vulnerability / gap tests, include the **implementation rule** the project uses — typically a dedicated assertion helper with a
+fixed timeout independent of `--wait-timeout`, so a gap fail is visibly distinct from a generic timeout. Document the helper's name and the timeout
+constant. Without that detail, a reviewer can't tell a gap-test fail from a transient timeout.
 
 ### Step 5 — §4 (interaction path coverage), only if dispatchers exist
 

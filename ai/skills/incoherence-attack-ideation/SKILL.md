@@ -14,7 +14,8 @@ description:
 
 # Incoherence-attack ideation — each step legitimate, the set impossible
 
-A black-hat ideation skill, sibling to `business-attack-ideation` and bound by the same hard rules. The lens here is narrower and sharper:
+A black-hat ideation skill, sibling to `business-logic-vulnerability-ideation` and bound by the same hard rules. The lens here is narrower and
+sharper:
 
 > _Where can a malicious user create a set of actions, each individually accepted by the SUT, whose **combination** violates a real-world constraint
 > the SUT doesn't model?_
@@ -22,7 +23,7 @@ A black-hat ideation skill, sibling to `business-attack-ideation` and bound by t
 The SUT validates **per-form**. The attacker reasons **across forms / time / space / identity**. The gap between the two is the vulnerability. The
 output is a catalogue of incoherence patterns and the test shape that would observe each.
 
-## The hard line (inherited from `business-attack-ideation` and `CLAUDE.md`)
+## The hard line (inherited from `business-logic-vulnerability-ideation` and `CLAUDE.md`)
 
 In scope:
 
@@ -193,7 +194,7 @@ scenario crosses the line, so this check is per-scenario.
 
 ## Cross-references
 
-- Sister skill: `business-attack-ideation` (volume / timing / identity attacks).
+- Sister skill: `business-logic-vulnerability-ideation` (volume / timing / identity attacks).
 - Spec questions: `review-spec-gaps` is the natural follow-up for any scenario whose expected behaviour isn't in the FRD.
 - the gap inventory <entry-refs>.
 
@@ -239,7 +240,7 @@ the team chooses to declare the model's bounds explicitly).
 ## When to run this skill
 
 - Coverage planning sessions — what reality-contradictions could the product silently accept?
-- After a `business-attack-ideation` pass — the two skills cover adjacent territory; running both gives a fuller adversarial map.
+- After a `business-logic-vulnerability-ideation` pass — the two skills cover adjacent territory; running both gives a fuller adversarial map.
 - When the product team is reviewing fraud / abuse stories — the catalogue is a discussion artifact.
 - After a spec change that adds new identity / relationship / location fields — does the new model close any previously-undetectable incoherence?
 

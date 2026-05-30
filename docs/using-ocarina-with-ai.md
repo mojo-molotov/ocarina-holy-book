@@ -73,7 +73,7 @@ Static reads; surface findings.
 
 ### Black-hat (6)
 
-- `business-attack-ideation`&nbsp;—&nbsp;bring the product down.
+- `business-logic-vulnerability-ideation`&nbsp;—&nbsp;bring the product down.
 - `incoherence-attack-ideation`&nbsp;—&nbsp;each step legal, the set impossible.
 - `persistence-attack-ideation`&nbsp;—&nbsp;repeated retries on blocked actions.
 - `permission-appropriateness-audit`&nbsp;—&nbsp;is the access model itself appropriate?

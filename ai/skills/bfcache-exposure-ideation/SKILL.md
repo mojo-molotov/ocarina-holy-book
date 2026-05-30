@@ -14,7 +14,7 @@ description:
 
 # BFcache-exposure ideation — what's reachable via Back after an access change?
 
-A black-hat ideation skill, sibling to `business-attack-ideation`, `incoherence-attack-ideation`, `persistence-attack-ideation`, and
+A black-hat ideation skill, sibling to `business-logic-vulnerability-ideation`, `incoherence-attack-ideation`, `persistence-attack-ideation`, and
 `permission-appropriateness-audit`. This one is laser-focused on a single mechanism:
 
 > _The browser's back-forward cache (BFcache) keeps the previous page **as it rendered**. After an access-changing event — logout, expiry, role switch
@@ -223,7 +223,7 @@ For each proposal: does the test shape require anything beyond pressing Back and
 
 - `§B-BROWSER-1` — the existing finding; this skill generalises around it.
 - `BackForwardCacheExposureError` (`src/lib/errors.py`) — the non-transient exception used for the existing assertion shape.
-- Sister skills: `persistence-attack-ideation §4` (insistent back-navigation), `business-attack-ideation`, `incoherence-attack-ideation`,
+- Sister skills: `persistence-attack-ideation §4` (insistent back-navigation), `business-logic-vulnerability-ideation`, `incoherence-attack-ideation`,
   `permission-appropriateness-audit`.
 
 ## Recommended next motions

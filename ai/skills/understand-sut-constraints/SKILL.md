@@ -226,8 +226,8 @@ For each, sketch (don't implement):
 ## Cross-references
 
 - Related skills: `analyse-flakiness` (test-body retry classification), `analyse-fixture-flakiness` (boundary instrumentation),
-  `business-attack-ideation` (saturation as deliberate attack), `assess-ecosystem` (third-party constraints from docs), `introduce-pom-retries`
-  (POM-retry candidates that turn out to be SUT bounds belong here, not in a retry layer).
+  `business-logic-vulnerability-ideation` (saturation as deliberate attack), `assess-ecosystem` (third-party constraints from docs),
+  `introduce-pom-retries` (POM-retry candidates that turn out to be SUT bounds belong here, not in a retry layer).
 - `the gap inventory (environmental section)` — current environment artifacts (some may be SUT-constraint symptoms in disguise).
 - `using-ocarina-with-ai` → _"Distributed when scarcity is shared"_ — the one-line summary of this skill's discipline.
 
@@ -291,6 +291,6 @@ The comprehension is the deliverable. The mitigation is a follow-up motion.
 - It does not run load tests, stress probes, or active SUT investigation. Stays on the comprehension / static side.
 - It does not unilaterally pick the backing store (Redis vs alternative). Names a canonical example; the choice is the user's.
 - It does not modify the SUT. SUT-side fixes are the SUT team's domain.
-- It does not encode tests around constraints. Tests that intentionally exercise a constraint (saturation tests) are `business-attack-ideation` /
-  `extend-coverage` territory.
+- It does not encode tests around constraints. Tests that intentionally exercise a constraint (saturation tests) are
+  `business-logic-vulnerability-ideation` / `extend-coverage` territory.
 - It does not file the gap inventory entries directly. Cross-references are recommended; entries are a follow-up via `update-frd-and-tests`.

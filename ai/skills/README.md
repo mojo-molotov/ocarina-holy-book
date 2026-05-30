@@ -61,7 +61,7 @@ observe, restore — mandatory restore step in each).
 
 Generate attack catalogues — every action through the normal UI, never injection / curl / proxy / DevTools manipulation.
 
-- [business-attack-ideation](business-attack-ideation/SKILL.md) — volume / saturation / slot-hoarding / aggregate-harm scenarios.
+- [business-logic-vulnerability-ideation](business-logic-vulnerability-ideation/SKILL.md) — volume / saturation / slot-hoarding / aggregate-harm scenarios.
 - [incoherence-attack-ideation](incoherence-attack-ideation/SKILL.md) — each step legitimate, the set impossible (temporal / spatial / biographical / causal / quantitative / relational).
 - [persistence-attack-ideation](persistence-attack-ideation/SKILL.md) — hardening through insistent legitimate retry; seven insistence dimensions.
 - [permission-appropriateness-audit](permission-appropriateness-audit/SKILL.md) — is the SUT's access model itself appropriate, even when perfectly enforced?

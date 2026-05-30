@@ -2,14 +2,15 @@
 name: assess-ecosystem
 description:
   "**Stalk the ecosystem** — go read what the wider internet says about the SUT, its dependencies, and the third-party technologies the test suite
-  leans on, so the project's view of its own environment widens beyond the repo. Pulls from public docs (Selenium, Chrome / Firefox release notes,
-  Heroku platform docs, the SUT's upstream repo, framework release notes), blog posts / Stack Overflow / GitHub issues that mention the SUT or a
-  load-bearing dependency, and similar public testbeds. Produces an **ecosystem map** — what's out there, what's load-bearing on the project, what
-  might be re-usable (a published selector list, a known-quirk catalogue, an upstream issue that explains a flake). The depth is **bounded by a token
-  budget**, not by a page count: at invocation, estimate the remaining context-window tokens and allocate a fraction (default **1/3**) to the
-  assessment; stop fetching when that budget is spent. Use whenever the user asks to scan the ecosystem, look for prior art, find upstream context for
-  a flake, check what other people say about the SUT / Selenium / the hosting platform / a specific Chrome version, or onboard onto a new technology
-  in the stack. Never confuse what an external source claims with what the SUT actually does — the empirical-verification rule still owns the truth."
+  leans on, so the project's view of its own environment widens beyond the repo. Pulls from public docs (the driver adapter — Selenium or Playwright,
+  Chrome / Firefox release notes, Heroku platform docs, the SUT's upstream repo, framework release notes), blog posts / Stack Overflow / GitHub issues
+  that mention the SUT or a load-bearing dependency, and similar public testbeds. Produces an **ecosystem map** — what's out there, what's
+  load-bearing on the project, what might be re-usable (a published selector list, a known-quirk catalogue, an upstream issue that explains a flake).
+  The depth is **bounded by a token budget**, not by a page count: at invocation, estimate the remaining context-window tokens and allocate a fraction
+  (default **1/3**) to the assessment; stop fetching when that budget is spent. Use whenever the user asks to scan the ecosystem, look for prior art,
+  find upstream context for a flake, check what other people say about the SUT / the driver adapter (Selenium or Playwright) / the hosting platform /
+  a specific Chrome version, or onboard onto a new technology in the stack. Never confuse what an external source claims with what the SUT actually
+  does — the empirical-verification rule still owns the truth."
 ---
 
 # Assess the ecosystem — bounded public-research pass
@@ -63,15 +64,17 @@ Where does the SUT live? (`github.com/<sut-org>/<sut-repo>` is one example shape
 The SUT's upstream often confirms or refutes the gap inventory entries: if a documented gap matches an open upstream issue, that's external
 corroboration.
 
-### 2. Selenium + WebDriver protocol
+### 2. The driver adapter (Selenium / WebDriver _or_ Playwright)
 
-Release notes, behavioural change notes between versions:
+Release notes, behavioural change notes between versions — for whichever adapter the suite is wired on:
 
-- `selenium.dev/documentation/webdriver/` for current behaviour.
-- The `seleniumhq/selenium` GitHub release notes — especially around `expected_conditions`, `Keys`, `Options`, BiDi.
-- W3C WebDriver spec when a question is "what should the protocol do here?".
+- **Selenium** — `selenium.dev/documentation/webdriver/` for current behaviour; the `seleniumhq/selenium` GitHub release notes (especially around
+  `expected_conditions`, `Keys`, `Options`, BiDi); the W3C WebDriver spec when the question is "what should the protocol do here?".
+- **Playwright** — `playwright.dev/python/docs/` for current behaviour; the `microsoft/playwright-python` release notes (auto-waiting, locators,
+  tracing/video, `expect` web-first assertions); the upstream `microsoft/playwright` changelog for engine-level changes across
+  chromium/firefox/webkit.
 
-Useful when a probe behaves differently across Selenium versions, or when a wait condition's semantics are load-bearing.
+Useful when a probe behaves differently across adapter versions, or when a wait/auto-wait condition's semantics are load-bearing.
 
 ### 3. Browser release notes
 
@@ -113,7 +116,7 @@ This is where **re-usable artifacts** live: a published selector list, an alread
 
 ### 7. Third-party libraries the test suite imports
 
-For the project: `selenium`, `pytest` (if used downstream), `ruff`, `mypy`. Each one has:
+For the project: the adapter library (`selenium` or `playwright`), `pytest` (if used downstream), `ruff`, `mypy`. Each one has:
 
 - Versioned release notes.
 - Migration guides for major versions.
@@ -211,7 +214,7 @@ Use this exact template:
 
 - <observation>. <…>.
 
-### Selenium / WebDriver
+### Driver adapter (Selenium / WebDriver or Playwright)
 
 - <observation>. <…>.
 

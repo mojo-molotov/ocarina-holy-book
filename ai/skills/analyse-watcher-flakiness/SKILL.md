@@ -33,9 +33,11 @@ failure surface.
 ### 1. Concurrent driver access (the big one)
 
 Selenium WebDriver clients are **not thread-safe**. The watcher's callback reads `driver.find_elements(...)` while the main thread is mid-`click()`.
-Symptoms:
+(On the Playwright adapter the shape differs: the `PlaywrightDriver` marshals every call onto a single owner thread via `driver.submit`, so two
+threads can't hit the page concurrently — but a watcher callback that issues its own `driver.submit` still contends for that owner thread and can
+deadlock or starve the main interaction. Same _category_ of bug, different mechanism.) Symptoms:
 
-- `WebDriverException: ... was not handled in time` from either thread.
+- `WebDriverException: ... was not handled in time` from either thread (Selenium); a stalled / timed-out `driver.submit` (Playwright).
 - Stale element references in the test body that _only_ appear with the watcher attached.
 - Random `URLError` / `RemoteDisconnected` from the chromedriver process under poll pressure.
 
@@ -278,7 +280,8 @@ Each finding can resolve as:
 
 - **Adjust the watcher** — change `poll_interval`, rewrite the callback for cheaper polling, swap to event-driven detection.
 - **Remove the watcher** — if it costs more flake than it catches.
-- **File as gap** — a Selenium / chromedriver concurrency artifact landing in the gap inventory.
+- **File as gap** — an adapter/driver concurrency artifact (Selenium/chromedriver, or Playwright owner-thread contention) landing in the gap
+  inventory.
 - **Promote** — if the watcher is solid, document its operating point in a comment on the callback
   (`# poll_interval=1.0 is the empirical safe point; see <date> analysis`).
 

@@ -253,7 +253,7 @@ The analysis doesn't apply. It surfaces.
 - A test fails intermittently and you can't tell if it's transient or a defect.
 - A `review-suite-stability` audit surfaces flakes with no clean explanation.
 - A new exception class lands in the suite — is it correctly classified?
-- After a major dependency bump (Selenium, browser) — did the bump change which exceptions fire?
+- After a major dependency bump (the driver adapter — Selenium or Playwright — or the browser) — did the bump change which exceptions fire?
 - Onboarding to the project — a flake-map gives a contributor the shape of the suite's failure surface.
 
 ## What this skill does NOT do

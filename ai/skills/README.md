@@ -3,11 +3,13 @@
 Skills for working in any Ocarina-based browser test suite. Each entry below points to a `<skill-name>/SKILL.md`. Skills stay flat on disk (so
 discovery keeps working); this document groups them by family for navigation.
 
-These skills are couple-light by design — they lean on Ocarina (the framework), the browsers Ocarina drives (Firefox, Chrome, Edge, Safari), and
-the host OSes (macOS, Windows, Linux). Everything else — the SUT's backend stack, the spec format (Markdown, Jira, Confluence, OpenAPI, PDF, JSON),
-the project layout — is interoperable. Worked examples cite <https://github.com/mojo-molotov/ocarina-example> or
-<https://github.com/mojo-molotov/ocarina-with-ai-example>; the framework itself is at <https://github.com/mojo-molotov/ocarina> and the docs at
-<https://github.com/mojo-molotov/ocarina-holy-book>.
+These skills are couple-light by design — they lean on Ocarina (the framework), the browsers Ocarina drives (Firefox/Chromium, Chrome, Edge,
+Safari/WebKit), and the host OSes (macOS, Windows, Linux). Everything else — the SUT's backend stack, the spec format (Markdown, Jira, Confluence,
+OpenAPI, PDF, JSON), the project layout, **and the driver adapter (Selenium or Playwright)** — is interoperable. Concrete examples in a skill use
+whichever adapter the suite is wired on; driver-level mechanics (the wait API, selector form, submission primitives, CLI flags) live in
+`CLAUDE.selenium.md` / `CLAUDE.playwright.md`, not in the skills. Worked examples cite <https://github.com/mojo-molotov/ocarina-example> or
+<https://github.com/mojo-molotov/ocarina-with-ai-example> (Selenium) and <https://github.com/mojo-molotov/ocarina-with-playwright> (Playwright); the
+framework itself is at <https://github.com/mojo-molotov/ocarina> and the docs at <https://github.com/mojo-molotov/ocarina-holy-book>.
 
 The prefix convention (`review-*`, `analyse-*`, `assess-*`, `pick-*`, `understand-*`) does most of the grouping at the filename level. The families
 below add the prefix-less skills (ideation, refactoring, authoring, state-probing).
@@ -117,7 +119,7 @@ Question the environment before assuming a result is meaningful.
 
 Stand up or refresh the local working environment so the suite is runnable, lintable, type-clean, and the skills invokable from Claude Code.
 
-- [setup-environment](setup-environment/SKILL.md) — venv + dev tooling + the Ocarina skill battery copied into Claude Code's skills directory + `CLAUDE.local.md` driver paths + verify/create the strict `ruff` (`pyproject.toml`), `mypy` (`mypy.ini`), and `.pre-commit-config.yaml` config of the worked examples + the `ruff` / `mypy` / `pre-commit` quality loop + a smoke-check of the runner.
+- [setup-environment](setup-environment/SKILL.md) — venv + dev tooling + driver-adapter choice (Selenium or Playwright, both shipped) + the Ocarina skill battery copied into Claude Code's skills directory + the suite's adapter-resolved `CLAUDE.md` assembled (core + chosen appendix, regenerable) + `CLAUDE.local.md` driver paths + verify/create the strict `ruff` (`pyproject.toml`), `mypy` (`mypy.ini`), and `.pre-commit-config.yaml` config of the worked examples + the `ruff` / `mypy` / `pre-commit` quality loop + a smoke-check of the runner.
 
 ## Run
 

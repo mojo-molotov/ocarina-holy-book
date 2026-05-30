@@ -5,13 +5,13 @@ description:
   documented finding — **plus** the hypothesis-confirmation paths (DevTools, `curl`, PHP read, comparison to the gap inventory) the user can run when
   their first observation is fuzzy — **plus**, when a cross-browser contrast is part of the finding, the same steps repeated in the contrasting
   browser with the differences called out. Use whenever the user asks to write a repro recipe, document a manual repro, capture a finding so a human
-  can verify it, share a bug for review, or build the user-facing companion to a Selenium probe.
+  can verify it, share a bug for review, or build the user-facing companion to an automated probe.
 ---
 
 # Manual reproduction guide
 
-A skill for producing the **human-runnable** companion to a finding. Selenium probes (`write-a-probe`) capture machine-driven evidence; `empiricism`
-walks the verification loop; this skill produces the artifact a _human_ opens their own browser to follow.
+A skill for producing the **human-runnable** companion to a finding. Automated probes (`write-a-probe`, on the suite's adapter) capture machine-driven
+evidence; `empiricism` walks the verification loop; this skill produces the artifact a _human_ opens their own browser to follow.
 
 Three layers, used in order. Layers 2 and 3 are optional.
 
@@ -37,8 +37,8 @@ Pick before writing. Don't pad the guide with layers the finding doesn't need.
 
 ## Layer 1 — step-by-step reproduction
 
-A numbered, terse, browser-driven sequence. Every step is one observable action or one expected observation. Skip Selenium concepts entirely — this
-layer is for a human, not for the suite.
+A numbered, terse, browser-driven sequence. Every step is one observable action or one expected observation. Skip automation concepts entirely (no
+driver/locator/adapter jargon) — this layer is for a human, not for the suite.
 
 What every step needs:
 
@@ -69,7 +69,7 @@ values, so the guide stays in sync if those ever change.
 ## Layer 2 — hypothesis-confirmation paths
 
 Add this layer only when the initial observation needs disambiguation — symptoms like "the page looks stale", "something didn't redirect", "the cookie
-behaviour is unclear". The user has an initial impression; the layer gives them the tools to firm it up without writing a Selenium probe.
+behaviour is unclear". The user has an initial impression; the layer gives them the tools to firm it up without writing an automated probe.
 
 The confirmation tools, in order of cost (cheapest first):
 
@@ -177,7 +177,7 @@ Use this exact template for the assembled guide:
 ## Cross-references
 
 - Documented in: the gap inventory <entry-ref>, the FRD §<ref> (if applicable).
-- Related Selenium test: `<test name>` in `<scenario file>`.
+- Related automated test: `<test name>` in `<scenario file>`.
 - Related probe: `<probe file>` (deleted; see `write-a-probe`).
 ```
 
@@ -218,7 +218,7 @@ That's the artifact. It went into the GAPS entry and stayed there.
 ## When to run this skill
 
 - The user asks: "write up the manual repro for X", "how do I check this by hand?", "give me a recipe to share with the team".
-- After a Selenium probe (`write-a-probe`) confirms a finding — produce the human-runnable companion so the finding is verifiable without running
+- After an automated probe (`write-a-probe`) confirms a finding — produce the human-runnable companion so the finding is verifiable without running
   Python.
 - After `review-suite-stability` surfaces a flake the user wants to chase manually.
 - When adding an entry to the gap inventory — the recipe block lives there for future readers.
@@ -227,7 +227,7 @@ That's the artifact. It went into the GAPS entry and stayed there.
 
 - It does not run the reproduction itself — it produces the document; the user runs it.
 - It does not perform the empirical verification (that's `empiricism` and the Layer 2 confirmation tools).
-- It does not write a Selenium test (that's a separate authoring step; see `empiricism` + the scenario file structure rules).
+- It does not write an automated test (that's a separate authoring step; see `empiricism` + the scenario file structure rules).
 - It does not include attack-shape inputs in any step — see `CLAUDE.md` → "Security testing is functional and static — never active". A manual recipe
   is fine for functional behaviour and security-relevant findings observable through the normal UI; it never asks the user to type a SQL injection
   string into a form.

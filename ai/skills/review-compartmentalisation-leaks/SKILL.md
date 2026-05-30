@@ -67,15 +67,20 @@ Any username / password / token literal outside `src/constants/credentials.py`.
 
 ### 3. Selector leak (POM internals leaking to scenarios / connectors)
 
-Any Selenium locator tuple (`(By.X, "...")`) outside a POM file.
+Any adapter locator outside a POM file — Selenium `(By.X, "...")` tuples or Playwright selector strings/locators.
 
 - **Canonical home**: `src/pages/**/*.py` only. Selectors are POM-internal.
-- **Leak shape**: `(By.ID, "...")`, `(By.CSS_SELECTOR, "...")`, `(By.XPATH, "...")` outside `src/pages/`. Also: raw selector strings (`"#submit"`,
-  `"//button[contains(...)]"`) appearing in scenario / connector files where they're being passed to `find_element` directly.
+- **Leak shape (Selenium)**: `(By.ID, "...")`, `(By.CSS_SELECTOR, "...")`, `(By.XPATH, "...")` outside `src/pages/`. Also raw selector strings
+  (`"#submit"`, `"//button[contains(...)]"`) passed to `find_element` directly in scenario / connector files.
+- **Leak shape (Playwright)**: selector strings or `page.locator(...)` / `get_by_*(...)` / `driver.submit(lambda page: page.locator(...))` outside
+  `src/pages/`.
 - **Detection**:
   ```bash
+  # Selenium
   grep -rn "By\.ID\|By\.CSS_SELECTOR\|By\.XPATH\|By\.NAME\|By\.CLASS_NAME" src --include="*.py" | grep -v "src/pages/"
   grep -rn "find_element\|find_elements" src --include="*.py" | grep -v "src/pages/"
+  # Playwright
+  grep -rn "page\.locator\|get_by_\|\.submit(lambda" src --include="*.py" | grep -v "src/pages/"
   ```
 - **Recommended move**: introduce a POM method exposing the operation (`page.click_submit()`), call that from the scenario / connector. If the
   selector lives in a component, route through the component (e.g. `Sidebar`).
@@ -85,10 +90,11 @@ Any Selenium locator tuple (`(By.X, "...")`) outside a POM file.
 Numeric literals representing timeouts, retry budgets, polling intervals, or limits — outside a named constant.
 
 - **Canonical home**: `src/constants/` (the appropriate file by domain — `transient_errors.py` for retry, a new module if needed).
-- **Leak shape**: `time.sleep(2)`, `WebDriverWait(driver, 15)`, `range(10)` (when 10 is a retry budget), `if attempts > 3:` inline.
+- **Leak shape**: `time.sleep(2)`, a bare timeout literal (`WebDriverWait(driver, 15)` / `timeout=15000`), `range(10)` (when 10 is a retry budget),
+  `if attempts > 3:` inline.
 - **Detection**:
   ```bash
-  grep -rn "time\.sleep\|WebDriverWait(.*,\s*[0-9]" src --include="*.py" | grep -v constants/
+  grep -rn "time\.sleep\|WebDriverWait(.*,\s*[0-9]\|timeout=[0-9]" src --include="*.py" | grep -v constants/
   ```
   Manual inspection needed beyond grep — magic numbers are context-sensitive.
 - **Recommended move**: name the constant in `src/constants/` with a comment on its _why_ (matches the project's commenting discipline — only WHY,

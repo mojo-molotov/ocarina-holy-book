@@ -93,15 +93,15 @@ Do not edit. Do not auto-remove. Do not propose a sweeping clean-up commit. Hand
 Any `# type: ignore` on a line that references one of these is **High**. Match by substring (a tokenised match is more precise but substring is good
 enough as a first pass; the false-positive cost is one line of review).
 
-| Category       | Symbols                                                                                                                                                                     |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| DSL            | `drive_page`, `act`, `Scenario`, `ChainRunner`                                                                                                                              |
-| Test hierarchy | `create_selenium_test`, `TestSuite`, `TestCampaign`, `TestCycle`, `has_test_cycle_failed`                                                                                   |
-| Driver / pool  | `create_selenium_driver`, `create_selenium_drivers_pool`, `WebDriversPool`, `SeleniumWebDriversPool`, `DriverBuilder`, `BuiltSeleniumWebDriver`, `BuiltWebDriver`           |
-| POM base       | `POMBase`, `SeleniumTitleMixin`, `SeleniumBackAndForwardNavigationMixin`                                                                                                    |
-| CLI / launcher | `SeleniumCliStoreSingleton`, `create_selenium_auto_cli_store`, `bootstrap`, `run_plugins`                                                                                   |
-| Types          | `ILogger`, `Effect`, `Thunk`, `SupportedSeleniumBrowser`, `SupportedLogger`, `TestName`, `TestScenario`, `TestScenarioFragment`, `SeleniumTestScenario`, `TestCycleResults` |
-| Reports        | `pretty_print_results`, `generate_docx_proof`, `generate_json_results`, `timing`                                                                                            |
+| Category       | Symbols                                                                                                                                                                                                                 |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DSL            | `drive_page`, `act`, `Scenario`, `ChainRunner`                                                                                                                                                                          |
+| Test hierarchy | `create_selenium_test` / `create_playwright_test`, `create_playwright_watcher`, `TestSuite`, `TestCampaign`, `TestCycle`, `has_test_cycle_failed`                                                                       |
+| Driver / pool  | `create_selenium_driver`, `create_selenium_drivers_pool`, `create_playwright_drivers_pool`, `PlaywrightDriver`, `WebDriversPool`, `SeleniumWebDriversPool`, `DriverBuilder`, `BuiltSeleniumWebDriver`, `BuiltWebDriver` |
+| POM base       | `POMBase`, `SeleniumTitleMixin`, `SeleniumBackAndForwardNavigationMixin`, `PlaywrightTitleMixin`                                                                                                                        |
+| CLI / launcher | `SeleniumCliStoreSingleton` / `PlaywrightCliStoreSingleton`, `create_selenium_auto_cli_store` / `create_playwright_auto_cli_store`, `bootstrap`, `run_plugins`                                                          |
+| Types          | `ILogger`, `Effect`, `Thunk`, `SupportedSeleniumBrowser`, `SupportedLogger`, `TestName`, `TestScenario`, `TestScenarioFragment`, `SeleniumTestScenario` / `PlaywrightTestScenario`, `TestCycleResults`                  |
+| Reports        | `pretty_print_results`, `generate_docx_proof`, `generate_json_results`, `timing`                                                                                                                                        |
 
 If the project adopts a new Ocarina symbol that becomes commonly used here, add it. Treat additions as a dataset change — surface the proposed
 addition to the user before editing this list (see `CLAUDE.md` → "Datasets are authoring decisions").

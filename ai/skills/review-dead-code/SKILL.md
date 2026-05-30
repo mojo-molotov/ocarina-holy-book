@@ -97,12 +97,13 @@ A page object class in `src/pages/` that no scenario constructs and no other POM
 
 ### 4. Dead scenario
 
-A scenario file whose `create_selenium_test(...)` outputs aren't unpacked into any `TestSuite.tests=[...]`.
+A scenario file whose `create_*_test(...)` outputs (`create_selenium_test` / `create_playwright_test`) aren't unpacked into any
+`TestSuite.tests=[...]`.
 
 - **Detection**:
   ```bash
   # Tests created
-  grep -rnE "= create_selenium_test\(" src/tests/scenarios --include="*.py"
+  grep -rnE "= create_(selenium|playwright)_test\(" src/tests/scenarios --include="*.py"
   # Where they're collected
   grep -rn "tests=\[" src/tests --include="*.py"
   ```
@@ -130,8 +131,8 @@ A scenario fragment in `src/tests/scenarios/_fragments/` (or equivalent) not lis
 
 A name in `src/constants/`, `src/.../datasets/`, or any utility module that nothing imports.
 
-- **Detection** (Python): `vulture src/` flags unused names quickly; cross-check each hit (vulture has known false positives on Selenium / dynamic
-  dispatch). Without `vulture`, fall back to:
+- **Detection** (Python): `vulture src/` flags unused names quickly; cross-check each hit (vulture has known false positives on Selenium/Playwright
+  driver objects and dynamic dispatch). Without `vulture`, fall back to:
   ```bash
   grep -rnE "^[A-Z_]+ = " src/constants --include="*.py"
   # For each <NAME>, look for imports / references
@@ -154,8 +155,8 @@ For each kind:
 - Capture each true positive as `(file:line, kind, symbol, dependency tree)`.
 
 The dependency tree for a symbol is the set of project-internal names it transitively imports / calls — anything that, if the symbol moves to
-`incubator/`, must move with it to keep the moved file standalone. External dependencies (stdlib, `selenium`, `ocarina`, `requests`) do **not** belong
-in the tree — they remain importable from `incubator/` exactly as they were from `src/`.
+`incubator/`, must move with it to keep the moved file standalone. External dependencies (stdlib, `selenium` / `playwright`, `ocarina`, `requests`) do
+**not** belong in the tree — they remain importable from `incubator/` exactly as they were from `src/`.
 
 Build the tree by walking imports (AST or `grep` on `from src.* import` / `import src.*`) one hop at a time, recording each project-internal name the
 symbol pulls in, then recursing into each of those names' own dependencies. Stop at:

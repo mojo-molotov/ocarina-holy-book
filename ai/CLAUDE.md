@@ -1,18 +1,42 @@
 # Ocarina Test Suite — Claude Context
 
 Orientation for Claude (and any contributor) working in an Ocarina-based browser test suite. The hard couplings here are **Ocarina itself**, the
-browsers it drives (Firefox, Chrome, Edge, Safari), and the host OSes (macOS, Windows, Linux). Everything else — the SUT's backend stack, the spec
-format, the project layout — is interoperable and you should resist baking assumptions about it into rules.
+browsers it drives (Firefox/Chromium, Chrome, Edge, Safari/WebKit), and the host OSes (macOS, Windows, Linux). Everything else — the SUT's backend
+stack, the spec format, the project layout, **and the driver adapter (Selenium or Playwright)** — is interoperable and you should resist baking
+assumptions about it into rules. This file is the framework-neutral core; the adapter-specific mechanics live in the appendices (see "Driver
+adapter").
 
 References:
 
 - Framework source: <https://github.com/mojo-molotov/ocarina>
 - The Holy Book (docs): <https://github.com/mojo-molotov/ocarina-holy-book>
-- Worked example, minimal: <https://github.com/mojo-molotov/ocarina-example>
-- Worked example with gap inventory and AI proof: <https://github.com/mojo-molotov/ocarina-with-ai-example>
+- Worked example, minimal (Selenium): <https://github.com/mojo-molotov/ocarina-example>
+- Worked example with gap inventory and AI proof (Selenium): <https://github.com/mojo-molotov/ocarina-with-ai-example>
+- Worked example on the Playwright adapter: <https://github.com/mojo-molotov/ocarina-with-playwright>
 
-When a rule below cites a worked example, the link points into one of those two example repos. When a rule cites the framework itself, it points at
+When a rule below cites a worked example, the link points into one of those example repos. When a rule cites the framework itself, it points at
 `mojo-molotov/ocarina`. When a rule cites the docs, it points at the Holy Book.
+
+## Driver adapter
+
+Ocarina is **adapter-shaped**. The framework's hard couplings are the test hierarchy (`Test → TestSuite → TestCampaign → TestCycle`), the scenario DSL
+(`drive_page` / `act` / `match_page`), the typed plumbing around them, the reporting plugins, and `POMBase` — all adapter-neutral. _How_ it drives the
+browser is delegated to an adapter. Two adapters ship with Ocarina (Playwright since **v1.1.3**):
+
+- **Selenium** — `create_selenium_test`, `WebDriverWait`, `By.*` locators, `--driver-path` + a real chromedriver. Worked examples: `ocarina-example`,
+  `ocarina-with-ai-example`.
+- **Playwright** — `create_playwright_test`, string locators with auto-wait, `driver.submit(lambda page: …)` thread-marshalling,
+  `--browser chromium|firefox|webkit` (no driver path). Worked example: `ocarina-with-playwright`.
+
+**The adapter is a setup decision, not an assumption.** `setup-environment` chooses it and records it on the adapter line of `CLAUDE.local.md`. This
+core file names the neutral surface ("the adapter's `create_*_test`", "the adapter's CLI store", "wait for the element to be ready"); the concrete
+mechanics — the wait API, the selector form, the submission primitives, navigation, the CLI flags — live in the matching appendix:
+
+- **`CLAUDE.selenium.md`** — Selenium realisation of every driver-level rule below.
+- **`CLAUDE.playwright.md`** — Playwright realisation of the same.
+
+When a rule below says "→ see the adapter appendix", open the one for the adapter on your `CLAUDE.local.md` line. A principle here and a mechanic in
+an appendix never disagree; the appendix is the realisation, not a fork.
 
 ### The SUT in the worked examples
 
@@ -57,21 +81,25 @@ visible — and to make the hacky shortcut uncomfortable.
 
 ## CLAUDE.local.md template
 
-`CLAUDE.local.md` is gitignored and stores per-machine paths. If it's missing, create it with the template below — and ask for the paths, don't guess.
-`find ~/ -name chromedriver -type f 2>/dev/null` locates chromedriver on Unix-likes; Ocarina/example clones have no predictable location.
+`CLAUDE.local.md` is gitignored and stores per-machine paths and the **driver-adapter choice**. If it's missing, create it with the template below —
+and ask for the paths, don't guess. The adapter line is load-bearing: every driver path below it is conditional on it (Selenium needs a chromedriver
+path; Playwright needs none — it manages its own browsers). The exact per-machine fields each adapter consumes are in its appendix
+(`CLAUDE.selenium.md` / `CLAUDE.playwright.md`) → "`CLAUDE.local.md`".
 
 ```markdown
 # Local machine config
 
-## chromedriver
+## Driver adapter
 
-Path: `/path/to/chromedriver`
+- Adapter: `selenium` | `playwright` (the choice from setup-environment)
+- Adapter-specific paths (see the adapter appendix): chromedriver path for Selenium; nothing for Playwright.
 
 ## Ocarina source repos (git clones)
 
 - **ocarina**: `/path/to/ocarina`
 - **ocarina-example**: `/path/to/ocarina-example`
 - **ocarina-with-ai-example**: `/path/to/ocarina-with-ai-example`
+- **ocarina-with-playwright**: `/path/to/ocarina-with-playwright`
 - **ocarina-holy-book**: `/path/to/ocarina-holy-book`
 ```
 
@@ -107,11 +135,11 @@ The `[COPY N]` annotations are not noise — they confirm the saturation framewo
 
 ```bash
 python -u src/main.py \
-  --driver-path <path/to/chromedriver> \
-  --browser chrome \
+  --browser <adapter browser> \
   --workers 3 \
   --wait-timeout 10 \
   --logger terminal+file
+  # + the adapter's driver flags — Selenium: --driver-path; Playwright: --video-dir / --trace-dir. See the adapter appendix.
 ```
 
 - **Never `--workers 1`.** Single-worker runs mask concurrency failures and diverge from CI. Match the workers count to your CI matrix; CI is the
@@ -120,18 +148,19 @@ python -u src/main.py \
   `sys.path[0]` so intra-suite imports read `from constants.urls import …`, never `from src.constants.urls import …`. Don't package `src`. CI uses the
   script form.
 
-CLI flags (all optional with defaults):
+Neutral CLI flags (all optional with defaults; every adapter exposes them):
 
-| Flag                             | Purpose                                                           |
-| -------------------------------- | ----------------------------------------------------------------- |
-| `--browser`                      | `chrome` / `firefox` always; `edge` on Windows; `safari` on macOS |
-| `--driver-path`                  | Path to the matching driver binary                                |
-| `--profile-path`                 | Browser profile directory to start from                           |
-| `--not-headless`                 | Show the browser UI                                               |
-| `--workers N`                    | Parallelism                                                       |
-| `--wait-timeout`                 | Per-operation wait, seconds                                       |
-| `--only ID …` / `--exclude ID …` | Filter tests by id                                                |
-| `--logger`                       | `mute` / `terminal` / `file` / `terminal+file`                    |
+| Flag                             | Purpose                                        |
+| -------------------------------- | ---------------------------------------------- |
+| `--profile-path`                 | Browser profile directory to start from        |
+| `--not-headless`                 | Show the browser UI                            |
+| `--workers N`                    | Parallelism                                    |
+| `--wait-timeout`                 | Per-operation wait, seconds                    |
+| `--only ID …` / `--exclude ID …` | Filter tests by id                             |
+| `--logger`                       | `mute` / `terminal` / `file` / `terminal+file` |
+
+`--browser` is shared but its **values are adapter-specific** (`chrome|firefox|edge|safari` vs `chromium|firefox|webkit`); the driver flags
+(`--driver-path` vs `--video-dir`/`--trace-dir`) are adapter-specific entirely. → see the adapter appendix.
 
 Use `--logger terminal+file` when reports must be generated (the DOCX generator reads the log tree).
 
@@ -185,8 +214,8 @@ Reusable pre/post-conditions live under `src/tests/scenarios/_fragments/`. Wire 
 - `pre_test_scenarios_fragments=[fragment_fn, ...]` — before the main scenario chain.
 - `post_test_scenarios_fragments=[fragment_fn, ...]` — after.
 
-A fragment has the scenario shape `(driver: WebDriver, logger: ILogger) -> list[ChainRunner]`. The framework concatenates pre + scenario + post into
-one `ChainRunner` sequence.
+A fragment has the scenario shape `(driver, logger: ILogger) -> list[ChainRunner]` — `driver` is the adapter's driver type (`WebDriver` for Selenium,
+`PlaywrightDriver` for Playwright). The framework concatenates pre + scenario + post into one `ChainRunner` sequence.
 
 ### When to extract a fragment
 
@@ -204,8 +233,10 @@ in <https://github.com/mojo-molotov/ocarina-example>):
 
 1. **Dataset** — frozen dataclass + a `Sequence[Case]`. A separate module under `<feature>/datasets/<name>.py` when reused; inline in the scenario
    file when tiny.
-2. **Scenario factory** — `_create_<name>_scenario(case: Case) -> SeleniumTestScenario` returns the closure binding the case into the chain.
-3. **Test list comprehension** — `<feature>_tests = [create_selenium_test(name=…, test_scenario=_create_…(case)) for case in cases]`.
+2. **Scenario factory** — `_create_<name>_scenario(case: Case)` returns the closure binding the case into the chain (return type is the adapter's test
+   scenario — `SeleniumTestScenario` / `PlaywrightTestScenario`).
+3. **Test list comprehension** — `<feature>_tests = [create_<adapter>_test(name=…, test_scenario=_create_…(case)) for case in cases]` (the adapter's
+   `create_*_test` — `create_selenium_test` / `create_playwright_test`).
 4. **Suite wiring** — unpack: `tests=[*<feature>_tests, …]`.
 
 ### When to use it
@@ -218,20 +249,13 @@ in <https://github.com/mojo-molotov/ocarina-example>):
   fails at step 1 with `[Errno 2] No such file or directory`. Use `-` (e.g. `back-forward`, not `back/forward`).
 - **Failure cases share the suite, not the structure.** Two failure-mode tests can live in the same suite without sharing a flow shape.
 
-## `SeleniumBackAndForwardNavigationMixin` — shared back/forward navigation
+## Shared back/forward navigation — don't hand-roll the dance per POM
 
-Any POM needing back-button navigation mixes in the framework's
-`src/lib/ext/ocarina/adapters/selenium/browser_navigation.SeleniumBackAndForwardNavigationMixin` rather than duplicating the `pre_url` capture +
-`driver.back()` / `driver.forward()` + `ec.url_changes` pattern. Place before `SeleniumTitleMixin` in the MRO:
-
-```python
-class MyPage(SeleniumBackAndForwardNavigationMixin, SeleniumTitleMixin, POMBase):
-    ...
-```
-
-`navigate_back()` captures the current URL, calls `driver.back()`, waits with `ec.url_changes(pre_url)`. `navigate_forward()` does the same with
-`driver.forward()` but silently swallows `TimeoutException` — a server-side 302 during a prior `back()` may collapse the forward entry; a no-op
-forward is not a failure. Both return `Self`.
+A POM needing back-button navigation reuses a single shared implementation of the capture-URL + back/forward + wait-for-URL-change pattern rather than
+duplicating it. The principle is constant: don't re-implement the `back()` → wait-for-change dance in each POM. The shape is adapter-specific → see
+the adapter appendix: Selenium ships `SeleniumBackAndForwardNavigationMixin`; on Playwright, drive `page.go_back()` / `page.go_forward()` through
+`driver.submit` (check whether a navigation mixin ships before hand-rolling — `understand-ocarina`; if none, extract a shared helper rather than
+copying the dance).
 
 ## Conventions
 
@@ -241,7 +265,8 @@ forward is not a failure. Both return `Self`.
 - **URLs go in `src/constants/urls.py` as full URLs.** Never inline a URL in a scenario, page, or connector. POMs take a single
   `url: str = <DEFAULT_URL>` parameter, defaulted to the constant. Scenarios construct pages with just `Page(driver=driver)` and pass `url=...` only
   to override. Same rule for shared fixture data (credentials, hardcoded names) — extract to `src/constants/<topic>.py`.
-- **Opinionated CLI keys.** Never rename keys read from `SeleniumCliStoreSingleton` (it's `"workers"`, not `"max_workers"`).
+- **Opinionated CLI keys.** Never rename keys read from the adapter's CLI store singleton (`SeleniumCliStoreSingleton` /
+  `PlaywrightCliStoreSingleton`) — it's `"workers"`, not `"max_workers"`. The key names are Ocarina's convention and are shared across adapters.
 - **Log factories, never inline lambdas.** `.failure(log_error("msg"))` / `.success(log_success("msg"))`.
 - **`TYPE_CHECKING` guard.** All type-only imports live inside `if TYPE_CHECKING:`, after all runtime imports.
 - **`transient_errors`.** Add types here only when they should auto-retry. Deterministic findings (e.g. a `BackForwardCacheExposureError`) never go
@@ -342,9 +367,9 @@ Active security testing belongs in Burp / ZAP / sqlmap / a dedicated engagement.
 ### Throwaway probes — when source-reading and the suite don't agree
 
 A **probe** is a one-off script that drives the browser (or raw HTTP) through a suspect flow and prints concrete runtime state (URL, page title, form
-HTML, hidden inputs, cookies, inter-request timings, network events). It **bypasses the Ocarina workflow entirely** — no `create_selenium_test`, no
-suites, no campaigns, no assertions. Probes live in a gitignored directory, are **never committed or pushed**, and are deleted once the answer lands
-in a durable artifact.
+HTML, hidden inputs, cookies, inter-request timings, network events). It **bypasses the Ocarina workflow entirely** — no `create_*_test`, no suites,
+no campaigns, no assertions. Probes live in a gitignored directory, are **never committed or pushed**, and are deleted once the answer lands in a
+durable artifact.
 
 Reach for one when the framework's error surface doesn't show enough — a bare `TimeoutException` or `AssertionError` you can't act on. The trigger is
 the visibility gap, not where you are in the test lifecycle:
@@ -430,11 +455,12 @@ browser only — the decisive question is not "why is the automation unhappy?" b
 same wall?**
 
 - **Yes** → real user-facing defect. The test is doing its job.
-- **No — only the synthetic automation path is affected** (the driver's synthetic `.click()` does nothing, but a fresh re-find / keyboard submit /
-  ActionChains / CDP trusted click all work) → tool artifact. Fix in the test/POM, not in a bug report against the app.
+- **No — only the automation path is affected** (the tool can't reach the element a real user reaches) → tool artifact. Fix in the test/POM, not in a
+  bug report against the app.
 
-Answer it empirically: escalate from synthetic toward real — synthetic `.click()` → fresh re-find → keyboard submit → ActionChains move-and-click →
-CDP trusted input event — and watch where it starts working. The boundary tells you the side of the line. Don't conclude by reasoning.
+Answer it empirically, not by reasoning — but _how_ you escalate from synthetic toward real depends on the adapter. Selenium has a real
+synthetic→trusted gap to walk (`.click()` → re-find → keyboard → ActionChains → CDP); Playwright dispatches trusted input by default, so the question
+collapses to actionability. → see the adapter appendix ("Functional testing simulates a real human" / "Trusted input by default").
 
 ### Confirming a back-forward-cache exposure — the back-then-reload check
 
@@ -442,18 +468,19 @@ A page served from the browser's back-forward cache (BFcache) is restored from a
 control (logout redirect, session check, auth gate) never runs. After `driver.back()` lands on a page that should be inaccessible, the URL alone
 cannot tell you whether the server _allowed_ it or the browser served a _cache_.
 
-**`back()` → `refresh()`.** A reload always reaches the server, unlike back-navigation. If `back()` did not redirect away but `refresh()` does,
-`back()` served a BFcache snapshot — the server's invalidation is intact; only the cache layer exposed the stale view. If `refresh()` also fails to
-redirect, the server itself isn't invalidating — a worse, separate finding. Two outcomes, two distinct failure messages.
+**`back()` → reload.** A reload always reaches the server, unlike back-navigation. If `back()` did not redirect away but a reload does, `back()`
+served a BFcache snapshot — the server's invalidation is intact; only the cache layer exposed the stale view. If the reload also fails to redirect,
+the server itself isn't invalidating — a worse, separate finding. Two outcomes, two distinct failure messages. (The reload instrument is the adapter's
+server-reaching reload — Selenium `driver.refresh()`, Playwright `page.reload()` → see the adapter appendix.)
 
-This is the one place `driver.refresh()` is legitimate. The "load-bearing SUT behaviour" rule forbids `refresh()` _inserted to paper over_ a flaky
-test ("reload to bypass cache and hope it passes"); here `refresh()` **is the instrument of the assertion** — the thing that separates the two causes.
+This is the one place a programmatic reload is legitimate. The "load-bearing SUT behaviour" rule forbids a reload _inserted to paper over_ a flaky
+test ("reload to bypass cache and hope it passes"); here the reload **is the instrument of the assertion** — the thing that separates the two causes.
 Intent is the dividing line.
 
 **A confirmed BFcache exposure raises a dedicated, non-transient exception** (e.g. `BackForwardCacheExposureError` in `src/lib/errors.py`). Never a
-bare `AssertionError`; never a Selenium `WebDriverException`. The finding is deterministic and must never land in `transient_errors` (and so must
-never surface as an auto-retried `TimeoutException`). Catch Selenium's `TimeoutException` from the reload-wait and re-raise as the dedicated type. The
-exception name in the report _is_ the diagnosis.
+bare `AssertionError`; never a raw driver/`WebDriverException`. The finding is deterministic and must never land in `transient_errors` (and so must
+never surface as an auto-retried timeout). Catch the adapter's timeout from the reload-wait and re-raise as the dedicated type. The exception name in
+the report _is_ the diagnosis.
 
 BFcache eligibility varies by browser and version — some browsers admit even `no-store` pages to BFcache; others honour `no-store` and re-request.
 That divergence is the matrix's job to surface. In `ocarina-with-ai-example`, `HistoryPage.verify_back_button_did_not_restore_view` is the worked
@@ -480,89 +507,60 @@ Post-fragments: (none)
 """
 ```
 
-**All `create_selenium_test()` at the bottom.** When a file declares more than one test, group all scenario-builder functions first and all
-`create_selenium_test(...)` assignments at the bottom in one block. Never interleave scenario → test → scenario → test. A reader should be able to
-glance at the bottom and see the file's public surface — names, fragments, wiring — without scanning every scenario body.
+**All `create_*_test()` at the bottom.** When a file declares more than one test, group all scenario-builder functions first and all the adapter's
+`create_*_test(...)` assignments (`create_selenium_test` / `create_playwright_test`) at the bottom in one block. Never interleave scenario → test →
+scenario → test. A reader should be able to glance at the bottom and see the file's public surface — names, fragments, wiring — without scanning every
+scenario body.
 
 ```python
 def _scenario_a(driver, logger): ...
 def _scenario_b(driver, logger): ...
 def _scenario_c(driver, logger): ...
 
-test_a = create_selenium_test(name="...", test_scenario=..., pre_test_scenarios_fragments=[...])
-test_b = create_selenium_test(name="...", test_scenario=..., pre_test_scenarios_fragments=[...])
-test_c = create_selenium_test(name="...", test_scenario=..., pre_test_scenarios_fragments=[...])
+# create_*_test = the adapter's test factory (create_selenium_test / create_playwright_test)
+test_a = create_test(name="...", test_scenario=..., pre_test_scenarios_fragments=[...])
+test_b = create_test(name="...", test_scenario=..., pre_test_scenarios_fragments=[...])
+test_c = create_test(name="...", test_scenario=..., pre_test_scenarios_fragments=[...])
 ```
 
 ### POM selectors live at the top of the class
 
-All locator tuples (`_xxx = (By.ID, "...")`, etc.) belong in one block at the top of the POM class, immediately after the docstring and before
-`__init__`. No locators declared further down next to the method that uses them. A POM's selectors are its contract with the DOM; one place means a
-reader updating an element ID, auditing for fragility, or grepping finds them instantly.
+All of a POM's selectors belong in **one block** at the top of the class — immediately after the docstring (Selenium `By.*` tuples as class
+attributes) or at the top of `__init__` (Playwright string locators, which need the driver to build). No locators declared further down next to the
+method that uses them. A POM's selectors are its contract with the DOM; one place means a reader updating an element ID, auditing for fragility, or
+grepping finds them instantly. The selector _form_ is adapter-specific → see the adapter appendix.
 
-```python
-@final
-class HistoryPage(...):
-    """..."""
+### Always wait for an element to be ready — never read the DOM raw
 
-    _section = (By.ID, "history")
-    _records = (By.CSS_SELECTOR, ".panel.panel-info")
-    _empty_message = (By.XPATH, "//*[normalize-space()='No record.']")
-    _btn_go_homepage = (By.XPATH, "//a[normalize-space()='Go to Homepage']")
+The principle is adapter-independent: **never operate on an element snapshot taken before the element is ready.** A raw, un-waited read snapshots the
+DOM at call time and either misses or goes stale while the page is still rendering — intermittent and hard to reproduce. Every POM method that locates
+an element waits for the right readiness condition first (clickable to click/type, visible to read text, present to script against, gone to assert
+disappearance, URL-changed to assert a redirect).
 
-    def __init__(self, *, driver: WebDriver, url: str = HISTORY_URL) -> None:
-        ...
-```
+How you wait is the biggest adapter difference, so the mechanics live in the appendix:
 
-### Always use WebDriverWait — never raw find_element
+- **Selenium** — explicit `WebDriverWait` with the matching `expected_condition`; the CLI sets the implicit wait; `find_elements` plural after
+  `verify()` is the one exception. The full condition table is in `CLAUDE.selenium.md`.
+- **Playwright** — locators auto-wait per action with an explicit `timeout`; there is no implicit wait and no condition table, but a present-element
+  `wait_for(state="hidden")` can blow the whole budget — race the two outcomes. See `CLAUDE.playwright.md`.
 
-Raw `driver.find_element()` and `find_elements()` snapshot the DOM at call time. If the page is still rendering or running framework initialisation,
-the call either raises `NoSuchElementException` or returns a stale element — intermittent and hard to reproduce.
-
-**Every POM method that locates an element goes through `WebDriverWait`.** Pick the expected condition for the intended use:
-
-| Use case                                       | Pattern                                                                                                          |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Click a button, checkbox, link, or select      | `WebDriverWait.until(ec.element_to_be_clickable(locator))`                                                       |
-| Send keys to a text input                      | `WebDriverWait.until(ec.element_to_be_clickable(locator))`                                                       |
-| Pass element to `execute_script` (JS exec)     | `WebDriverWait.until(ec.presence_of_element_located(locator))`                                                   |
-| Read `.text` from a label or heading           | `WebDriverWait.until(ec.visibility_of_element_located(locator))`                                                 |
-| Wait for a page section to exist               | `WebDriverWait.until(ec.presence_of_element_located(locator))`                                                   |
-| Assert element transitions visible → invisible | `WebDriverWait.until(ec.invisibility_of_element_located(locator))`                                               |
-| Assert access-control redirect                 | `WebDriverWait.until(ec.url_changes(self._url))` — URL check, no DOM, no implicit wait                           |
-| Assert DOM absence on a fully-loaded section   | `driver.execute_script("return document.querySelectorAll('…').length")` — synchronous JS, bypasses implicit wait |
-
-**`invisibility_of_element_located` only works fast when the element _exists_ at navigation time and then disappears** (form closes after submit,
-spinner hides). When the element never existed (e.g. a section locator on the login page after redirect), Selenium 4 still fires the full implicit
-wait on each poll before raising `NoSuchElementException`. Use `ec.url_changes` for redirect checks and `execute_script` querySelectorAll for static
-DOM absence.
-
-**Implicit wait is set by the CLI (`--wait-timeout`).** Never read, modify, or work around it in POM/test code — it is framework infrastructure. No
-`driver.implicitly_wait(...)` outside the Ocarina driver builder.
-
-**Exception: `find_elements` (plural) for multi-element reads after `verify()`.** When `verify()` has confirmed the section is loaded, subsequent
-`find_elements` on child elements of that section is safe (CURA pages are server-rendered, so all children are present when the landmark element is;
-same principle for any server-rendered SUT).
-
-**Not an exception: "this page is static / already loaded / verify() ran first."** Don't skip `WebDriverWait` on reasoning about a specific page. The
-rule is a principle, not a per-page observation; "exceptions by reasoning" reintroduce the flakiness the rule exists to prevent. The two above are the
-only valid ones.
+**Not an exception: "this page is static / already loaded / verify() ran first."** Don't skip the wait on reasoning about a specific page. The rule is
+a principle, not a per-page observation; "exceptions by reasoning" reintroduce the flakiness the rule exists to prevent. Only the adapter-listed
+exceptions are valid.
 
 ### Widget-decorated inputs: drive the widget's API, don't fight its intercepts
 
 When a third-party widget decorates a plain `<input>` (datepicker, autocomplete, masked-input, rich-text editor, etc.), its own keyboard/click
-handlers intercept `send_keys`, click-outside, focus changes, and any Selenium-level interaction. Fighting those intercepts yields a fragile sequence
-(type → escape → tab → click around the overlay → hope).
+handlers intercept ordinary field interaction, click-outside, and focus changes. Fighting those intercepts yields a fragile sequence (type → escape →
+tab → click around the overlay → hope).
 
-The pattern: bypass the widget's user-facing interface and drive its scripting API. Set the underlying field value via JS, then call the widget's
-update/hide hook so the widget reflects the new state. The form sees a normal `<input value="...">` on submit; the widget doesn't fight you because
-you went through its own API.
+The pattern: bypass the widget's user-facing interface and drive its own affordance/scripting API, then make the widget reflect the new state. The
+form sees a normal `<input value="...">` on submit; the widget doesn't fight you because you went through its own API. **Corollary:** when a widget
+can render an overlay on top of nearby elements, fill the widget-backed field _last_, or close the widget before interacting with the next field.
 
-Corollary: when a widget can render an overlay on top of nearby elements, fill the widget-backed field _last_, or close the widget before interacting
-with the next field.
-
-Worked example: CURA's `txt_visit_date` Bootstrap 3 datepicker — see `AppointmentPage.enter_visit_date` in
-<https://github.com/mojo-molotov/ocarina-with-ai-example> for the JS + widget-API call.
+The concrete realisation (Selenium: set value via `execute_script` + the widget's hook; Playwright: locator affordances + idempotent toggles) → see
+the adapter appendix. Worked examples: CURA's `txt_visit_date` Bootstrap datepicker (`ocarina-with-ai-example`, Selenium); the OTP-checkbox label
+toggle in `DashboardLoginPage` (`ocarina-with-playwright`).
 
 ### Setup/teardown actions: prefer the URL, save the UI click for the test that owns it
 
@@ -637,19 +635,19 @@ confirm `E501` is resolved.
 
 ### Form submission paths — and verifying _why_ one "doesn't work"
 
-Three interactions submit a form, all legitimate browser behaviour and all valid dispatcher paths: `element.click()` on the submit `<button>`;
-`send_keys(Keys.ENTER)` on a focused text `<input>` (HTML implicit submission); `send_keys(Keys.ENTER)` on a focused `<button type="submit">`.
+Three interactions submit a form, all legitimate browser behaviour and all valid dispatcher paths: clicking the submit control; Enter on a focused
+text input (HTML implicit submission); Enter on a focused submit button. A POM exposes them as a random-choice dispatcher dict (see
+`review-submit-dispatchers`); which forms expose which dispatchers is per POM and belongs in the test-strategy doc. The concrete primitives are
+adapter-specific (`element.click()` / `send_keys(Keys.ENTER)` vs `locator.click()` / `locator.press("Enter")`) → see the adapter appendix.
 
 The one real caveat is a JS widget bound to an input that intercepts Enter — CURA's Bootstrap datepicker on `txt_visit_date` toggles its calendar on
 Enter instead of submitting, so Enter-on-that-input is not a submission path (Enter-on-the-submit-button still is). See "Widget-decorated inputs".
 
-**The hard-won part:** _"`send_keys(Keys.ENTER)` on a `<button>` is unreliable"_ was once treated as fact and propagated into three files in
-`ocarina-with-ai-example` — a **misdiagnosis**. The Chrome password-breach modal was silently swallowing _all_ input after a login (clicks included);
-"Enter didn't submit" got pinned on the interaction path rather than the modal. A probe later showed Enter-on-button submits 12/12 in a clean browser
-(with the password manager disabled per `create_drivers_pool.py`). Before you declare an interaction path unreliable, find out _why_ it failed; a
-swallowed input, an intercepting widget, and a genuinely-bad path all look identical from "the form didn't submit."
-
-Which forms expose which dispatchers is per POM and should be documented in the test-strategy doc.
+**The hard-won part:** _"Enter on a `<button>` is unreliable"_ was once treated as fact and propagated into three files in `ocarina-with-ai-example` —
+a **misdiagnosis**. The Chrome password-breach modal was silently swallowing _all_ input after a login (clicks included); "Enter didn't submit" got
+pinned on the interaction path rather than the modal. A probe later showed Enter-on-button submits 12/12 in a clean browser (with the password manager
+disabled per `create_drivers_pool.py`). Before you declare an interaction path unreliable, find out _why_ it failed; a swallowed input, an
+intercepting widget, and a genuinely-bad path all look identical from "the form didn't submit."
 
 ### No magic numbers — least of all in log messages
 

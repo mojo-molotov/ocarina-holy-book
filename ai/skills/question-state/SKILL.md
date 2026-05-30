@@ -73,7 +73,8 @@ Each run writes to `.reports/`, `.ocarina_logs_*`, `.screenshots/`, and creates 
   (`ls -t .reports/json/*.json | head -1`).
 - **`.reports/docx/<run-id>/`** — same, plus the DOCX proofs.
 - **`.ocarina_logs_*/`** — one directory per run.
-- **`.webdriver_profile_*/`** — chrome temp profiles. `DriverBuilder` should clean these on `dispose()`, but force-killed runs leave them.
+- **`.webdriver_profile_*/`** — Selenium chrome temp profiles. `DriverBuilder` should clean these on `dispose()`, but force-killed runs leave them.
+  (On Playwright, the equivalent leftovers are browser contexts and any `--video-dir` / `--trace-dir` artefacts.)
 
 Verification:
 

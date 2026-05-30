@@ -8,7 +8,7 @@ description:
   that names it**. So this skill always inspects for **fresh logs** first: it locates the latest `.ocarina_logs_*` root by mtime, then cross-references
   every picked screenshot against it — a shot named in the fresh logs belongs to the latest run and carries its test/step context; a shot with no
   fresh-log hit is from an older run or orphaned, and is surfaced as such. The screenshot directory isn't a fixed convention — it's determined by the
-  **test code's** screenshot handler factories (typically configured in `src/lib/ext/ocarina/adapters/selenium/logs.py` or similar, with calls like
+  **test code's** screenshot handler factories (typically configured in `src/lib/ext/ocarina/adapters/<adapter>/logs.py` — `selenium` or `playwright` — or similar, with calls like
   `create_log_success_and_take_screenshot(...)`). The skill **reads the screenshot factory wiring** to find the configured path, then falls back to a
   filesystem walk. Use whenever the user asks to see the latest screenshots, look at the fail burst from a recent run, inspect a passing test visually,
   or audit the report-quality after a screenshot-rule change.

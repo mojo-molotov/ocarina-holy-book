@@ -1,6 +1,6 @@
 ---
 name: write-a-probe
-description: Author a one-off **probe** — a throwaway Python script that drives the browser through a suspect flow with whichever instrument fits the question (Selenium, raw HTTP, Chrome DevTools Protocol, or Playwright for reactive SPAs) and prints concrete runtime state (URL, page title, rendered DOM, hidden inputs, cookies, XHR/fetch traffic, timing) so you can see what the SUT actually does before encoding it as a test or accepting a claim about it. Probes bypass Ocarina entirely (no `create_selenium_test`, no suites, no assertions), live in a gitignored directory (`<gitignored>/`), are never committed, and are deleted once the finding lands in a durable artifact (a test, a source-cited comment, the gap inventory, the FRD). Use whenever the user asks to probe a flow, verify a behaviour empirically, capture rendered HTML, observe a redirect chain, inspect SPA network calls, measure inter-request timing, confirm a deployment-vs-source discrepancy, or settle a "does the SUT actually do X?" question. The hard rule for any probe that **reproduces** a production interaction path: exercise the **exact** locator, screen, wait condition, and action the production code uses — never an "equivalent". Observation probes pick the best instrument for the concern.
+description: Author a one-off **probe** — a throwaway Python script that drives the browser through a suspect flow with whichever instrument fits the question (Selenium, raw HTTP, Chrome DevTools Protocol, or Playwright for reactive SPAs) and prints concrete runtime state (URL, page title, rendered DOM, hidden inputs, cookies, XHR/fetch traffic, timing) so you can see what the SUT actually does before encoding it as a test or accepting a claim about it. Probes bypass Ocarina entirely (no `create_*_test`, no suites, no assertions), live in a gitignored directory (`<gitignored>/`), are never committed, and are deleted once the finding lands in a durable artifact (a test, a source-cited comment, the gap inventory, the FRD). Use whenever the user asks to probe a flow, verify a behaviour empirically, capture rendered HTML, observe a redirect chain, inspect SPA network calls, measure inter-request timing, confirm a deployment-vs-source discrepancy, or settle a "does the SUT actually do X?" question. The hard rule for any probe that **reproduces** a production interaction path: exercise the **exact** locator, screen, wait condition, and action the production code uses — never an "equivalent". Observation probes pick the best instrument for the concern.
 ---
 
 # Write a probe — experiment on the app before formalising
@@ -21,18 +21,19 @@ not a probe action.
 
 ## Pick the tool for the question
 
-Selenium is the default — the production suite is Selenium, and any probe that **reproduces a production interaction path** must use it (the
-exact-target rule binds to the production engine). A probe that **observes** rather than reproduces is free to use whatever sees the answer most
-directly. Match the instrument to the concern:
+Any probe that **reproduces a production interaction path** must use the **suite's production adapter** — Selenium or Playwright, whichever the suite
+is wired on (the exact-target rule binds to the production engine; a Selenium reproduction of a Playwright path, or vice versa, proves nothing about
+prod). Check `CLAUDE.local.md`'s adapter line / grep the suite (`create_selenium_test` vs `create_playwright_test`). A probe that **observes** rather
+than reproduces is free to use whatever sees the answer most directly. Match the instrument to the concern:
 
-| The question is about…                                                         | Instrument                                                                   |
-| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| A production interaction path — does this `.click()` / `Keys.ENTER` step work? | **Selenium**, exact production locator + wait + action (Templates A / C / D) |
-| Server response — status, headers, `Set-Cookie`, the redirect chain            | **Raw HTTP** — `httpx` / `requests` / `curl -v` (Template E)                 |
-| Does element X render on a reactive SPA, and with what content                 | **Selenium + `WebDriverWait`** (mirror prod) or **Playwright** (Template F)  |
-| XHR/fetch traffic — order, payloads, timing, a client-side route change        | **CDP Network domain** or **Playwright** `page.on("response")` (Template F)  |
-| When an SPA page is actually settled                                           | **Playwright** `wait_for_load_state("networkidle")` or a content marker      |
-| JS console errors / uncaught exceptions during a flow                          | **CDP** Runtime/Log or **Playwright** `page.on("console" / "pageerror")`     |
+| The question is about…                                                   | Instrument                                                                                                         |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| A production interaction path — does this exact click / Enter step work? | **The production adapter** (Selenium: Templates A/C/D; Playwright: Template F), exact prod locator + wait + action |
+| Server response — status, headers, `Set-Cookie`, the redirect chain      | **Raw HTTP** — `httpx` / `requests` / `curl -v` (Template E)                                                       |
+| Does element X render on a reactive SPA, and with what content           | **Selenium + `WebDriverWait`** (mirror prod) or **Playwright** (Template F)                                        |
+| XHR/fetch traffic — order, payloads, timing, a client-side route change  | **CDP Network domain** or **Playwright** `page.on("response")` (Template F)                                        |
+| When an SPA page is actually settled                                     | **Playwright** `wait_for_load_state("networkidle")` or a content marker                                            |
+| JS console errors / uncaught exceptions during a flow                    | **CDP** Runtime/Log or **Playwright** `page.on("console" / "pageerror")`                                           |
 
 Selenium 4 itself speaks CDP (`driver.execute_cdp_cmd(...)`), so a Selenium interaction probe that also needs a header override or a quick network
 peek doesn't always need a second engine — but when network or timing observation is the _whole point_, Playwright is cleaner. Puppeteer covers the

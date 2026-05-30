@@ -18,10 +18,15 @@ narrows what the suite probes.
 
 The discipline (from `CLAUDE.md` → "Form submission paths"):
 
-- `element.click()` on the submit `<button>` — always legitimate.
-- `send_keys(Keys.ENTER)` on a focused text `<input>` — HTML implicit submission, legitimate **unless** a JS widget bound to that input intercepts
-  Enter (the SUT's Bootstrap datepicker on `txt_visit_date` is the example — Enter there toggles the calendar instead of submitting).
-- `send_keys(Keys.ENTER)` on a focused `<button type="submit">` — a focused button activates on Enter; legitimate.
+- Click the submit control — always legitimate.
+- Enter on a focused text input — HTML implicit submission, legitimate **unless** a JS widget bound to that input intercepts Enter (the SUT's
+  Bootstrap datepicker on `txt_visit_date` is the example — Enter there toggles the calendar instead of submitting).
+- Enter on a focused submit button — a focused button activates on Enter; legitimate.
+
+The **dispatcher pattern is adapter-neutral** (a `dict[str, Effect]` of submission paths, one chosen at random); only the primitives differ. The
+snippets below are the **Selenium** form (`WebDriverWait(...).click()` / `.send_keys(Keys.ENTER)`); on the **Playwright** adapter the same dispatcher
+holds lambdas of `self._driver.submit(lambda page: page.locator(sel).first.click())` / `.press("Enter")` (worked example: `DashboardLoginPage`'s
+`_login_*_action_dispatchers` in `ocarina-with-playwright`). Audit for the coverage, not the API.
 
 The audit surfaces gaps. **It never edits POMs.** A dispatcher is a deliberate API choice; the audit only makes the gap visible.
 

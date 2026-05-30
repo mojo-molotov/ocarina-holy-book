@@ -91,15 +91,15 @@ grep -rn "No appointment\." src/pages
 
 Build the affected-artifacts list:
 
-| Artifact class    | Where to look                                                                             |
-| ----------------- | ----------------------------------------------------------------------------------------- |
-| POM selectors     | `src/pages/**/*.py` — `_xxx = (By.…, "...")` lines                                        |
-| POM method bodies | `src/pages/**/*.py` — any `find_element` / `execute_script` mentioning the element        |
-| Connectors        | `src/lib/connectors/test_steps/**/*.py` — methods wrapping affected POM operations        |
-| Scenarios         | `src/tests/scenarios/**/*.py` — flows asserting against the changed surface               |
-| Datasets          | `src/tests/scenarios/**/datasets/**/*.py`, inline `*_cases` tuples                        |
-| Strategy doc      | Coverage tables, the suite/campaign tree, expected outcome categories, known-gaps section |
-| Gap inventory     | Entries citing the changed area                                                           |
+| Artifact class    | Where to look                                                                                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POM selectors     | `src/pages/**/*.py` — `_xxx = (By.…, "...")` lines                                                                                                      |
+| POM method bodies | `src/pages/**/*.py` — any element access mentioning it (Selenium `find_element` / `execute_script`; Playwright `page.locator(...)` via `driver.submit`) |
+| Connectors        | `src/lib/connectors/test_steps/**/*.py` — methods wrapping affected POM operations                                                                      |
+| Scenarios         | `src/tests/scenarios/**/*.py` — flows asserting against the changed surface                                                                             |
+| Datasets          | `src/tests/scenarios/**/datasets/**/*.py`, inline `*_cases` tuples                                                                                      |
+| Strategy doc      | Coverage tables, the suite/campaign tree, expected outcome categories, known-gaps section                                                               |
+| Gap inventory     | Entries citing the changed area                                                                                                                         |
 
 Classify each hit:
 

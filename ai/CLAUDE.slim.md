@@ -5,7 +5,9 @@ layout, hierarchy, naming conventions, CI workflow shape, PR template). Load thi
 content; load the full `CLAUDE.md` for onboarding, review tasks, anything that asks _"how is this project shaped?"_.
 
 When the slim file and the full file disagree, the full file wins — this is a condensation, not a fork. If a rule here feels incomplete, open the full
-file at the matching section name.
+file at the matching section name. **Driver-level mechanics (the wait API, selector form, submission primitives, navigation, CLI flags) are
+adapter-specific and live in `CLAUDE.selenium.md` / `CLAUDE.playwright.md`.** The rules below state the adapter-neutral principle; open the appendix
+for the adapter on your `CLAUDE.local.md` line for the concrete form.
 
 ## Philosophy
 
@@ -40,28 +42,26 @@ file at the matching section name.
   the test to work on **both**, never by removing it from one.
 - **Never `--workers 1`.** Single-worker runs mask concurrency failures and diverge from CI. Match CI's worker count.
 
-## WebDriver / POM discipline
+## Driver / POM discipline
 
-- **Always use `WebDriverWait` — never raw `find_element` / `find_elements`.** Pick the expected condition for the use:
-  - clickable target (button, input for keys) → `ec.element_to_be_clickable`
-  - read `.text` → `ec.visibility_of_element_located`
-  - JS exec or section existence → `ec.presence_of_element_located`
-  - visible → invisible transition → `ec.invisibility_of_element_located`
-  - access-control redirect → `ec.url_changes(self._url)`
-  - static DOM absence → `execute_script` querySelectorAll (bypasses implicit wait)
-- **Implicit wait is set by the CLI (`--wait-timeout`).** Never `driver.implicitly_wait(...)` in POM/test code.
-- **Exception (plural):** `find_elements` after `verify()` on server-rendered pages is safe.
+- **Always wait for an element to be ready — never read the DOM raw.** Adapter-neutral principle; the wait API is adapter-specific → appendix.
+  - **Selenium** → explicit `WebDriverWait` + expected condition (clickable / visible / present / invisible / `url_changes` / `execute_script`
+    querySelectorAll); implicit wait is CLI-set (never `driver.implicitly_wait(...)` in POM/test code); `find_elements` plural after `verify()` is the
+    one exception. Full table in `CLAUDE.selenium.md`.
+  - **Playwright** → locators auto-wait per action with an explicit `timeout`; no implicit wait, no condition table; race two outcomes rather than
+    blocking the whole budget on a present-element `wait_for(state="hidden")`. See `CLAUDE.playwright.md`.
 - **Not an exception:** "this page is static / already loaded" — don't reason your way past the rule.
-- **Widget-decorated inputs (datepicker, autocomplete, masked-input):** drive the widget's scripting API, don't fight its intercepts. Fill the
-  widget-backed field _last_ or close it before interacting with the next field.
-- **POM selectors live at the top of the class.** One block, immediately after the docstring, before `__init__`.
+- **Widget-decorated inputs (datepicker, autocomplete, masked-input):** drive the widget's own affordance/API, don't fight its intercepts. Fill the
+  widget-backed field _last_ or close it before the next field. (Concrete form → appendix.)
+- **POM selectors live at the top.** One block — Selenium `By.*` tuples at class top, Playwright string locators at the top of `__init__`.
 - **POM encapsulates page mechanics.** Don't expose multi-step UI (`open_nav` then `click_link`) to scenarios — merge into one POM method.
 
 ## Scenario / test discipline
 
 - **One scenario per file.** Exception: data-driven families (factory + `Sequence[Case]`).
 - **Top docstring gives the flow as arrows**, lists pre/post-fragments. Write `(none)` when empty.
-- **All `create_selenium_test()` at the bottom**, grouped. Never interleave scenario → test → scenario → test.
+- **All the adapter's `create_*_test()` at the bottom** (`create_selenium_test` / `create_playwright_test`), grouped. Never interleave scenario → test
+  → scenario → test.
 - **Log factories, never inline lambdas.** `.failure(log_error("msg"))` / `.success(log_success("msg"))`.
 - **Every `drive_page` produces at least one `log_and_screenshot`** on the act that shows the resulting state. Pre/post fragments use plain
   `log_success`. No manual failure shots (the `autoscreen_on_fail=True` burst handles it).
@@ -84,8 +84,9 @@ file at the matching section name.
 
 - **Functional testing simulates a real human.** When a test fails — especially on one browser only — ask: would a real person, doing exactly this in
   this browser, hit the same wall? Yes → real defect. No (only synthetic automation affected) → tool artifact, fix in test/POM.
-- **Escalate from synthetic toward real to find the boundary:** synthetic `.click()` → fresh re-find → keyboard submit → ActionChains move-and-click →
-  CDP trusted input event. The point at which it starts working tells you the side of the line. Don't conclude by reasoning.
+- **Escalate from synthetic toward real to find the boundary, empirically — _how_ is adapter-specific.** Selenium has a real gap to walk (`.click()` →
+  re-find → keyboard → ActionChains → CDP); Playwright dispatches trusted input by default, so it collapses to actionability. → appendix. Don't
+  conclude by reasoning.
 - **Probe sequence vs ritual workaround — the "dance" test.** If a user did exactly this sequence by hand, does each step have a reason from their
   perspective? Yes → probe sequence (keep, document the concern being probed). No → stop, read the source, fix the underlying assumption.
 
@@ -95,9 +96,9 @@ A page from the browser's back-forward cache is restored locally with no server 
 not redirect away but `refresh()` does, `back()` served a BFcache snapshot. If `refresh()` also fails to redirect, the server itself isn't
 invalidating — a worse, separate finding. Two outcomes, two distinct failure messages.
 
-This is the one place `driver.refresh()` is legitimate — it _is_ the instrument of the assertion. A confirmed BFcache exposure raises a dedicated
-non-transient exception (e.g. `BackForwardCacheExposureError`), never a bare `AssertionError` or Selenium `WebDriverException`. Must never land in
-`transient_errors`.
+This is the one place a programmatic reload is legitimate — it _is_ the instrument of the assertion (Selenium `driver.refresh()` / Playwright
+`page.reload()` → appendix). A confirmed BFcache exposure raises a dedicated non-transient exception (e.g. `BackForwardCacheExposureError`), never a
+bare `AssertionError` or a raw driver exception. Must never land in `transient_errors`.
 
 ## Setup / teardown
 

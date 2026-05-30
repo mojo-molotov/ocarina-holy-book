@@ -190,7 +190,7 @@ If the audit surfaces a flake, the next moves (none of which this skill does):
 3. Check whether the failing replay coincided with a Heroku cold start (the first request after dyno sleep is slow).
 4. If neither, write a probe per the `empiricism` skill.
 
-The fix path for a real flake is in CLAUDE.md → "Verify SUT behaviour" and "A probe must exercise the exact target" — not in this audit.
+The fix path for a real flake is in CLAUDE.md → "Verify SUT behaviour" and "Evidence is local — re-derive for every new question" — not in this audit.
 
 ## When to run this skill
 

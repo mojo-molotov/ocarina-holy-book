@@ -13,9 +13,13 @@ The shape is the canonical one — nine sections, generated from the wired suite
 <https://github.com/mojo-molotov/ocarina-with-ai-example>, produced empirically against that example; cite it as a reference, but every project
 supplies its own facts.
 
-**Generated, not invented.** Every row in §5 traces back to a real `create_selenium_test(...)`; every node in §6 comes from the wired cycle; every row
-in §8 comes from the FRD's known-bugs section + the project's gap inventory. No phantom tests, no aspirational coverage. If the suite doesn't exercise
+**Generated, not invented.** Every row in §5 traces back to a real `create_*_test(...)`; every node in §6 comes from the wired cycle; every row in §8
+comes from the FRD's known-bugs section + the project's gap inventory. No phantom tests, no aspirational coverage. If the suite doesn't exercise
 something, the doc doesn't claim it does.
+
+> **Adapter note.** This skill writes `create_selenium_test` throughout for concreteness, but it stands for **the suite's adapter test factory** —
+> `create_selenium_test` on the Selenium adapter, `create_playwright_test` on the Playwright adapter. The `rg` patterns below match both. Use the name
+> the suite actually uses.
 
 **Surface, don't apply.** The skill produces the doc as a proposal; the user reviews and signs off before commit.
 
@@ -180,10 +184,10 @@ Where:
 Enumerate every test, single and data-driven:
 
 ```bash
-# Single tests — test_<x> = create_selenium_test(name="...", ...)
-rg -nP 'create_selenium_test\(\s*\n?\s*name="([^"]+)"' src/tests/scenarios
+# Single tests — test_<x> = create_(selenium|playwright)_test(name="...", ...)
+rg -nP 'create_(selenium|playwright)_test\(\s*\n?\s*name="([^"]+)"' src/tests/scenarios
 # Data-driven families — list comprehension at the bottom of the scenario file
-rg -n '\[\s*create_selenium_test\(' src/tests/scenarios
+rg -n '\[\s*create_(selenium|playwright)_test\(' src/tests/scenarios
 # Datasets that drive them — Sequence[Case] tuples
 rg -n 'Sequence\[\w+Case\]' src/tests/scenarios/*/datasets
 ```

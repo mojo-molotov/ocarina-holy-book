@@ -23,7 +23,7 @@ git diff --stat main..HEAD
 
 # 2. Did any test get added / removed / renamed / moved? (The hard signal of a test-strategy PR.)
 git diff --name-status main..HEAD -- 'src/tests/scenarios/**' 'src/tests/suites/**' 'src/tests/campaigns/**' 'src/tests/cycles/**'
-git diff main..HEAD -- 'src/tests/scenarios/**' | grep -E "^[+-].*create_selenium_test\(name="
+git diff main..HEAD -- 'src/tests/scenarios/**' | grep -E "^[+-].*create_(selenium|playwright)_test\(name="
 
 # 3. Was a suite / campaign / cycle wired differently? (Same hard signal.)
 git diff main..HEAD -- 'src/tests/suites/**' 'src/tests/campaigns/**' 'src/tests/cycles/**'
@@ -40,7 +40,7 @@ Decision tree:
 
 | Signals                                                                                                                                                                                               | PR type           | Template                                                                                             |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
-| New / deleted / renamed scenario; added/removed `create_selenium_test(name=`; suite/campaign membership changed                                                                                       | **Test-strategy** | The existing `CLAUDE.md` "PR descriptions" section — `## Summary` + `## Test plan` + hierarchy slice |
+| New / deleted / renamed scenario; added/removed `create_*_test(name=` (selenium/playwright); suite/campaign membership changed                                                                        | **Test-strategy** | The existing `CLAUDE.md` "PR descriptions" section — `## Summary` + `## Test plan` + hierarchy slice |
 | None of the above; changes concentrate in `src/pages/`, `src/lib/`, `src/constants/`, or scenario _internals_ (screenshots, dispatcher additions, type fixes, mechanical renames) with no flow-change | **Refactor**      | The refactor template below                                                                          |
 | Small targeted diff fixing a specific defect; failing test or bug reference; no test-shape change                                                                                                     | **Bug fix**       | The bug-fix template below                                                                           |
 | Only `.md` files changed                                                                                                                                                                              | **Doc-only**      | The doc-only template below                                                                          |

@@ -126,7 +126,8 @@ find src/tests/scenarios -name "*.py" -not -name "__init__.py"
 grep -rhoE 'name=("|f")[^"]+"' src/tests/scenarios/ | sort -u
 ```
 
-For a more precise inventory, parse the AST: find `create_selenium_test(name=…)` calls and pair them with their containing file/folder.
+For a more precise inventory, parse the AST: find the adapter's `create_*_test(name=…)` calls (`create_selenium_test` / `create_playwright_test`) and
+pair them with their containing file/folder.
 
 ### 2. Walk the six dimensions above
 

@@ -128,10 +128,13 @@ the pair obvious: a reader scanning the POM sees the base operation and its retr
 ## The base method must be idempotent — that is the reset discipline
 
 A retry is only safe if calling the base operation again is the same as calling it the first time. **Nothing guarantees the SUT or the page clears
-state between attempts** — Selenium's `send_keys` _appends_, so a base method that does not `clear()` first submits `JohnDoeJohnDoe` on the second
-call and fails for a reason that has nothing to do with the original flake. So the base operation method must reset its own preconditions, every call:
+state between attempts** — on the Selenium adapter `send_keys` _appends_, so a base method that does not `clear()` first submits `JohnDoeJohnDoe` on
+the second call and fails for a reason that has nothing to do with the original flake. (Playwright's `locator.fill()` _replaces_ the field value, so
+the append footgun doesn't arise there — but the reset _discipline_ still does: a leftover overlay, checkbox state, or cached id must still be reset
+every call.) So the base operation method must reset its own preconditions, every call:
 
-- **Text inputs** — `element.clear()` before every `send_keys`, exactly as `login_without_otp` and `enter_fresh_corsicamon_id` do.
+- **Text inputs** — clear before every keystroke entry (Selenium `element.clear()` then `send_keys`; Playwright `locator.fill()` already replaces),
+  exactly as `login_without_otp` and `enter_fresh_corsicamon_id` do.
 - **Widget-decorated inputs** — re-set the backing field through the widget's API (per the _widget-decorated inputs_ rule in `CLAUDE.md`); a leftover
   datepicker calendar or autocomplete dropdown intercepts the next call.
 - **Overlays / modals / flash errors** — dismiss anything a prior call surfaced (a validation banner, a "fields required" toast) so it does not

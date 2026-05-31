@@ -21,7 +21,8 @@ head:
 > nous ne nous focaliserons que sur ce qui peut réellement être piégeux.
 
 Cette page explique le chemin avant toute chose. De la pratique sera nécessaire dans tous les cas.  
-[📖 Munissez-vous de l'exemple canonique comme référence.](https://github.com/mojo-molotov/ocarina-example)
+[📖 Munissez-vous de l'exemple canonique comme référence.](https://github.com/mojo-molotov/ocarina-example)  
+[📖 Existe aussi avec l'adapter Playwright.](https://github.com/mojo-molotov/ocarina-with-playwright-example)
 
 ## 1. Mise en place du projet
 

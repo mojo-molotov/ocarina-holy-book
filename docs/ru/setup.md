@@ -21,7 +21,8 @@ head:
 > остановимся только на том, что и правда может оказаться непростым.
 
 Эта страница объясняет _путь_. А дальше понадобится практика.  
-[📖 Возьмите за образец канонический пример.](https://github.com/mojo-molotov/ocarina-example)
+[📖 Возьмите за образец канонический пример.](https://github.com/mojo-molotov/ocarina-example)  
+[📖 Также доступен с адаптером Playwright.](https://github.com/mojo-molotov/ocarina-with-playwright-example)
 
 ## 1. Настройка проекта
 

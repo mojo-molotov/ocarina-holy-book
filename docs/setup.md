@@ -21,7 +21,8 @@ head:
 > on what can genuinely be tricky.
 
 This page explains the _journey_. After that, practice will be necessary.  
-[📖 Get the canonical example as a reference.](https://github.com/mojo-molotov/ocarina-example)
+[📖 Get the canonical example as a reference.](https://github.com/mojo-molotov/ocarina-example)  
+[📖 Also available with the Playwright adapter.](https://github.com/mojo-molotov/ocarina-with-playwright-example)
 
 ## 1. Project setup
 

@@ -66,6 +66,38 @@ export default defineConfig({
     ]
   },
   locales: {
+    ru: {
+      themeConfig: {
+        outline: {
+          label: 'Оглавление',
+          level: [2, 3]
+        },
+        skipToContentLabel: 'Перейти к содержанию',
+        lastUpdatedText: 'Последнее обновление:',
+        returnToTopLabel: 'Вернуться вверх',
+        sidebarMenuLabel: 'Смотрите также'
+      },
+      description: 'Ocarina — это автоматизированный фреймворк Игоря для тестирования веб-браузеров.',
+      title: 'Священная Книга Ocarina',
+      label: 'Русский',
+      lang: 'ru'
+    },
+    fr: {
+      themeConfig: {
+        outline: {
+          label: 'Sommaire',
+          level: [2, 3]
+        },
+        returnToTopLabel: 'Retour en haut de page',
+        lastUpdatedText: 'Dernière mise à jour :',
+        skipToContentLabel: 'Passer au contenu',
+        sidebarMenuLabel: 'Voir aussi'
+      },
+      description: "Ocarina est le framework de test de navigateur web automatisé d'Igor.",
+      title: "Le livre sacré d'Ocarina",
+      label: 'Français',
+      lang: 'fr'
+    },
     root: {
       themeConfig: {
         outline: {
@@ -80,36 +112,6 @@ export default defineConfig({
       title: 'The Ocarina Holy Book',
       label: 'English',
       lang: 'en'
-    },
-    fr: {
-      themeConfig: {
-        outline: {
-          label: 'Sommaire',
-          level: [2, 3]
-        },
-        returnToTopLabel: 'Retour en haut de page',
-        lastUpdatedText: 'Dernière mise à jour :',
-        skipToContentLabel: 'Passer au contenu',
-        sidebarMenuLabel: 'Voir aussi'
-      },
-      title: "Le livre sacré d'Ocarina",
-      label: 'Français',
-      lang: 'fr'
-    },
-    ru: {
-      themeConfig: {
-        outline: {
-          label: 'Оглавление',
-          level: [2, 3]
-        },
-        skipToContentLabel: 'Перейти к содержанию',
-        lastUpdatedText: 'Последнее обновление:',
-        returnToTopLabel: 'Вернуться вверх',
-        sidebarMenuLabel: 'Смотрите также'
-      },
-      title: 'Священная Книга Ocarina',
-      label: 'Русский',
-      lang: 'ru'
     }
   },
   themeConfig: {

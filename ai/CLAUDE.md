@@ -79,6 +79,18 @@ visible — and to make the hacky shortcut uncomfortable.
   specific gaps below illustrate every rule), but keep symptom names out of the rule statement itself; they belong in the call-site comment or in the
   gap inventory.
 
+## Engagement profile — the latitude this file assumes
+
+This file is written at **maximum latitude**: CURA is an open-source public demo, so the rules below assume you read the SUT's source (`gh api` the
+PHP), drive throwaway probes against the live app, use public demo credentials, and research the ecosystem on the open web. That is the _most
+permissive_ a suite is ever meant to be. A real engagement (a client site, an internal app, an NDA, live PII) is narrower — and when it is, the
+`profile-environment` skill emits a `CLAUDE.profile.md` appendix (concatenated after this core and the adapter appendix) that **tightens** these
+defaults: it may forbid source-reading, live probing, web egress, or unredacted screenshots, and may gate what runs without sign-off.
+
+**The profile only ever tightens, never loosens** — and the security hard line below ("functional and static, never active") is invariant no matter
+what an engagement "allows". When a `CLAUDE.profile.md` appendix is present it is the final word; if a rule here grants a latitude the appendix
+withdraws, the appendix wins.
+
 ## CLAUDE.local.md template
 
 `CLAUDE.local.md` is gitignored and stores per-machine paths and the **driver-adapter choice**. If it's missing, create it with the template below —

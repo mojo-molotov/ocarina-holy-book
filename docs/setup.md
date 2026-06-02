@@ -7,7 +7,7 @@ date: 2026-04-26
 head:
   - - meta
     - property: og:image
-      content: http://mojo-molotov.github.io/ocarina-holy-book/assets/content/docs/creatives/mojo-reading.png
+      content: https://mojo-molotov.github.io/ocarina-holy-book/assets/content/docs/creatives/mojo-reading.png
 ---
 
 # First steps

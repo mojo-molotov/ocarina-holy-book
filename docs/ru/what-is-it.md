@@ -9,7 +9,7 @@ date: 2026-04-24
 head:
   - - meta
     - property: og:image
-      content: http://mojo-molotov.github.io/ocarina-holy-book/assets/content/what-is-it/creatives/the-children-tools-battle.png
+      content: https://mojo-molotov.github.io/ocarina-holy-book/assets/content/what-is-it/creatives/the-children-tools-battle.png
 ---
 
 # Что такое Ocarina?

@@ -9,6 +9,10 @@ file at the matching section name. **Driver-level mechanics (the wait API, selec
 adapter-specific and live in `CLAUDE.selenium.md` / `CLAUDE.playwright.md`.** The rules below state the adapter-neutral principle; open the appendix
 for the adapter on your `CLAUDE.local.md` line for the concrete form.
 
+These rules assume **maximum latitude** (open-source SUT, live probing, public creds, web research — the CURA demo). When the engagement is narrower,
+a `CLAUDE.profile.md` appendix (from `profile-environment`) **tightens** them — it may forbid source-reading, live probing, web egress, or unredacted
+screenshots. The profile only ever tightens, never loosens; when present it is the final word.
+
 ## Philosophy
 
 - **No tricks or hacks.** JS-clicks to skip hit-testing, lint suppressions to silence a rule, `time.sleep` to mask a race, `driver.implicitly_wait` to
@@ -34,6 +38,8 @@ for the adapter on your `CLAUDE.local.md` line for the concrete form.
 - **Forbidden, no exceptions:** crafted attack payloads (SQLi, XSS, command injection, path traversal, deserialisation), token tampering, signature
   stripping, cookie forgery, session-fixation, cross-origin POSTs constructed outside the suite, directory enumeration, DOS, rate-floods. Anything
   that escalates from "use the app like a user" to "attack the app like an adversary" belongs in Burp / ZAP / sqlmap, not this suite.
+- **This line is invariant** — a `CLAUDE.profile.md` can only narrow it (e.g. functional security tests out of scope too); no engagement "allows"
+  active testing here. That's a different engagement entirely.
 
 ## Cross-browser
 

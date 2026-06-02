@@ -212,6 +212,12 @@ The Holy Book ships the Claude context as **three files**: `ai/CLAUDE.md` (frame
 step assembles that into the suite's own root `CLAUDE.md` — the file Claude Code auto-loads — so a fresh checkout actually gets the Holy Book's rules
 instead of nothing.
 
+**A third appendix, if `profile-environment` has run.** The Holy Book core is authored at **maximum latitude** (CURA is an open public demo — read the
+source, probe the live app, research on the web). When the engagement is narrower — a client site, an internal app, an NDA, live PII — the
+`profile-environment` skill emits a suite-root **`CLAUDE.profile.md`** that _tightens_ those defaults. It is **not** shipped by the Holy Book; it's
+generated locally per engagement. If it exists, concatenate it as the final appendix so the engagement envelope rides in the same auto-loaded file.
+Run `profile-environment` first if this SUT isn't the open public-demo case and no profile exists yet.
+
 It is a **generated artifact, not a hand-edited file.** Regenerate it (re-run this step) whenever the adapter switches or the Holy Book clone updates,
 exactly like the skill-battery copy in Step 4 — same copy-not-symlink rationale. Don't hand-edit the generated file; project-specific rules go in a
 clearly-marked separate section (see the overwrite note) or in `CLAUDE.local.md`.
@@ -226,8 +232,14 @@ ADAPTER="selenium"   # or "playwright" — the choice from Step 5
   cat "$HOLY_BOOK/ai/CLAUDE.md"
   printf '\n\n---\n\n'
   cat "$HOLY_BOOK/ai/CLAUDE.$ADAPTER.md"
-} > ./CLAUDE.md
+  # Engagement envelope, if profile-environment has produced one (suite-local, not from the Holy Book):
+  [ -f ./CLAUDE.profile.md ] && { printf '\n\n---\n\n'; cat ./CLAUDE.profile.md; }
+} > ./CLAUDE.md.tmp && mv ./CLAUDE.md.tmp ./CLAUDE.md
 ```
+
+The profile appendix goes **last** so its tightening rules read as the final word over the core's max-latitude defaults. (The write goes through a
+temp file because `./CLAUDE.profile.md` is read in the same pipeline that produces `./CLAUDE.md` — though they're different files today, the temp-file
+form is the safe habit if the profile is ever inlined.)
 
 The **other** adapter's appendix is deliberately omitted — the suite is wired on one adapter, and the core's "→ see the adapter appendix" pointers now
 resolve to the appended section in the same file. The slim variant needs no merge (it already inlines the adapter-neutral principle with per-adapter
@@ -369,6 +381,8 @@ path → Step 6; import error → Step 2; lint/type complaint with the wrong str
   copy from Step 4 is a snapshot and must be refreshed (re-run Step 4 alone; the rest of the setup is unaffected).
 - After the Holy Book's `ai/CLAUDE*.md` changes (a `git pull` adds or edits a rule, in the core or an appendix) — the suite's generated `CLAUDE.md` is
   a snapshot and must be re-assembled (re-run Step 7 alone).
+- After `profile-environment` writes or updates `CLAUDE.profile.md` (a new engagement, or the engagement's terms changed — staging → prod, demo data
+  became real, an NDA landed) — the suite's generated `CLAUDE.md` must be re-assembled to fold the new envelope in (re-run Step 7 alone).
 - **When switching driver adapter** (Selenium ↔ Playwright ↔ a local build). The adapter line in `CLAUDE.local.md`, the **generated `CLAUDE.md`**
   (re-run Step 7 — a different appendix gets concatenated), the CLI flags in the smoke check, and any optional-dependency install all need to follow.
 
@@ -383,6 +397,9 @@ path → Step 6; import error → Step 2; lint/type complaint with the wrong str
 - It does not guess driver paths or credentials. `CLAUDE.local.md` is gitignored precisely because per-machine values must be supplied, not inferred.
 - It does not pick the adapter for the user. The choice is surfaced (Step 5) and recorded (Step 6); the decision stays with the user, the same as a
   dataset choice (see `CLAUDE.md` → "Datasets are authoring decisions").
+- It does not profile the engagement envelope (source/probing/data/egress/security/autonomy/change-surface latitude). That's `profile-environment`,
+  which emits `CLAUDE.profile.md`; Step 7 only concatenates that appendix if it exists. Setup assumes the open public-demo default until profiling
+  narrows it.
 - It does not pick the skill-install scope for the user. Step 4 surfaces personal vs project; the decision stays with the user.
 - It does not symlink the skill battery or version it. Step 4 copies — the Claude Code copy drifts from `ai/skills/` until re-run. This is deliberate
   (a copy survives the repo being moved or deleted); the cost is the manual refresh noted above.

@@ -9,7 +9,7 @@ date: 2026-04-25
 head:
   - - meta
     - property: og:image
-      content: http://mojo-molotov.github.io/ocarina-holy-book/assets/content/first-feedbacks/creatives/stupid-mojo-engineer.png
+      content: https://mojo-molotov.github.io/ocarina-holy-book/assets/content/first-feedbacks/creatives/stupid-mojo-engineer.png
 ---
 
 # Первые отзывы

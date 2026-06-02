@@ -1,6 +1,6 @@
 # The Ocarina Holy Book
 
-[📖 Amen.](http://mojo-molotov.github.io/ocarina-holy-book)
+[📖 Amen.](https://mojo-molotov.github.io/ocarina-holy-book)
 
 ## See also
 

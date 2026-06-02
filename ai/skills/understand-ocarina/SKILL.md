@@ -3,7 +3,7 @@ name: understand-ocarina
 description:
   "**Deep-comprehension skill for Ocarina — the test framework an Ocarina suite is built on.** Two complementary public doc sites lead. For
   *reference* questions — a primitive's signature, contract, lifecycle (TestChain, drive_page, match_page, Watcher, fragments, scenarios, suites,
-  campaigns, cycles) — the primary source is the **Ocarina Holy Book** (`http://mojo-molotov.github.io/ocarina-holy-book`). For *intent / cartography
+  campaigns, cycles) — the primary source is the **Ocarina Holy Book** (`https://mojo-molotov.github.io/ocarina-holy-book`). For *intent / cartography
   / philosophy / cross-repo* questions — why the framework is shaped the way it is, how the six ecosystem repos relate, the Railway/functional design
   rationale, CI/CD across the ecosystem — the primary source is the book **from-ocarina-to-igor**
   (`https://mojo-molotov.github.io/from-ocarina-to-igor/`), a chaptered reverse-engineering of the whole ecosystem. The skill fetches either site
@@ -38,7 +38,7 @@ rationale from the book. Below each primary site is its own clone-and-build fall
 The canonical LLM-facing **reference**, hosted at:
 
 ```
-http://mojo-molotov.github.io/ocarina-holy-book
+https://mojo-molotov.github.io/ocarina-holy-book
 ```
 
 (Adapt if the live URL has changed — verify with the user before reverting to a cached or alternate location. The URL above is the documented public
@@ -162,7 +162,7 @@ the lay of the land" questions are the book's job.
 For a **reference** question, fetch the Holy Book; for an **intent / cartography** question, fetch the book; for a mixed question, both.
 
 ```text
-WebFetch: http://mojo-molotov.github.io/ocarina-holy-book/<page-or-section>       # reference
+WebFetch: https://mojo-molotov.github.io/ocarina-holy-book/<page-or-section>       # reference
 WebFetch: https://mojo-molotov.github.io/from-ocarina-to-igor/<NN-folder>/        # intent / cartography
 ```
 
@@ -172,8 +172,8 @@ needed or whether a different page name is the issue.
 If the structure of a site is unknown (first invocation, or the layout changed), fetch the index / sitemap first:
 
 ```text
-WebFetch: http://mojo-molotov.github.io/ocarina-holy-book/
-WebFetch: http://mojo-molotov.github.io/ocarina-holy-book/sitemap.xml
+WebFetch: https://mojo-molotov.github.io/ocarina-holy-book/
+WebFetch: https://mojo-molotov.github.io/ocarina-holy-book/sitemap.xml
 WebFetch: https://mojo-molotov.github.io/from-ocarina-to-igor/        # then use the chapter table above
 ```
 
@@ -289,7 +289,7 @@ a different motion handled by another skill.
   citation can't be re-verified.
 - **Don't copy doc-site content into project files.** Cross-reference URLs. The Holy Book and the book are the canonical sources; mirroring them in the
   project root makes stale copies inevitable.
-- **The doc-site URLs are `http://mojo-molotov.github.io/ocarina-holy-book` and `https://mojo-molotov.github.io/from-ocarina-to-igor/` per the skill's
+- **The doc-site URLs are `https://mojo-molotov.github.io/ocarina-holy-book` and `https://mojo-molotov.github.io/from-ocarina-to-igor/` per the skill's
   authoring date.** If one is unreachable consistently, it may have moved — verify with the user before assuming the URL is broken vs the site is
   unpublished.
 - **Match the example to the adapter.** Read the Selenium examples for a Selenium project, `ocarina-with-playwright-example` for a Playwright one (the

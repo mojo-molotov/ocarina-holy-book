@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://mojo-molotov.github.io/ocarina-holy-book/sitemap.xml

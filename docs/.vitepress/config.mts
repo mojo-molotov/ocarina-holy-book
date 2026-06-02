@@ -114,6 +114,21 @@ export default defineConfig({
       lang: 'en'
     }
   },
+  sitemap: {
+    // VitePress emits xhtml:link alternates for en/fr/ru but no x-default
+    // fallback. Google recommends an x-default hreflang pointing at the
+    // default (English/root) version; add it to every multi-locale entry.
+    transformItems: (items) =>
+      items.map((item) => {
+        if (!item.links?.length) return item;
+        if (item.links.some((l) => l.lang === 'x-default')) return item;
+        const root = item.links.find((l) => l.lang === 'en');
+        if (!root) return item;
+        return { ...item, links: [...item.links, { lang: 'x-default', url: root.url }] };
+      }),
+    hostname: 'https://mojo-molotov.github.io/ocarina-holy-book/'
+  },
+
   themeConfig: {
     socialLinks: [
       {
@@ -126,18 +141,15 @@ export default defineConfig({
     },
     logo: '/logo.png'
   },
-
   markdown: {
     config: (md) => {
       webpConfig.markdown!.config!(md); // ← délègue à webp.ts
     }
   },
-  sitemap: {
-    hostname: 'http://mojo-molotov.github.io/ocarina-holy-book/'
-  },
   head: [['link', { href: `${base}favicon.ico`, rel: 'icon' }]],
-
   extends: blogTheme,
+
+  lastUpdated: true,
   lang: 'en',
   base
 });

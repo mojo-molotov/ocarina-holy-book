@@ -7,7 +7,7 @@ date: 2026-05-16
 head:
   - - meta
     - property: og:image
-      content: http://mojo-molotov.github.io/ocarina-holy-book/assets/content/docs/creatives/mojo-playing-ocarina.png
+      content: https://mojo-molotov.github.io/ocarina-holy-book/assets/content/docs/creatives/mojo-playing-ocarina.png
 ---
 
 # Utiliser Ocarina avec l'IA

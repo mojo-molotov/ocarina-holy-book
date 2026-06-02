@@ -12,7 +12,7 @@ References:
 - The Holy Book (docs): <https://github.com/mojo-molotov/ocarina-holy-book>
 - Worked example, minimal (Selenium): <https://github.com/mojo-molotov/ocarina-example>
 - Worked example with gap inventory and AI proof (Selenium): <https://github.com/mojo-molotov/ocarina-with-ai-example>
-- Worked example on the Playwright adapter: <https://github.com/mojo-molotov/ocarina-with-playwright>
+- Worked example on the Playwright adapter: <https://github.com/mojo-molotov/ocarina-with-playwright-example>
 
 When a rule below cites a worked example, the link points into one of those example repos. When a rule cites the framework itself, it points at
 `mojo-molotov/ocarina`. When a rule cites the docs, it points at the Holy Book.
@@ -26,7 +26,7 @@ browser is delegated to an adapter. Two adapters ship with Ocarina (Playwright s
 - **Selenium** — `create_selenium_test`, `WebDriverWait`, `By.*` locators, `--driver-path` + a real chromedriver. Worked examples: `ocarina-example`,
   `ocarina-with-ai-example`.
 - **Playwright** — `create_playwright_test`, string locators with auto-wait, `driver.submit(lambda page: …)` thread-marshalling,
-  `--browser chromium|firefox|webkit` (no driver path). Worked example: `ocarina-with-playwright`.
+  `--browser chromium|firefox|webkit` (no driver path). Worked example: `ocarina-with-playwright-example`.
 
 **The adapter is a setup decision, not an assumption.** `setup-environment` chooses it and records it on the adapter line of `CLAUDE.local.md`. This
 core file names the neutral surface ("the adapter's `create_*_test`", "the adapter's CLI store", "wait for the element to be ready"); the concrete
@@ -111,7 +111,7 @@ path; Playwright needs none — it manages its own browsers). The exact per-mach
 - **ocarina**: `/path/to/ocarina`
 - **ocarina-example**: `/path/to/ocarina-example`
 - **ocarina-with-ai-example**: `/path/to/ocarina-with-ai-example`
-- **ocarina-with-playwright**: `/path/to/ocarina-with-playwright`
+- **ocarina-with-playwright-example**: `/path/to/ocarina-with-playwright-example`
 - **ocarina-holy-book**: `/path/to/ocarina-holy-book`
 ```
 
@@ -572,7 +572,7 @@ can render an overlay on top of nearby elements, fill the widget-backed field _l
 
 The concrete realisation (Selenium: set value via `execute_script` + the widget's hook; Playwright: locator affordances + idempotent toggles) → see
 the adapter appendix. Worked examples: CURA's `txt_visit_date` Bootstrap datepicker (`ocarina-with-ai-example`, Selenium); the OTP-checkbox label
-toggle in `DashboardLoginPage` (`ocarina-with-playwright`).
+toggle in `DashboardLoginPage` (`ocarina-with-playwright-example`).
 
 ### Setup/teardown actions: prefer the URL, save the UI click for the test that owns it
 

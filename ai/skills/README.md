@@ -8,8 +8,10 @@ Safari/WebKit), and the host OSes (macOS, Windows, Linux). Everything else — t
 OpenAPI, PDF, JSON), the project layout, **and the driver adapter (Selenium or Playwright)** — is interoperable. Concrete examples in a skill use
 whichever adapter the suite is wired on; driver-level mechanics (the wait API, selector form, submission primitives, CLI flags) live in
 `CLAUDE.selenium.md` / `CLAUDE.playwright.md`, not in the skills. Worked examples cite <https://github.com/mojo-molotov/ocarina-example> or
-<https://github.com/mojo-molotov/ocarina-with-ai-example> (Selenium) and <https://github.com/mojo-molotov/ocarina-with-playwright> (Playwright); the
-framework itself is at <https://github.com/mojo-molotov/ocarina> and the docs at <https://github.com/mojo-molotov/ocarina-holy-book>.
+<https://github.com/mojo-molotov/ocarina-with-ai-example> (Selenium) and <https://github.com/mojo-molotov/ocarina-with-playwright-example>
+(Playwright); the framework itself is at <https://github.com/mojo-molotov/ocarina>, the reference docs at
+<https://github.com/mojo-molotov/ocarina-holy-book>, and the ecosystem book (intent, cartography, philosophy) at
+<https://github.com/mojo-molotov/from-ocarina-to-igor>.
 
 The prefix convention (`review-*`, `analyse-*`, `assess-*`, `pick-*`, `understand-*`) does most of the grouping at the filename level. The families
 below add the prefix-less skills (ideation, refactoring, authoring, state-probing).
@@ -78,7 +80,7 @@ Build / refresh a mental model — of the codebase, the ecosystem, the SUT's con
 - [assess-impact](assess-impact/SKILL.md) — forward impact analysis: given a change (SUT change / planned refactor / a `diagnose-*` shared-component cause), trace its blast radius through the dependency graph, classify each affected node (broken / stale claim / gap-test-may-flip / coverage-gap / smoke-gate crossing), render a Mermaid dependency-slice. The forward dual of the `diagnose-*` pair.
 - [assess-ecosystem](assess-ecosystem/SKILL.md) — bounded public-research pass over eight ecosystem surfaces; token-budget-controlled.
 - [understand-sut-constraints](understand-sut-constraints/SKILL.md) — map SUT-side bounds that constrain parallel-test safety; distributed mitigations when the fleet shares scarcity, worker-local in-memory only when it doesn't (and the keys + thread-safety gates pass).
-- [understand-ocarina](understand-ocarina/SKILL.md) — four-tier framework comprehension; Holy Book first.
+- [understand-ocarina](understand-ocarina/SKILL.md) — framework comprehension routed by question class: the Holy Book for reference (what a primitive is), the `from-ocarina-to-igor` book for intent / ecosystem cartography / philosophy (why it's shaped this way), then the Ocarina source and the adapter-matched worked example for behaviour and shape.
 
 ## Pick (file selection)
 
@@ -140,7 +142,7 @@ A few recurring chains:
 - Black-hat ideation → `empiricism` to verify the SUT's current behaviour → `extend-coverage` to author the test.
 - Spec change → `update-frd-and-tests` (spec doc first, tests follow, gap tests reframed not flipped).
 - New flake suspect → `diagnose-flake-root-cause` (failure rate → signature → correlate → routed `analyse-*` experiment) → `write-a-probe` to confirm by moving the rate → finding lands in the gap inventory / scenario comment / spec doc → probe deleted.
-- Any framework question → `understand-ocarina` (Holy Book first, then source / example clones).
+- Any framework question → `understand-ocarina` (routed by class: Holy Book for reference, the `from-ocarina-to-igor` book for intent / cartography, then source / adapter-matched example clones).
 - Hygiene pass / pre-release pruning → `assess-test-base` (catalogue) → `review-dead-code` (audit unused connectors / POMs / scenarios / fragments / constants) → per finding: delete or move to `<source-root>/incubator/`.
 - Local environment bring-up → `setup-environment` (venv + tooling + skill-battery install into Claude Code + driver adapter choice + `CLAUDE.local.md` + strict `ruff`/`mypy`/pre-commit config + quality loop).
 - Engagement isn't the open public demo (client site / internal app / NDA / live PII) → `profile-environment` (seven-dimension latitude interview, emits `CLAUDE.profile.md`) → `setup-environment` Step 7 concatenates the profile appendix into `CLAUDE.md`. Re-run profiling and Step 7 when the engagement's terms change (staging → prod, demo data → real, an NDA lands).

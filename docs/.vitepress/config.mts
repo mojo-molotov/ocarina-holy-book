@@ -118,14 +118,20 @@ export default defineConfig({
     // VitePress emits xhtml:link alternates for en/fr/ru but no x-default
     // fallback. Google recommends an x-default hreflang pointing at the
     // default (English/root) version; add it to every multi-locale entry.
+    //
+    // first-feedbacks is marked noindex (NSFW copy) in every locale, so keep
+    // it out of the sitemap entirely — listing a noindexed URL sends Google a
+    // contradictory signal.
     transformItems: (items) =>
-      items.map((item) => {
-        if (!item.links?.length) return item;
-        if (item.links.some((l) => l.lang === 'x-default')) return item;
-        const root = item.links.find((l) => l.lang === 'en');
-        if (!root) return item;
-        return { ...item, links: [...item.links, { lang: 'x-default', url: root.url }] };
-      }),
+      items
+        .filter((item) => !/(^|\/)first-feedbacks\.html$/.test(item.url))
+        .map((item) => {
+          if (!item.links?.length) return item;
+          if (item.links.some((l) => l.lang === 'x-default')) return item;
+          const root = item.links.find((l) => l.lang === 'en');
+          if (!root) return item;
+          return { ...item, links: [...item.links, { lang: 'x-default', url: root.url }] };
+        }),
     hostname: 'https://mojo-molotov.github.io/ocarina-holy-book/'
   },
 

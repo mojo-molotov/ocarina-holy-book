@@ -8,7 +8,10 @@ description:
   Ocarina convention — *a watcher never reports something positive*. A watcher exists to flag the undesirable; if it fired, something undesirable was
   observed, even if the test still passed. Walks the report + log + screenshot set looking for these emissions, cross-references each one to its
   watcher, and surfaces them as **deferred-investigation items** that the standard `review-report` pass misses. Use whenever the user asks to audit
-  watcher output, look for hidden negative signals, review the 'extra stuff' in a report, or sanity-check that nothing watcher-emitted was overlooked."
+  watcher output, look for hidden negative signals, review the 'extra stuff' in a report, or sanity-check that nothing watcher-emitted was overlooked.
+  Distinct from `review-watcher-misuse` (which reviews the watcher callback *source* for convention compliance) and `analyse-watcher-flakiness` (which
+  *runs* the suite to hunt watcher-induced flakes): this skill reads the *run output* — report, logs, screenshot burst — for emitted signals, no
+  source read or re-run needed."
 ---
 
 # Review watcher emissions — the quiet negative signals

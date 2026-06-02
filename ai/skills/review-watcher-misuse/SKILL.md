@@ -7,7 +7,9 @@ description:
   poll cycle regardless of state — that's not a watcher, that's a log spammer), or a report whose message is neutral / informational rather than
   warning-shaped ('user is on the home page'). Surfaces misuses with the recommended fix: re-shape into a real assertion in the test body if it's
   positive, drop the call if it's noise, or rewrite the message if it's just phrased wrong. Use whenever the user asks to review watchers, audit
-  watcher convention compliance, vet a PR that introduces a watcher, or sanity-check the watcher catalog before a release."
+  watcher convention compliance, vet a PR that introduces a watcher, or sanity-check the watcher catalog before a release. Distinct from
+  `review-watcher-emissions` (which reads *run output* for emitted signals) and `analyse-watcher-flakiness` (which *runs* the suite to catch
+  watcher-caused flakes): this skill is a *static* read of the callback source — no run, no report needed."
 ---
 
 # Review watcher misuse — the negative-signal-only rule

@@ -8,7 +8,9 @@ description:
   registered watcher for these failure shapes, instruments the watcher lifecycle, runs the suite with and without the watcher attached (and at
   multiple poll intervals), and surfaces watchers that destabilise the test body, miss the signal they were built to catch, or contaminate adjacent
   tests. Use whenever the user asks to audit watchers, suspect a watcher is causing the flake, evaluate a new watcher before adding it to a scenario,
-  or investigate ghost screenshots / spurious reports."
+  or investigate ghost screenshots / spurious reports. Distinct from the *static* watcher reviews — `review-watcher-misuse` (callback convention) and
+  `review-watcher-emissions` (emitted signals in run output): this skill *runs* the suite with and without the watcher to catch concurrency-induced
+  flakes. Usually routed to from `diagnose-flake-root-cause`."
 ---
 
 # Analyse watcher flakiness — concurrency at the test boundary

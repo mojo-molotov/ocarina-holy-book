@@ -121,10 +121,13 @@ Chacun produit un livrable.
 
 - `question-state`&nbsp;—&nbsp;interroger l'environnement avant de croire un résultat.
 
-### Setup (1)
+### Setup (2)
 
 - `setup-environment`&nbsp;—&nbsp;venv, outillage de dev, la batterie de skills Ocarina copiée dans le répertoire de skills de Claude Code, chemins de
   drivers dans `CLAUDE.local.md`, boucle pré-commit, smoke-check du runner.
+- `profile-environment`&nbsp;—&nbsp;profiler la marge de manœuvre accordée sur la mission (accès au code, sondage en direct, sensibilité des données,
+  confidentialité, sécurité, autonomie, périmètre de modification)&nbsp;;&nbsp;génère une annexe `CLAUDE.profile.md` qui resserre les réglages par
+  défaut, sans jamais les assouplir.
 
 ### Run (1)
 
@@ -160,6 +163,9 @@ dans `IDENTIFIED_GAPS.md`. Le tout via `update-frd-and-tests`.
 **Distribué quand une ressource est partagée.** Dès que plusieurs workers se partagent une ressource plafonnée par le SUT (sessions, créneaux,
 quotas), la coordination passe par des primitives distribuées. Sinon, un cache local en mémoire suffit&nbsp;—&nbsp;à condition que les clés soient
 garanties uniques et que leur génération soit thread-safe.
+
+**La marge de manœuvre ne peut que se resserrer.** Au départ, tout est ouvert comme sur une démo&nbsp;:&nbsp;code lisible, sondage en direct,
+identifiants publics. `profile-environment` la réduit selon la mission, sans jamais assouplir les règles de sécurité.
 
 **Mtime, pas nom de fichier.** Les suffixes UUID sont aléatoires&nbsp;;&nbsp;`pick-*` trie par mtime.
 

@@ -118,10 +118,12 @@ Each produces a deliverable.
 
 - `question-state`&nbsp;—&nbsp;interrogate the environment before trusting a result.
 
-### Setup (1)
+### Setup (2)
 
 - `setup-environment`&nbsp;—&nbsp;venv, dev tooling, the Ocarina skill battery copied into Claude Code's skills directory, driver paths in
   `CLAUDE.local.md`, pre-commit loop, runner smoke-check.
+- `profile-environment`&nbsp;—&nbsp;profile the engagement's latitude (source, probing, data, egress, security, autonomy, change-surface); emit a
+  `CLAUDE.profile.md` appendix that tightens the defaults, never loosens.
 
 ### Run (1)
 
@@ -154,6 +156,9 @@ motion via `update-frd-and-tests`.
 
 **Distributed when scarcity is shared.** If workers contend on a SUT-capped resource (sessions, slots, quotas), coordinate through distributed
 primitives. Otherwise a worker-local in-memory cache is fine&nbsp;—&nbsp;provided keys can't collide and generation is thread-safe.
+
+**Latitude only tightens.** Defaults assume an open demo (read source, probe live, public creds). `profile-environment` narrows them per engagement;
+nothing loosens the security line.
 
 **Mtime, not filename.** UUID suffixes are random; `pick-*` sorts by mtime.
 

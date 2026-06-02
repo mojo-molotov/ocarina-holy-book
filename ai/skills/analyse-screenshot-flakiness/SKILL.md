@@ -10,7 +10,9 @@ description:
   intermediate page (cookie banner with Accept, an interstitial modal, a consent gate) → candidate for an Ocarina `match_page` branch that dismisses
   it deterministically; (c) a transient artifact of the run (mid-redirect frame, BFcache stale frame) → no adaptation, cross-reference to the gap
   inventory. Use whenever the user asks to compare screenshots across runs, find what's making screenshots different, decide whether to add a watcher
-  or a match_page branch, or triage visual flakes."
+  or a match_page branch, or triage visual flakes. Distinct from its `analyse-*` siblings: it works from *captured frames*, not by instrumenting a
+  code path (`analyse-flakiness` widens the transient net in test bodies, `analyse-fixture-flakiness` the setup/teardown boundary,
+  `analyse-watcher-flakiness` the watcher threads). Usually routed to from `diagnose-flake-root-cause`."
 ---
 
 # Analyse screenshot flakiness — what's in the picture that shouldn't be?

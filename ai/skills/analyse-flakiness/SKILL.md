@@ -7,7 +7,9 @@ description:
   Conversely, tests that pass after 2/3 lives once the net is widened tell you where the **existing** transient-error classification is too narrow.
   Use whenever the user asks to hunt flakes, audit transient-vs-non-transient classification, find chronic failure spots, or investigate why a test
   still dies under retries. The hard rule: this is a **temporary, local experiment** — never commit the widened net; restore the original
-  classification once the analysis lands.'
+  classification once the analysis lands. Distinct from its `analyse-*` siblings by *surface*: `analyse-fixture-flakiness` instruments the
+  setup/teardown boundary, `analyse-watcher-flakiness` the watcher threads, `analyse-screenshot-flakiness` compares captured frames — this one widens
+  the transient-error net inside test *bodies*. Usually routed to from `diagnose-flake-root-cause`, which picks the experiment.'
 ---
 
 # Analyse flakiness — widen the transient net, watch what still dies

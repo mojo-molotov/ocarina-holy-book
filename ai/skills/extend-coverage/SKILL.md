@@ -5,7 +5,9 @@ description:
   aren't covered yet** — variants one input/parameter away from an existing test, sibling pages where the same operation is also possible, dispatcher
   paths not exercised, documented gaps without an intentional-fail test, edge values at the boundaries of inputs. The output is a structured list of
   *candidate* tests with rationale and priority — never a written scenario. The user decides what's worth adding. Use whenever the user asks to find
-  coverage gaps, extend the suite, look for missing test cases, hunt for adjacent scenarios, harden before release, or do a coverage pass.
+  coverage gaps, extend the suite, look for missing test cases, hunt for adjacent scenarios, harden before release, or do a coverage pass. Surfaces
+  *candidate* tests to choose from — distinct from `write-test-strategy` (which authors the strategy *document*) and `assess-test-base` (which
+  inventories what already exists): this skill finds what's *missing* and proposes it, never writing the scenario itself.
 ---
 
 # Extend coverage — find unexercised adjacent cases

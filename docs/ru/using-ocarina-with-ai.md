@@ -1,6 +1,6 @@
 ---
 sticky: 1
-description: Привет, это я, твой новый лучший друг!
+description: Hello it's me, your new best friend!
 
 date: 2026-05-16
 

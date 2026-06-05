@@ -142,6 +142,7 @@ export default defineConfig({
         icon: 'github'
       }
     ],
+    lastUpdated: { formatOptions: { dateStyle: 'medium', timeStyle: 'medium', forceLocale: true } },
     outline: {
       level: [2, 3]
     },

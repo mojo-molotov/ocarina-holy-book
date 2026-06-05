@@ -73,7 +73,7 @@ export default defineConfig({
           level: [2, 3]
         },
         skipToContentLabel: 'Перейти к содержанию',
-        lastUpdatedText: 'Последнее обновление:',
+        lastUpdatedText: 'Последнее обновление',
         returnToTopLabel: 'Вернуться вверх',
         sidebarMenuLabel: 'Смотрите также'
       },
@@ -89,7 +89,7 @@ export default defineConfig({
           level: [2, 3]
         },
         returnToTopLabel: 'Retour en haut de page',
-        lastUpdatedText: 'Dernière mise à jour :',
+        lastUpdatedText: 'Dernière mise à jour',
         skipToContentLabel: 'Passer au contenu',
         sidebarMenuLabel: 'Voir aussi'
       },
@@ -106,7 +106,7 @@ export default defineConfig({
         skipToContentLabel: 'Skip to content',
         sidebarMenuLabel: 'Related articles',
         returnToTopLabel: 'Return to top',
-        lastUpdatedText: 'Last update:'
+        lastUpdatedText: 'Last update'
       },
       description: "Ocarina is Igor's automated web browser testing framework.",
       title: 'The Ocarina Holy Book',

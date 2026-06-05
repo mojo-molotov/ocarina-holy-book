@@ -89,7 +89,7 @@ export default defineConfig({
           level: [2, 3]
         },
         returnToTopLabel: 'Retour en haut de page',
-        lastUpdatedText: 'Dernière mise à jour',
+        lastUpdatedText: 'Dernière mise à jour ',
         skipToContentLabel: 'Passer au contenu',
         sidebarMenuLabel: 'Voir aussi'
       },

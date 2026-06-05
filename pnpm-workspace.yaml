@@ -3,6 +3,12 @@ allowBuilds:
   esbuild: true
   sharp: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@sugarat/theme@0.5.21'
+  - vitepress-plugin-announcement@0.1.9
+  - vitepress-plugin-artalk@0.1.3
+  - vitepress-plugin-back2top@0.1.2
+  - vitepress-plugin-giscus@0.1.2
 peerDependencyRules:
   ignoreMissing:
     - '@algolia/client-search'

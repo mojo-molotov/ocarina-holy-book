@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@sugarat/theme':
-        specifier: 0.5.20
-        version: 0.5.20(@element-plus/icons-vue@2.3.2(vue@3.5.33(typescript@6.0.3)))(element-plus@2.14.0(vue@3.5.33(typescript@6.0.3)))(pagefind@1.5.2)(vite@7.3.3(@types/node@25.6.0)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.9.0))(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))
+        specifier: 0.5.21
+        version: 0.5.21(@element-plus/icons-vue@2.3.2(vue@3.5.33(typescript@6.0.3)))(element-plus@2.14.0(vue@3.5.33(typescript@6.0.3)))(pagefind@1.5.2)(vite@7.3.3(@types/node@25.6.0)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.9.0))(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))
     devDependencies:
       '@commitlint/config-conventional':
         specifier: 20.5.0
@@ -1026,8 +1026,8 @@ packages:
   '@sugarat/theme-shared@0.0.7':
     resolution: {integrity: sha512-rFK+NF5ORXjxmisVjVKI1A2WWu/J2NMw367n9Dxy7rF4jJE8CaHqryu3vOLwp96RUBDbaN95ABT3E4wyaGzGKA==}
 
-  '@sugarat/theme@0.5.20':
-    resolution: {integrity: sha512-SxkoUtlA12u+pdEunBQPlmwMp5l+CuSP9ztb1dtLkuRyQvPWkaixHpCP8Wrqc0AZAuIQHbyNWBRm4HyFcvFn1w==}
+  '@sugarat/theme@0.5.21':
+    resolution: {integrity: sha512-iUQOBp4WrdG0oky22RjD8Kp1Vf1m3G+xLws1rmjocB2Md8oiN6gO1m0FvmA8EWef3wqj7X7ZirfT1LcVM6WG7A==}
     peerDependencies:
       '@element-plus/icons-vue': ^2.3.1
       element-plus: ^2.7
@@ -3283,23 +3283,23 @@ packages:
   vitepress-markdown-timeline@1.2.2:
     resolution: {integrity: sha512-eDFcvudmTW33pI7XdT+ZeUPvpc4CPXI0LZbsZZ54j36G56AN6qYEBiwZpDHl77E4QvqAIJMc8phXXvm7P/Lc+Q==}
 
-  vitepress-plugin-announcement@0.1.8:
-    resolution: {integrity: sha512-CX/cLSdkNWffbodm2CC4DkaItg4iuGu9Q6JESGn4Ouegy6eezlEm2NVoNzcex6Qvmbzom05RVAOwDEFKwtdVNg==}
+  vitepress-plugin-announcement@0.1.9:
+    resolution: {integrity: sha512-SZTOdvpYRDUU/ifJ4y2k3K3pFTIJsR8e8oLi1FXTbjYe1hf9qvfnLTFzlJn5RNwcMgJ6lipUfzXazovvWH1wlQ==}
     peerDependencies:
       vitepress: ^1.0.0-0 || ^2.0.0-0
 
-  vitepress-plugin-artalk@0.1.2:
-    resolution: {integrity: sha512-wgW5AmsQhB+qTLslsMZ//MNrDrg0SP7J6CWozVk2wtg2ADBrq+6d6w4GzZopGYVNZ6pm/Wd16xbLciN82MNTmQ==}
+  vitepress-plugin-artalk@0.1.3:
+    resolution: {integrity: sha512-kmx9CAnPATGg6ExXZXBfmNCcmPXmRrjJ5IRWbe4X+SXFI4nYcvjy8pa/B5PFE+QRFTE83r6s5gp3Rvkce+6s3Q==}
     peerDependencies:
       vitepress: ^1.0.0-0 || ^2.0.0-0
 
-  vitepress-plugin-back2top@0.1.1:
-    resolution: {integrity: sha512-Gh9k5vPNMVuqMYTyqogP6xbm0O1nRtapm5dxEJK2vQFilPBWtMqLE0ReqUQl34pI9vxrznw96uhZcTHhtspK3A==}
+  vitepress-plugin-back2top@0.1.2:
+    resolution: {integrity: sha512-ijQYiDrtUwhpGHY2DAgzZkhuOpGO7pvS8eeQq2vPPIgPXArxjEdxNVEawlpkdz9BgvZxZYJnkMCsTiK3DYl9fQ==}
     peerDependencies:
       vitepress: ^1.0.0-0 || ^2.0.0-0
 
-  vitepress-plugin-giscus@0.1.1:
-    resolution: {integrity: sha512-X6jeHjLu/yaekHO3bYtinc2Iqt7zbQGYjE+4wpWJYsDwGcggtDmQSbBmSZWr9DgQoclSC6xtVslE6JLor91wvg==}
+  vitepress-plugin-giscus@0.1.2:
+    resolution: {integrity: sha512-WHFPdRER8OHKqgTX/sr382QeZoPDP80sngUK342aPJRARe53oLU1rsXyJmVZhctQIJFqMqWykJd/0sUFckB7Hg==}
     peerDependencies:
       vitepress: ^1.0.0-0 || ^2.0.0-0
 
@@ -4148,7 +4148,7 @@ snapshots:
       cross-spawn: 7.0.6
       gray-matter: 4.0.3
 
-  '@sugarat/theme@0.5.20(@element-plus/icons-vue@2.3.2(vue@3.5.33(typescript@6.0.3)))(element-plus@2.14.0(vue@3.5.33(typescript@6.0.3)))(pagefind@1.5.2)(vite@7.3.3(@types/node@25.6.0)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.9.0))(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))':
+  '@sugarat/theme@0.5.21(@element-plus/icons-vue@2.3.2(vue@3.5.33(typescript@6.0.3)))(element-plus@2.14.0(vue@3.5.33(typescript@6.0.3)))(pagefind@1.5.2)(vite@7.3.3(@types/node@25.6.0)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.9.0))(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))':
     dependencies:
       '@element-plus/icons-vue': 2.3.2(vue@3.5.33(typescript@6.0.3))
       '@giscus/vue': 3.1.1(vue@3.5.33(typescript@6.0.3))
@@ -4161,10 +4161,10 @@ snapshots:
       mermaid: 10.9.6
       oh-my-live2d: 0.19.3
       vitepress-markdown-timeline: 1.2.2
-      vitepress-plugin-announcement: 0.1.8(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))
-      vitepress-plugin-artalk: 0.1.2(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))
-      vitepress-plugin-back2top: 0.1.1(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))
-      vitepress-plugin-giscus: 0.1.1(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))
+      vitepress-plugin-announcement: 0.1.9(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))
+      vitepress-plugin-artalk: 0.1.3(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))
+      vitepress-plugin-back2top: 0.1.2(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))
+      vitepress-plugin-giscus: 0.1.2(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))
       vitepress-plugin-group-icons: 1.6.5(vite@7.3.3(@types/node@25.6.0)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(yaml@2.9.0))
       vitepress-plugin-image-preview: 0.1.3(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3))
       vitepress-plugin-mermaid: 2.0.13(mermaid@10.9.6)(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))
@@ -6616,20 +6616,12 @@ snapshots:
     dependencies:
       dayjs: 1.11.20
 
-  vitepress-plugin-announcement@0.1.8(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0)):
+  vitepress-plugin-announcement@0.1.9(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0)):
     dependencies:
       javascript-stringify: 2.1.0
       vitepress: 2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0)
 
-  vitepress-plugin-artalk@0.1.2(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3)):
-    dependencies:
-      '@vueuse/core': 14.3.0(vue@3.5.33(typescript@6.0.3))
-      javascript-stringify: 2.1.0
-      vitepress: 2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0)
-    transitivePeerDependencies:
-      - vue
-
-  vitepress-plugin-back2top@0.1.1(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3)):
+  vitepress-plugin-artalk@0.1.3(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3)):
     dependencies:
       '@vueuse/core': 14.3.0(vue@3.5.33(typescript@6.0.3))
       javascript-stringify: 2.1.0
@@ -6637,7 +6629,15 @@ snapshots:
     transitivePeerDependencies:
       - vue
 
-  vitepress-plugin-giscus@0.1.1(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3)):
+  vitepress-plugin-back2top@0.1.2(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3)):
+    dependencies:
+      '@vueuse/core': 14.3.0(vue@3.5.33(typescript@6.0.3))
+      javascript-stringify: 2.1.0
+      vitepress: 2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0)
+    transitivePeerDependencies:
+      - vue
+
+  vitepress-plugin-giscus@0.1.2(vitepress@2.0.0-alpha.17(@types/node@25.6.0)(async-validator@4.2.5)(jiti@2.6.1)(postcss@8.5.14)(sass-embedded@1.99.0)(sass@1.99.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.33(typescript@6.0.3)):
     dependencies:
       '@giscus/vue': 3.1.1(vue@3.5.33(typescript@6.0.3))
       '@vueuse/core': 14.3.0(vue@3.5.33(typescript@6.0.3))

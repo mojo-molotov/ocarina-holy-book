@@ -324,7 +324,6 @@ _Фрагмент_ — это функция `(driver, logger) -> TestChain`, к
 def login_without_otp_happy_path(driver: WebDriver, logger: ILogger):
     """Verify that we can connect without OTP."""
     on_dashboard_login_page = DashboardLoginPage(driver=driver)
-    on_dashboard_welcome_page = DashboardWelcomePage(driver=driver)
 
     # * ...
     return [

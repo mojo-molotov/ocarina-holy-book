@@ -231,7 +231,7 @@ On peut alors faire&nbsp;:
 create_selenium_test(
     name="Send the form",
     test_scenario=lambda driver, logger: Scenario(
-        test_chain=_send__form(
+        test_chain=_send_form(
             HumanizedDriver(  # <- [!]
                 driver,
                 wpm=125,
